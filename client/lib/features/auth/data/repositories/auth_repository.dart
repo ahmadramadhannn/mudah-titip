@@ -92,7 +92,7 @@ class AuthRepository {
 
   Future<void> _saveAuthData(AuthResponse authResponse) async {
     await _prefs.setString(_tokenKey, authResponse.token);
-    await _prefs.setString(_userKey, jsonEncode(authResponse.user.toJson()));
+    // await _prefs.setString(_userKey, jsonEncode(authResponse.user.toJson()));
   }
 
   Failure _handleDioError(DioException e) {
@@ -118,7 +118,9 @@ class AuthRepository {
     }
 
     return ServerFailure(
-      data is Map ? data['message'] as String? ?? 'Terjadi kesalahan' : 'Terjadi kesalahan',
+      data is Map
+          ? data['message'] as String? ?? 'Terjadi kesalahan'
+          : 'Terjadi kesalahan',
       statusCode: statusCode,
     );
   }

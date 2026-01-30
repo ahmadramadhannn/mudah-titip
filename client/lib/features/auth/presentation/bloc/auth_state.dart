@@ -20,12 +20,12 @@ final class AuthLoading extends AuthState {
 
 /// User is authenticated.
 final class AuthAuthenticated extends AuthState {
-  final User user;
+  final String name;
 
-  const AuthAuthenticated(this.user);
+  const AuthAuthenticated(this.name);
 
   @override
-  List<Object?> get props => [user];
+  List<Object?> get props => [name];
 }
 
 /// User is not authenticated.

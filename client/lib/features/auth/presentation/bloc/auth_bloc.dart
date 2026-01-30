@@ -29,7 +29,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final user = await _authRepository.tryRestoreSession();
     if (user != null) {
-      emit(AuthAuthenticated(user));
+      emit(AuthAuthenticated(user.name));
     } else {
       emit(const AuthUnauthenticated());
     }
@@ -43,12 +43,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     try {
       final response = await _authRepository.login(
-        LoginRequest(
-          email: event.email,
-          password: event.password,
-        ),
+        LoginRequest(email: event.email, password: event.password),
       );
-      emit(AuthAuthenticated(response.user));
+      emit(AuthAuthenticated(response.name));
     } on Failure catch (e) {
       emit(AuthFailure(e.message));
       emit(const AuthUnauthenticated());
@@ -75,7 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           shopDescription: event.shopDescription,
         ),
       );
-      emit(AuthAuthenticated(response.user));
+      // emit(AuthAuthenticated(response.user));
     } on Failure catch (e) {
       emit(AuthFailure(e.message));
       emit(const AuthUnauthenticated());

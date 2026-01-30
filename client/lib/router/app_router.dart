@@ -6,6 +6,9 @@ import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../features/products/data/models/product.dart';
+import '../features/products/presentation/pages/add_product_page.dart';
+import '../features/products/presentation/pages/products_page.dart';
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -20,7 +23,8 @@ class AppRouter {
     redirect: (context, state) {
       final authState = authBloc.state;
       final isAuth = authState is AuthAuthenticated;
-      final isLoggingIn = state.matchedLocation == '/login' ||
+      final isLoggingIn =
+          state.matchedLocation == '/login' ||
           state.matchedLocation == '/register';
       final isSplash = state.matchedLocation == '/';
 
@@ -42,14 +46,8 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const SplashPage(),
-      ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
-      ),
+      GoRoute(path: '/', builder: (context, state) => const SplashPage()),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterPage(),
@@ -61,11 +59,14 @@ class AppRouter {
       // Placeholder routes - will be implemented later
       GoRoute(
         path: '/products',
-        builder: (context, state) => _PlaceholderPage(title: 'Produk'),
+        builder: (context, state) => const ProductsPage(),
       ),
       GoRoute(
         path: '/products/add',
-        builder: (context, state) => _PlaceholderPage(title: 'Tambah Produk'),
+        builder: (context, state) {
+          final product = state.extra as Product?;
+          return AddProductPage(productToEdit: product);
+        },
       ),
       GoRoute(
         path: '/consignments',
@@ -121,9 +122,9 @@ class _PlaceholderPage extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               'Segera hadir',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
             ),
           ],
         ),

@@ -12,14 +12,14 @@ class ApiEndpoints {
   // Products
   static const String products = '/products';
   static const String myProducts = '/products/my';
-  static String product(int id) => '/products/$id';
+  static String product(String id) => '/products/$id';
   static const String searchProducts = '/products/search';
 
   // Consignments
   static const String consignments = '/consignments';
   static const String myConsignments = '/consignments/my';
-  static String consignment(int id) => '/consignments/$id';
-  static String consignmentStatus(int id) => '/consignments/$id/status';
+  static String consignment(String id) => '/consignments/$id';
+  static String consignmentStatus(String id) => '/consignments/$id/status';
   static const String expiringSoon = '/consignments/expiring-soon';
 
   // Sales
@@ -29,10 +29,10 @@ class ApiEndpoints {
 
   // Agreements
   static const String proposeAgreement = '/agreements/propose';
-  static String counterAgreement(int id) => '/agreements/$id/counter';
-  static String acceptAgreement(int id) => '/agreements/$id/accept';
-  static String rejectAgreement(int id) => '/agreements/$id/reject';
+  static String counterAgreement(String id) => '/agreements/$id/counter';
+  static String acceptAgreement(String id) => '/agreements/$id/accept';
+  static String rejectAgreement(String id) => '/agreements/$id/reject';
   static const String pendingAgreements = '/agreements/pending';
-  static String settlement(int consignmentId) =>
+  static String settlement(String consignmentId) =>
       '/agreements/settlement/$consignmentId';
 }

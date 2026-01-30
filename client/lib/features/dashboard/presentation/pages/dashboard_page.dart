@@ -20,7 +20,7 @@ class DashboardPage extends StatelessWidget {
           );
         }
 
-        final user = state.user;
+        // final user = state.user;
 
         return Scaffold(
           appBar: AppBar(
@@ -43,11 +43,11 @@ class DashboardPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user.name,
+                          "john doe",
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
-                          user.role.displayName,
+                          "john doe",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ],
@@ -80,7 +80,7 @@ class DashboardPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Greeting
-                  _GreetingCard(user: user),
+                  // _GreetingCard(user: user),
                   const SizedBox(height: 24),
 
                   // Quick stats
@@ -89,7 +89,7 @@ class DashboardPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
-                  _StatsGrid(user: user),
+                  // _StatsGrid(user: user),
                   const SizedBox(height: 24),
 
                   // Quick actions
@@ -98,7 +98,7 @@ class DashboardPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
-                  _QuickActionsGrid(user: user),
+                  // _QuickActionsGrid(user: user),
                   const SizedBox(height: 24),
 
                   // Alerts section
@@ -107,7 +107,7 @@ class DashboardPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
-                  _AlertsCard(user: user),
+                  // _AlertsCard(user: user),
                 ],
               ),
             ),
@@ -115,30 +115,30 @@ class DashboardPage extends StatelessWidget {
           bottomNavigationBar: NavigationBar(
             selectedIndex: 0,
             onDestinationSelected: (index) {
-              switch (index) {
-                case 0:
-                  // Already on dashboard
-                  break;
-                case 1:
-                  if (user.isConsignor) {
-                    context.push('/products');
-                  } else {
-                    context.push('/consignments');
-                  }
-                  break;
-                case 2:
-                  if (user.isShopOwner) {
-                    context.push('/sales');
-                  } else {
-                    context.push('/consignments');
-                  }
-                  break;
-                case 3:
-                  context.push('/agreements');
-                  break;
-              }
+              // switch (index) {
+              //   case 0:
+              //     // Already on dashboard
+              //     break;
+              //   case 1:
+              //     if (user.isConsignor) {
+              //       context.push('/products');
+              //     } else {
+              //       context.push('/consignments');
+              //     }
+              //     break;
+              //   case 2:
+              //     if (user.isShopOwner) {
+              //       context.push('/sales');
+              //     } else {
+              //       context.push('/consignments');
+              //     }
+              //     break;
+              //   case 3:
+              //     context.push('/agreements');
+              //     break;
+              // }
             },
-            destinations: user.isConsignor
+            destinations: 10 == 2
                 ? const [
                     NavigationDestination(
                       icon: Icon(Icons.dashboard_outlined),
@@ -227,31 +227,33 @@ class _GreetingCard extends StatelessWidget {
               children: [
                 Text(
                   '$greeting,',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white70,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.white70),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   user.name,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white24,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     user.role.displayName,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white,
-                        ),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.white),
                   ),
                 ),
               ],
@@ -329,24 +331,22 @@ class _StatCard extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(stat.icon, color: AppColors.primary, size: 24),
-              ],
+              children: [Icon(stat.icon, color: AppColors.primary, size: 24)],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   stat.value,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   stat.label,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.neutral500,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: AppColors.neutral500),
                 ),
               ],
             ),
@@ -366,14 +366,34 @@ class _QuickActionsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = user.isConsignor
         ? [
-            _QuickAction('Tambah Produk', Icons.add_box_outlined, '/products/add'),
-            _QuickAction('Titipkan', Icons.upload_outlined, '/consignments/add'),
-            _QuickAction('Lihat Penjualan', Icons.receipt_long_outlined, '/sales'),
+            _QuickAction(
+              'Tambah Produk',
+              Icons.add_box_outlined,
+              '/products/add',
+            ),
+            _QuickAction(
+              'Titipkan',
+              Icons.upload_outlined,
+              '/consignments/add',
+            ),
+            _QuickAction(
+              'Lihat Penjualan',
+              Icons.receipt_long_outlined,
+              '/sales',
+            ),
             _QuickAction('Perjanjian', Icons.handshake_outlined, '/agreements'),
           ]
         : [
-            _QuickAction('Catat Penjualan', Icons.add_shopping_cart, '/sales/add'),
-            _QuickAction('Lihat Titipan', Icons.inventory_outlined, '/consignments'),
+            _QuickAction(
+              'Catat Penjualan',
+              Icons.add_shopping_cart,
+              '/sales/add',
+            ),
+            _QuickAction(
+              'Lihat Titipan',
+              Icons.inventory_outlined,
+              '/consignments',
+            ),
             _QuickAction('Riwayat Penjualan', Icons.history_outlined, '/sales'),
             _QuickAction('Perjanjian', Icons.handshake_outlined, '/agreements'),
           ];
@@ -388,7 +408,8 @@ class _QuickActionsGrid extends StatelessWidget {
         mainAxisSpacing: 8,
       ),
       itemCount: actions.length,
-      itemBuilder: (context, index) => _QuickActionButton(action: actions[index]),
+      itemBuilder: (context, index) =>
+          _QuickActionButton(action: actions[index]),
     );
   }
 }
@@ -456,10 +477,7 @@ class _AlertsCard extends StatelessWidget {
                 color: AppColors.warning.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
-                Icons.warning_rounded,
-                color: AppColors.warning,
-              ),
+              child: Icon(Icons.warning_rounded, color: AppColors.warning),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -475,16 +493,13 @@ class _AlertsCard extends StatelessWidget {
                   Text(
                     'Segera periksa dan ambil tindakan',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.neutral500,
-                        ),
+                      color: AppColors.neutral500,
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.chevron_right,
-              color: AppColors.neutral400,
-            ),
+            Icon(Icons.chevron_right, color: AppColors.neutral400),
           ],
         ),
       ),
