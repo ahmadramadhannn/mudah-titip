@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/error").permitAll()
+                        // API Documentation endpoints
+                        .requestMatchers("/docs", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         // All other endpoints require authentication
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
