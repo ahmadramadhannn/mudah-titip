@@ -392,6 +392,9 @@ class _ProfileContentState extends State<_ProfileContent> {
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(0, 48),
+                        ),
                         onPressed: isUpdating
                             ? null
                             : () {
@@ -538,6 +541,9 @@ class _ProfileContentState extends State<_ProfileContent> {
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(0, 48),
+                    ),
                     onPressed: isLoading ? null : onSave,
                     child: isLoading
                         ? const SizedBox(
