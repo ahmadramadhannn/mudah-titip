@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../auth/data/models/user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../products/data/repositories/product_repository.dart';
+import '../../data/repositories/dashboard_repository.dart';
+import '../bloc/dashboard_bloc.dart';
 
 /// Dashboard page - main screen after login.
 class DashboardPage extends StatelessWidget {
@@ -13,187 +17,239 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, state) {
-        if (state is! AuthAuthenticated) {
+      builder: (context, authState) {
+        if (authState is! AuthAuthenticated) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        // final user = state.user;
-
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Mudah Titip'),
-            actions: [
-              PopupMenuButton<String>(
-                icon: const CircleAvatar(
-                  backgroundColor: AppColors.primary,
-                  child: Icon(Icons.person, color: Colors.white, size: 20),
-                ),
-                onSelected: (value) {
-                  if (value == 'logout') {
-                    context.read<AuthBloc>().add(const AuthLogoutRequested());
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    enabled: false,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "john doe",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                        Text(
-                          "john doe",
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const PopupMenuDivider(),
-                  const PopupMenuItem(
-                    value: 'logout',
-                    child: Row(
-                      children: [
-                        Icon(Icons.logout, size: 20),
-                        SizedBox(width: 8),
-                        Text('Keluar'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 8),
-            ],
-          ),
-          body: RefreshIndicator(
-            onRefresh: () async {
-              // TODO: Refresh dashboard data
-            },
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Greeting
-                  // _GreetingCard(user: user),
-                  const SizedBox(height: 24),
-
-                  // Quick stats
-                  Text(
-                    'Ringkasan',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  // _StatsGrid(user: user),
-                  const SizedBox(height: 24),
-
-                  // Quick actions
-                  Text(
-                    'Aksi Cepat',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  // _QuickActionsGrid(user: user),
-                  const SizedBox(height: 24),
-
-                  // Alerts section
-                  Text(
-                    'Perhatian',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  // _AlertsCard(user: user),
-                ],
-              ),
-            ),
-          ),
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: 0,
-            onDestinationSelected: (index) {
-              // switch (index) {
-              //   case 0:
-              //     // Already on dashboard
-              //     break;
-              //   case 1:
-              //     if (user.isConsignor) {
-              //       context.push('/products');
-              //     } else {
-              //       context.push('/consignments');
-              //     }
-              //     break;
-              //   case 2:
-              //     if (user.isShopOwner) {
-              //       context.push('/sales');
-              //     } else {
-              //       context.push('/consignments');
-              //     }
-              //     break;
-              //   case 3:
-              //     context.push('/agreements');
-              //     break;
-              // }
-            },
-            destinations: 10 == 2
-                ? const [
-                    NavigationDestination(
-                      icon: Icon(Icons.dashboard_outlined),
-                      selectedIcon: Icon(Icons.dashboard),
-                      label: 'Beranda',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.inventory_2_outlined),
-                      selectedIcon: Icon(Icons.inventory_2),
-                      label: 'Produk',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.local_shipping_outlined),
-                      selectedIcon: Icon(Icons.local_shipping),
-                      label: 'Titipan',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.handshake_outlined),
-                      selectedIcon: Icon(Icons.handshake),
-                      label: 'Perjanjian',
-                    ),
-                  ]
-                : const [
-                    NavigationDestination(
-                      icon: Icon(Icons.dashboard_outlined),
-                      selectedIcon: Icon(Icons.dashboard),
-                      label: 'Beranda',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.local_shipping_outlined),
-                      selectedIcon: Icon(Icons.local_shipping),
-                      label: 'Titipan',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.point_of_sale_outlined),
-                      selectedIcon: Icon(Icons.point_of_sale),
-                      label: 'Penjualan',
-                    ),
-                    NavigationDestination(
-                      icon: Icon(Icons.handshake_outlined),
-                      selectedIcon: Icon(Icons.handshake),
-                      label: 'Perjanjian',
-                    ),
-                  ],
-          ),
+        return BlocProvider(
+          create: (context) => DashboardBloc(
+            getIt<DashboardRepository>(),
+            getIt<ProductRepository>(),
+          )..add(const DashboardLoadRequested()),
+          child: _DashboardContent(auth: authState),
         );
       },
     );
   }
 }
 
-class _GreetingCard extends StatelessWidget {
-  final User user;
+class _DashboardContent extends StatelessWidget {
+  final AuthAuthenticated auth;
 
-  const _GreetingCard({required this.user});
+  const _DashboardContent({required this.auth});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Mudah Titip'),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const CircleAvatar(
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.person, color: Colors.white, size: 20),
+            ),
+            onSelected: (value) {
+              if (value == 'logout') {
+                context.read<AuthBloc>().add(const AuthLogoutRequested());
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      auth.name,
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    Text(
+                      auth.email,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, size: 20),
+                    SizedBox(width: 8),
+                    Text('Keluar'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: BlocBuilder<DashboardBloc, DashboardState>(
+        builder: (context, state) {
+          if (state is DashboardLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is DashboardError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                  const SizedBox(height: 16),
+                  Text(state.message),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<DashboardBloc>().add(
+                      const DashboardLoadRequested(),
+                    ),
+                    child: const Text('Coba Lagi'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (state is DashboardLoaded) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<DashboardBloc>().add(
+                  const DashboardRefreshRequested(),
+                );
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Greeting
+                    _GreetingCard(auth: auth),
+                    const SizedBox(height: 24),
+
+                    // Quick stats
+                    Text(
+                      'Ringkasan',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    _StatsGrid(auth: auth, state: state),
+                    const SizedBox(height: 24),
+
+                    // Quick actions
+                    Text(
+                      'Aksi Cepat',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: 12),
+                    _QuickActionsGrid(auth: auth),
+                    const SizedBox(height: 24),
+
+                    // Alerts section
+                    if (state.expiringConsignments.isNotEmpty ||
+                        state.lowStockConsignments.isNotEmpty) ...[
+                      Text(
+                        'Perhatian',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      _AlertsSection(state: state),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+      bottomNavigationBar: _buildBottomNavBar(context),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return NavigationBar(
+      selectedIndex: 0,
+      onDestinationSelected: (index) {
+        switch (index) {
+          case 0:
+            // Already on dashboard
+            break;
+          case 1:
+            if (auth.isConsignor) {
+              context.push('/products');
+            } else {
+              context.push('/consignments');
+            }
+            break;
+          case 2:
+            context.push('/sales');
+            break;
+          case 3:
+            context.push('/agreements');
+            break;
+        }
+      },
+      destinations: auth.isConsignor
+          ? const [
+              NavigationDestination(
+                icon: Icon(Icons.dashboard_outlined),
+                selectedIcon: Icon(Icons.dashboard),
+                label: 'Beranda',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.inventory_2_outlined),
+                selectedIcon: Icon(Icons.inventory_2),
+                label: 'Produk',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.local_shipping_outlined),
+                selectedIcon: Icon(Icons.local_shipping),
+                label: 'Titipan',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.handshake_outlined),
+                selectedIcon: Icon(Icons.handshake),
+                label: 'Perjanjian',
+              ),
+            ]
+          : const [
+              NavigationDestination(
+                icon: Icon(Icons.dashboard_outlined),
+                selectedIcon: Icon(Icons.dashboard),
+                label: 'Beranda',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.local_shipping_outlined),
+                selectedIcon: Icon(Icons.local_shipping),
+                label: 'Titipan',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.point_of_sale_outlined),
+                selectedIcon: Icon(Icons.point_of_sale),
+                label: 'Penjualan',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.handshake_outlined),
+                selectedIcon: Icon(Icons.handshake),
+                label: 'Perjanjian',
+              ),
+            ],
+    );
+  }
+}
+
+class _GreetingCard extends StatelessWidget {
+  final AuthAuthenticated auth;
+
+  const _GreetingCard({required this.auth});
 
   @override
   Widget build(BuildContext context) {
@@ -233,7 +289,7 @@ class _GreetingCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  user.name,
+                  auth.name,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -250,7 +306,7 @@ class _GreetingCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    user.role.displayName,
+                    auth.role.displayName,
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: Colors.white),
@@ -260,7 +316,7 @@ class _GreetingCard extends StatelessWidget {
             ),
           ),
           Icon(
-            user.isConsignor ? Icons.inventory_2 : Icons.storefront,
+            auth.isConsignor ? Icons.inventory_2 : Icons.storefront,
             size: 48,
             color: Colors.white24,
           ),
@@ -271,25 +327,70 @@ class _GreetingCard extends StatelessWidget {
 }
 
 class _StatsGrid extends StatelessWidget {
-  final User user;
+  final AuthAuthenticated auth;
+  final DashboardLoaded state;
 
-  const _StatsGrid({required this.user});
+  const _StatsGrid({required this.auth, required this.state});
+
+  String _formatCurrency(double amount) {
+    if (amount >= 1000000) {
+      return 'Rp ${(amount / 1000000).toStringAsFixed(1)} jt';
+    } else if (amount >= 1000) {
+      return 'Rp ${(amount / 1000).toStringAsFixed(0)} rb';
+    }
+    return NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    ).format(amount);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder stats - will be replaced with real data
-    final stats = user.isConsignor
+    final stats = auth.isConsignor
         ? [
-            _StatItem('Total Produk', '12', Icons.inventory_2_outlined),
-            _StatItem('Titipan Aktif', '5', Icons.local_shipping_outlined),
-            _StatItem('Terjual', '28', Icons.sell_outlined),
-            _StatItem('Pendapatan', 'Rp 2.5 jt', Icons.payments_outlined),
+            _StatItem(
+              'Total Produk',
+              state.totalProducts.toString(),
+              Icons.inventory_2_outlined,
+            ),
+            _StatItem(
+              'Titipan Aktif',
+              state.activeConsignments.length.toString(),
+              Icons.local_shipping_outlined,
+            ),
+            _StatItem(
+              'Terjual',
+              state.summary.totalItemsSold.toString(),
+              Icons.sell_outlined,
+            ),
+            _StatItem(
+              'Pendapatan',
+              _formatCurrency(state.summary.totalEarnings),
+              Icons.payments_outlined,
+            ),
           ]
         : [
-            _StatItem('Titipan Aktif', '8', Icons.local_shipping_outlined),
-            _StatItem('Hari Ini', '5 terjual', Icons.today_outlined),
-            _StatItem('Komisi', 'Rp 350 rb', Icons.payments_outlined),
-            _StatItem('Stok Rendah', '3', Icons.warning_outlined),
+            _StatItem(
+              'Titipan Aktif',
+              state.activeConsignments.length.toString(),
+              Icons.local_shipping_outlined,
+            ),
+            _StatItem(
+              'Terjual',
+              '${state.summary.totalItemsSold} item',
+              Icons.today_outlined,
+            ),
+            _StatItem(
+              'Komisi',
+              _formatCurrency(state.summary.totalEarnings),
+              Icons.payments_outlined,
+            ),
+            _StatItem(
+              'Stok Rendah',
+              state.lowStockConsignments.length.toString(),
+              Icons.warning_outlined,
+            ),
           ];
 
     return GridView.builder(
@@ -358,13 +459,13 @@ class _StatCard extends StatelessWidget {
 }
 
 class _QuickActionsGrid extends StatelessWidget {
-  final User user;
+  final AuthAuthenticated auth;
 
-  const _QuickActionsGrid({required this.user});
+  const _QuickActionsGrid({required this.auth});
 
   @override
   Widget build(BuildContext context) {
-    final actions = user.isConsignor
+    final actions = auth.isConsignor
         ? [
             _QuickAction(
               'Tambah Produk',
@@ -457,50 +558,91 @@ class _QuickActionButton extends StatelessWidget {
   }
 }
 
-class _AlertsCard extends StatelessWidget {
-  final User user;
+class _AlertsSection extends StatelessWidget {
+  final DashboardLoaded state;
 
-  const _AlertsCard({required this.user});
+  const _AlertsSection({required this.state});
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder alerts
+    return Column(
+      children: [
+        if (state.expiringConsignments.isNotEmpty)
+          _AlertCard(
+            icon: Icons.schedule,
+            iconColor: AppColors.warning,
+            title:
+                '${state.expiringConsignments.length} titipan akan kedaluwarsa',
+            subtitle: 'Segera periksa dan ambil tindakan',
+            onTap: () => context.push('/consignments'),
+          ),
+        if (state.lowStockConsignments.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          _AlertCard(
+            icon: Icons.inventory_outlined,
+            iconColor: AppColors.error,
+            title: '${state.lowStockConsignments.length} stok titipan rendah',
+            subtitle: 'Perlu restock atau tarik barang',
+            onTap: () => context.push('/consignments'),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _AlertCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+
+  const _AlertCard({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
-      color: AppColors.warning.withValues(alpha: 0.1),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppColors.warning.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(8),
+      color: iconColor.withValues(alpha: 0.1),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, color: iconColor),
               ),
-              child: Icon(Icons.warning_rounded, color: AppColors.warning),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    user.isConsignor
-                        ? '3 produk akan kedaluwarsa'
-                        : '3 stok titipan rendah',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  Text(
-                    'Segera periksa dan ambil tindakan',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.neutral500,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: Theme.of(context).textTheme.titleSmall),
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: AppColors.neutral500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Icon(Icons.chevron_right, color: AppColors.neutral400),
-          ],
+              Icon(Icons.chevron_right, color: AppColors.neutral400),
+            ],
+          ),
         ),
       ),
     );

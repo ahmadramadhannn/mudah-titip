@@ -20,7 +20,7 @@ class ApiEndpoints {
   static const String myConsignments = '/consignments/my';
   static String consignment(String id) => '/consignments/$id';
   static String consignmentStatus(String id) => '/consignments/$id/status';
-  static const String expiringSoon = '/consignments/expiring-soon';
+  static const String expiringSoon = '/consignments/expiring';
 
   // Sales
   static const String sales = '/sales';
