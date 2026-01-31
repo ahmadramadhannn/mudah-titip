@@ -68,35 +68,35 @@ class _ProfileContentState extends State<_ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileBloc, ProfileState>(
-      listener: (context, state) {
-        if (state is ProfileUpdateSuccess) {
-          _showMessage(state.message);
-          setState(() {
-            _isEditingName = false;
-            _isEditingPhone = false;
-            _isEditingEmail = false;
-            _isEditingPassword = false;
-          });
-          _currentPasswordController.clear();
-          _newPasswordController.clear();
-          _confirmPasswordController.clear();
-        } else if (state is ProfileError) {
-          _showMessage(state.message, isError: true);
-        }
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Profil'),
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.pop(),
-            ),
-          ),
-          body: _buildBody(state),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profil'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      body: BlocConsumer<ProfileBloc, ProfileState>(
+        listener: (context, state) {
+          if (state is ProfileUpdateSuccess) {
+            _showMessage(state.message);
+            setState(() {
+              _isEditingName = false;
+              _isEditingPhone = false;
+              _isEditingEmail = false;
+              _isEditingPassword = false;
+            });
+            _currentPasswordController.clear();
+            _newPasswordController.clear();
+            _confirmPasswordController.clear();
+          } else if (state is ProfileError) {
+            _showMessage(state.message, isError: true);
+          }
+        },
+        builder: (context, state) {
+          return _buildBody(state);
+        },
+      ),
     );
   }
 
