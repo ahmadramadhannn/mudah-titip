@@ -15,7 +15,12 @@ final class ProfileInitial extends ProfileState {
 
 /// Loading profile data.
 final class ProfileLoading extends ProfileState {
-  const ProfileLoading();
+  final ProfileResponse? profile;
+
+  const ProfileLoading({this.profile});
+
+  @override
+  List<Object?> get props => [profile];
 }
 
 /// Profile loaded successfully.

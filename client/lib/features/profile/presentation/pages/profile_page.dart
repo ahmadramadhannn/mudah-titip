@@ -607,6 +607,7 @@ class _ProfileContentState extends State<_ProfileContent> {
   }
 
   ProfileResponse? _getProfile(ProfileState state) {
+    if (state is ProfileLoading) return state.profile;
     if (state is ProfileLoaded) return state.profile;
     if (state is ProfileUpdating) return state.profile;
     if (state is ProfileUpdateSuccess) return state.profile;
