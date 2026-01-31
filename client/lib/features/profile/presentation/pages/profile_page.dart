@@ -218,6 +218,8 @@ class _ProfileContentState extends State<_ProfileContent> {
             },
             onCancel: () => setState(() => _isEditingEmail = false),
             editContent: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
                   controller: _emailController,
@@ -248,43 +250,51 @@ class _ProfileContentState extends State<_ProfileContent> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => setState(() => _isEditingEmail = false),
-                      child: const Text('Batal'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: isUpdating
-                          ? null
-                          : () {
-                              if (_emailController.text.contains('@') &&
-                                  _currentPasswordController.text.isNotEmpty) {
-                                context.read<ProfileBloc>().add(
-                                  ProfileEmailUpdateRequested(
-                                    newEmail: _emailController.text.trim(),
-                                    currentPassword:
-                                        _currentPasswordController.text,
-                                  ),
-                                );
-                              } else {
-                                _showMessage(
-                                  'Lengkapi email dan password',
-                                  isError: true,
-                                );
-                              }
-                            },
-                      child: isUpdating
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Simpan'),
-                    ),
-                  ],
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextButton(
+                        onPressed: () =>
+                            setState(() => _isEditingEmail = false),
+                        child: const Text('Batal'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: isUpdating
+                            ? null
+                            : () {
+                                if (_emailController.text.contains('@') &&
+                                    _currentPasswordController
+                                        .text
+                                        .isNotEmpty) {
+                                  context.read<ProfileBloc>().add(
+                                    ProfileEmailUpdateRequested(
+                                      newEmail: _emailController.text.trim(),
+                                      currentPassword:
+                                          _currentPasswordController.text,
+                                    ),
+                                  );
+                                } else {
+                                  _showMessage(
+                                    'Lengkapi email dan password',
+                                    isError: true,
+                                  );
+                                }
+                              },
+                        child: isUpdating
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Simpan'),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -307,6 +317,8 @@ class _ProfileContentState extends State<_ProfileContent> {
             },
             onCancel: () => setState(() => _isEditingPassword = false),
             editContent: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
                   controller: _currentPasswordController,
@@ -368,59 +380,64 @@ class _ProfileContentState extends State<_ProfileContent> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () =>
-                          setState(() => _isEditingPassword = false),
-                      child: const Text('Batal'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: isUpdating
-                          ? null
-                          : () {
-                              if (_currentPasswordController.text.isEmpty ||
-                                  _newPasswordController.text.isEmpty) {
-                                _showMessage(
-                                  'Lengkapi semua field',
-                                  isError: true,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextButton(
+                        onPressed: () =>
+                            setState(() => _isEditingPassword = false),
+                        child: const Text('Batal'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: isUpdating
+                            ? null
+                            : () {
+                                if (_currentPasswordController.text.isEmpty ||
+                                    _newPasswordController.text.isEmpty) {
+                                  _showMessage(
+                                    'Lengkapi semua field',
+                                    isError: true,
+                                  );
+                                  return;
+                                }
+                                if (_newPasswordController.text.length < 6) {
+                                  _showMessage(
+                                    'Password minimal 6 karakter',
+                                    isError: true,
+                                  );
+                                  return;
+                                }
+                                if (_newPasswordController.text !=
+                                    _confirmPasswordController.text) {
+                                  _showMessage(
+                                    'Konfirmasi password tidak cocok',
+                                    isError: true,
+                                  );
+                                  return;
+                                }
+                                context.read<ProfileBloc>().add(
+                                  ProfilePasswordUpdateRequested(
+                                    currentPassword:
+                                        _currentPasswordController.text,
+                                    newPassword: _newPasswordController.text,
+                                  ),
                                 );
-                                return;
-                              }
-                              if (_newPasswordController.text.length < 6) {
-                                _showMessage(
-                                  'Password minimal 6 karakter',
-                                  isError: true,
-                                );
-                                return;
-                              }
-                              if (_newPasswordController.text !=
-                                  _confirmPasswordController.text) {
-                                _showMessage(
-                                  'Konfirmasi password tidak cocok',
-                                  isError: true,
-                                );
-                                return;
-                              }
-                              context.read<ProfileBloc>().add(
-                                ProfilePasswordUpdateRequested(
-                                  currentPassword:
-                                      _currentPasswordController.text,
-                                  newPassword: _newPasswordController.text,
+                              },
+                        child: isUpdating
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
                                 ),
-                              );
-                            },
-                      child: isUpdating
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Simpan'),
-                    ),
-                  ],
+                              )
+                            : const Text('Simpan'),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -501,7 +518,8 @@ class _ProfileContentState extends State<_ProfileContent> {
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
               TextFormField(
                 controller: controller,
@@ -510,25 +528,28 @@ class _ProfileContentState extends State<_ProfileContent> {
                 enabled: !isLoading,
               ),
               const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: isLoading ? null : onCancel,
-                    child: const Text('Batal'),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: isLoading ? null : onSave,
-                    child: isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Simpan'),
-                  ),
-                ],
+              Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: isLoading ? null : onCancel,
+                      child: const Text('Batal'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: isLoading ? null : onSave,
+                      child: isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Simpan'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
