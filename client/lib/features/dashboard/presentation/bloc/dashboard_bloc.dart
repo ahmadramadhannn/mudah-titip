@@ -26,7 +26,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     emit(const DashboardLoading());
-    await _loadDashboardData(emit);
+    await _loadDashboardData(emit, isConsignor: event.isConsignor);
   }
 
   Future<void> _onRefreshRequested(
@@ -34,27 +34,36 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     Emitter<DashboardState> emit,
   ) async {
     // Keep current state visible during refresh
-    await _loadDashboardData(emit);
+    await _loadDashboardData(emit, isConsignor: event.isConsignor);
   }
 
-  Future<void> _loadDashboardData(Emitter<DashboardState> emit) async {
+  Future<void> _loadDashboardData(
+    Emitter<DashboardState> emit, {
+    required bool isConsignor,
+  }) async {
     try {
-      // Load all data in parallel
-      final results = await Future.wait([
+      // Load common data in parallel
+      final commonFutures = [
         _dashboardRepository.getSalesSummary(),
         _dashboardRepository.getMyConsignments(
           status: ConsignmentStatus.active,
         ),
         _dashboardRepository.getExpiringConsignments(),
         _dashboardRepository.getLowStockConsignments(),
-        _productRepository.getMyProducts(),
-      ]);
+      ];
+
+      // Only load products for consignors (shop owners don't have products)
+      if (isConsignor) {
+        commonFutures.add(_productRepository.getMyProducts());
+      }
+
+      final results = await Future.wait(commonFutures);
 
       final summary = results[0] as DashboardSummary;
       final activeConsignments = results[1] as List<Consignment>;
       final expiringConsignments = results[2] as List<Consignment>;
       final lowStockConsignments = results[3] as List<Consignment>;
-      final products = results[4] as List;
+      final products = isConsignor ? results[4] as List : [];
 
       emit(
         DashboardLoaded(

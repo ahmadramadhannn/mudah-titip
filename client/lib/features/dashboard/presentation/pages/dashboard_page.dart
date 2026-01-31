@@ -28,7 +28,7 @@ class DashboardPage extends StatelessWidget {
           create: (context) => DashboardBloc(
             getIt<DashboardRepository>(),
             getIt<ProductRepository>(),
-          )..add(const DashboardLoadRequested()),
+          )..add(DashboardLoadRequested(isConsignor: authState.isConsignor)),
           child: _DashboardContent(auth: authState),
         );
       },
@@ -119,7 +119,7 @@ class _DashboardContent extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => context.read<DashboardBloc>().add(
-                      const DashboardLoadRequested(),
+                      DashboardLoadRequested(isConsignor: auth.isConsignor),
                     ),
                     child: const Text('Coba Lagi'),
                   ),
@@ -132,7 +132,7 @@ class _DashboardContent extends StatelessWidget {
             return RefreshIndicator(
               onRefresh: () async {
                 context.read<DashboardBloc>().add(
-                  const DashboardRefreshRequested(),
+                  DashboardRefreshRequested(isConsignor: auth.isConsignor),
                 );
               },
               child: SingleChildScrollView(

@@ -10,10 +10,20 @@ sealed class DashboardEvent extends Equatable {
 
 /// Event to load dashboard data.
 class DashboardLoadRequested extends DashboardEvent {
-  const DashboardLoadRequested();
+  final bool isConsignor;
+
+  const DashboardLoadRequested({required this.isConsignor});
+
+  @override
+  List<Object?> get props => [isConsignor];
 }
 
 /// Event to refresh dashboard data.
 class DashboardRefreshRequested extends DashboardEvent {
-  const DashboardRefreshRequested();
+  final bool isConsignor;
+
+  const DashboardRefreshRequested({required this.isConsignor});
+
+  @override
+  List<Object?> get props => [isConsignor];
 }
