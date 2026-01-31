@@ -39,6 +39,11 @@ class _AgreementsView extends StatelessWidget {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => _showProposeDialog(context),
+        icon: const Icon(Icons.add),
+        label: const Text('Ajukan'),
+      ),
       body: BlocConsumer<AgreementBloc, AgreementState>(
         listener: (context, state) {
           if (state is AgreementError) {
@@ -84,6 +89,50 @@ class _AgreementsView extends StatelessWidget {
 
           return const Center(child: CircularProgressIndicator());
         },
+      ),
+    );
+  }
+
+  void _showProposeDialog(BuildContext context) {
+    final controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Ajukan Perjanjian Baru'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Masukkan ID konsinyasi untuk mengajukan perjanjian:'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'ID Konsinyasi',
+                hintText: 'Contoh: 1',
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () {
+              final id = int.tryParse(controller.text);
+              if (id != null) {
+                Navigator.pop(dialogContext);
+                context.push('/agreements/propose/$id');
+              }
+            },
+            child: const Text('Lanjutkan'),
+          ),
+        ],
       ),
     );
   }
