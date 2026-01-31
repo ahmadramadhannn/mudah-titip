@@ -515,6 +515,7 @@ class _ProfileContentState extends State<_ProfileContent> {
   }) {
     if (isEditing) {
       return Card(
+        key: ValueKey('${label}_editing'),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -528,28 +529,25 @@ class _ProfileContentState extends State<_ProfileContent> {
                 enabled: !isLoading,
               ),
               const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextButton(
-                      onPressed: isLoading ? null : onCancel,
-                      child: const Text('Batal'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: isLoading ? null : onSave,
-                      child: isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Simpan'),
-                    ),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: isLoading ? null : onCancel,
+                    child: const Text('Batal'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: isLoading ? null : onSave,
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Text('Simpan'),
+                  ),
+                ],
               ),
             ],
           ),
@@ -558,6 +556,7 @@ class _ProfileContentState extends State<_ProfileContent> {
     }
 
     return ListTile(
+      key: ValueKey('${label}_display'),
       title: Text(label),
       subtitle: Text(value),
       trailing: IconButton(
@@ -578,10 +577,12 @@ class _ProfileContentState extends State<_ProfileContent> {
   }) {
     if (isEditing) {
       return Card(
+        key: ValueKey('${label}_security_editing'),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 'Ubah $label',
@@ -596,6 +597,7 @@ class _ProfileContentState extends State<_ProfileContent> {
     }
 
     return ListTile(
+      key: ValueKey('${label}_security_display'),
       title: Text(label),
       subtitle: Text(value),
       trailing: IconButton(
