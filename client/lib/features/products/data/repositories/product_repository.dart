@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/api_endpoints.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/api/api_error_handler.dart';
 import '../models/product.dart';
 import '../models/product_request.dart';
 
@@ -19,7 +19,7 @@ class ProductRepository {
           .map((json) => Product.fromJson(json as Map<String, dynamic>))
           .toList();
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -30,7 +30,7 @@ class ProductRepository {
       );
       return Product.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -42,7 +42,7 @@ class ProductRepository {
       );
       return Product.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -54,7 +54,7 @@ class ProductRepository {
       );
       return Product.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -62,29 +62,7 @@ class ProductRepository {
     try {
       await _apiClient.delete(ApiEndpoints.product(id.toString()));
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
-  }
-
-  Failure _handleDioError(DioException e) {
-    if (e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout) {
-      return const NetworkFailure();
-    }
-
-    final statusCode = e.response?.statusCode;
-    final data = e.response?.data;
-
-    if (statusCode == 400 || statusCode == 422) {
-      final message = data is Map ? data['message'] as String? : null;
-      return ValidationFailure(message ?? 'Data tidak valid');
-    }
-
-    return ServerFailure(
-      data is Map
-          ? data['message'] as String? ?? 'Terjadi kesalahan'
-          : 'Terjadi kesalahan',
-      statusCode: statusCode,
-    );
   }
 }

@@ -1,9 +1,11 @@
+import '../config/env_config.dart';
+
 /// API endpoint constants for the Mudah Titip backend.
 class ApiEndpoints {
   ApiEndpoints._();
 
-  // Base URL - adjust for different environments
-  static const String baseUrl = 'http://localhost:8080/api';
+  /// Base URL from environment configuration.
+  static String get baseUrl => EnvConfig.baseUrl;
 
   // Auth
   static const String login = '/auth/login';

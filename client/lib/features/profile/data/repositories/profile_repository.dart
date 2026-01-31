@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/api_endpoints.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/api/api_error_handler.dart';
 import '../models/profile_request.dart';
 import '../models/profile_response.dart';
 
@@ -18,7 +18,7 @@ class ProfileRepository {
       final response = await _apiClient.get(ApiEndpoints.profile);
       return ProfileResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -31,7 +31,7 @@ class ProfileRepository {
       );
       return ProfileResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -44,7 +44,7 @@ class ProfileRepository {
       );
       return ProfileResponse.fromJson(response.data);
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -56,33 +56,7 @@ class ProfileRepository {
         data: request.toJson(),
       );
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
-  }
-
-  Failure _handleDioError(DioException e) {
-    if (e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout) {
-      return const NetworkFailure();
-    }
-
-    final statusCode = e.response?.statusCode;
-    final data = e.response?.data;
-
-    if (statusCode == 401) {
-      return const AuthFailure('Sesi telah berakhir, silakan login kembali');
-    }
-
-    if (statusCode == 400 || statusCode == 422) {
-      final message = data is Map ? data['message'] as String? : null;
-      return ValidationFailure(message ?? 'Data tidak valid');
-    }
-
-    return ServerFailure(
-      data is Map
-          ? data['message'] as String? ?? 'Terjadi kesalahan'
-          : 'Terjadi kesalahan',
-      statusCode: statusCode,
-    );
   }
 }

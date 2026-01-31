@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/api_endpoints.dart';
-import '../../../../core/error/failures.dart';
+import '../../../../core/api/api_error_handler.dart';
 import '../models/auth_request.dart';
 import '../models/auth_response.dart';
 
@@ -32,7 +33,7 @@ class AuthRepository {
 
       return authResponse;
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -50,7 +51,7 @@ class AuthRepository {
 
       return authResponse;
     } on DioException catch (e) {
-      throw _handleDioError(e);
+      throw ApiErrorHandler.handleDioError(e);
     }
   }
 
@@ -99,35 +100,5 @@ class AuthRepository {
   Future<void> _saveAuthData(AuthResponse authResponse) async {
     await _prefs.setString(_tokenKey, authResponse.token);
     await _prefs.setString(_authDataKey, jsonEncode(authResponse.toJson()));
-  }
-
-  Failure _handleDioError(DioException e) {
-    if (e.type == DioExceptionType.connectionError ||
-        e.type == DioExceptionType.connectionTimeout) {
-      return const NetworkFailure();
-    }
-
-    final statusCode = e.response?.statusCode;
-    final data = e.response?.data;
-
-    if (statusCode == 401) {
-      return const AuthFailure('Email atau password salah');
-    }
-
-    if (statusCode == 400 || statusCode == 422) {
-      final message = data is Map ? data['message'] as String? : null;
-      return ValidationFailure(message ?? 'Data tidak valid');
-    }
-
-    if (statusCode == 409) {
-      return const ValidationFailure('Email sudah terdaftar');
-    }
-
-    return ServerFailure(
-      data is Map
-          ? data['message'] as String? ?? 'Terjadi kesalahan'
-          : 'Terjadi kesalahan',
-      statusCode: statusCode,
-    );
   }
 }

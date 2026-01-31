@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/agreement/presentation/pages/agreement_detail_page.dart';
+import '../features/agreement/presentation/pages/agreements_page.dart';
+import '../features/agreement/presentation/pages/propose_agreement_page.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
@@ -87,7 +90,23 @@ class AppRouter {
       ),
       GoRoute(
         path: '/agreements',
-        builder: (context, state) => _PlaceholderPage(title: 'Perjanjian'),
+        builder: (context, state) => const AgreementsPage(),
+      ),
+      GoRoute(
+        path: '/agreements/propose/:consignmentId',
+        builder: (context, state) {
+          final consignmentId = int.parse(
+            state.pathParameters['consignmentId']!,
+          );
+          return ProposeAgreementPage(consignmentId: consignmentId);
+        },
+      ),
+      GoRoute(
+        path: '/agreements/:id',
+        builder: (context, state) {
+          final agreementId = int.parse(state.pathParameters['id']!);
+          return AgreementDetailPage(agreementId: agreementId);
+        },
       ),
       GoRoute(
         path: '/profile',
