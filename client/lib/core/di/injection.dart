@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api/api_client.dart';
 import '../../features/products/data/repositories/product_repository.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
+import '../../features/profile/data/repositories/profile_repository.dart';
 
 final getIt = GetIt.instance;
 
@@ -21,5 +22,8 @@ Future<void> configureDependencies() async {
   );
   getIt.registerLazySingleton<DashboardRepository>(
     () => DashboardRepository(getIt<ApiClient>()),
+  );
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepository(getIt<ApiClient>()),
   );
 }

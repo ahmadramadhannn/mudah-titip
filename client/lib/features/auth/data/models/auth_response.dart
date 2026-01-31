@@ -9,9 +9,9 @@ class AuthResponse extends Equatable {
   final String name;
   final String email;
   final UserRole role;
-  int? shopId;
+  final int? shopId;
 
-  AuthResponse({
+  const AuthResponse({
     required this.token,
     required this.tokenType,
     required this.userId,
@@ -31,6 +31,18 @@ class AuthResponse extends Equatable {
       role: UserRole.fromString(json['role'] as String),
       shopId: json['shopId'] as int?,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'token': token,
+      'tokenType': tokenType,
+      'userId': userId,
+      'name': name,
+      'email': email,
+      'role': role.value,
+      'shopId': shopId,
+    };
   }
 
   @override

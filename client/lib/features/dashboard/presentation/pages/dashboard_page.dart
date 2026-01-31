@@ -53,7 +53,9 @@ class _DashboardContent extends StatelessWidget {
               child: Icon(Icons.person, color: Colors.white, size: 20),
             ),
             onSelected: (value) {
-              if (value == 'logout') {
+              if (value == 'profile') {
+                context.push('/profile');
+              } else if (value == 'logout') {
                 context.read<AuthBloc>().add(const AuthLogoutRequested());
               }
             },
@@ -75,6 +77,16 @@ class _DashboardContent extends StatelessWidget {
                 ),
               ),
               const PopupMenuDivider(),
+              const PopupMenuItem(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    Icon(Icons.person_outlined, size: 20),
+                    SizedBox(width: 8),
+                    Text('Profil'),
+                  ],
+                ),
+              ),
               const PopupMenuItem(
                 value: 'logout',
                 child: Row(

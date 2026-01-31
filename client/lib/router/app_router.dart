@@ -9,6 +9,7 @@ import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/products/data/models/product.dart';
 import '../features/products/presentation/pages/add_product_page.dart';
 import '../features/products/presentation/pages/products_page.dart';
+import '../features/profile/presentation/pages/profile_page.dart';
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -87,6 +88,10 @@ class AppRouter {
       GoRoute(
         path: '/agreements',
         builder: (context, state) => _PlaceholderPage(title: 'Perjanjian'),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfilePage(),
       ),
     ],
   );

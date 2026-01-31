@@ -20,8 +20,9 @@ class _AddProductPageState extends State<AddProductPage> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late final TextEditingController _descriptionController;
-  late final TextEditingController _priceController;
-  late final TextEditingController _stockController;
+  late final TextEditingController _basePriceController;
+  late final TextEditingController _categoryController;
+  late final TextEditingController _shelfLifeDaysController;
   bool _isLoading = false;
 
   bool get _isEditing => widget.productToEdit != null;
@@ -33,11 +34,14 @@ class _AddProductPageState extends State<AddProductPage> {
     _descriptionController = TextEditingController(
       text: widget.productToEdit?.description,
     );
-    _priceController = TextEditingController(
-      text: widget.productToEdit?.price.toStringAsFixed(0),
+    _basePriceController = TextEditingController(
+      text: widget.productToEdit?.basePrice.toStringAsFixed(0),
     );
-    _stockController = TextEditingController(
-      text: widget.productToEdit?.stock.toString(),
+    _categoryController = TextEditingController(
+      text: widget.productToEdit?.category,
+    );
+    _shelfLifeDaysController = TextEditingController(
+      text: widget.productToEdit?.shelfLifeDays?.toString(),
     );
   }
 
@@ -45,8 +49,9 @@ class _AddProductPageState extends State<AddProductPage> {
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
-    _priceController.dispose();
-    _stockController.dispose();
+    _basePriceController.dispose();
+    _categoryController.dispose();
+    _shelfLifeDaysController.dispose();
     super.dispose();
   }
 
@@ -54,8 +59,9 @@ class _AddProductPageState extends State<AddProductPage> {
     if (_formKey.currentState?.validate() ?? false) {
       final name = _nameController.text.trim();
       final description = _descriptionController.text.trim();
-      final price = double.tryParse(_priceController.text) ?? 0;
-      final stock = int.tryParse(_stockController.text) ?? 0;
+      final basePrice = double.tryParse(_basePriceController.text) ?? 0;
+      final category = _categoryController.text.trim();
+      final shelfLifeDays = int.tryParse(_shelfLifeDaysController.text);
 
       if (_isEditing) {
         context.read<ProductBloc>().add(
@@ -64,8 +70,9 @@ class _AddProductPageState extends State<AddProductPage> {
             request: UpdateProductRequest(
               name: name,
               description: description.isNotEmpty ? description : null,
-              price: price,
-              stock: stock,
+              basePrice: basePrice,
+              category: category.isNotEmpty ? category : null,
+              shelfLifeDays: shelfLifeDays,
             ),
           ),
         );
@@ -75,8 +82,9 @@ class _AddProductPageState extends State<AddProductPage> {
             CreateProductRequest(
               name: name,
               description: description.isNotEmpty ? description : null,
-              price: price,
-              stock: stock,
+              basePrice: basePrice,
+              category: category.isNotEmpty ? category : null,
+              shelfLifeDays: shelfLifeDays,
             ),
           ),
         );
@@ -203,9 +211,9 @@ class _AddProductPageState extends State<AddProductPage> {
                 const SizedBox(height: 16),
 
                 TextFormField(
-                  controller: _priceController,
+                  controller: _basePriceController,
                   decoration: const InputDecoration(
-                    labelText: 'Harga Satuan (Rp)',
+                    labelText: 'Harga Dasar (Rp)',
                     hintText: '0',
                     prefixIcon: Icon(Icons.attach_money_outlined),
                   ),
@@ -224,20 +232,30 @@ class _AddProductPageState extends State<AddProductPage> {
                 const SizedBox(height: 16),
 
                 TextFormField(
-                  controller: _stockController,
+                  controller: _categoryController,
                   decoration: const InputDecoration(
-                    labelText: 'Stok Awal',
-                    hintText: '0',
-                    prefixIcon: Icon(Icons.numbers_outlined),
+                    labelText: 'Kategori (Opsional)',
+                    hintText: 'Contoh: Makanan Ringan',
+                    prefixIcon: Icon(Icons.category_outlined),
+                  ),
+                  textInputAction: TextInputAction.next,
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: _shelfLifeDaysController,
+                  decoration: const InputDecoration(
+                    labelText: 'Masa Simpan (Hari, Opsional)',
+                    hintText: 'Contoh: 30',
+                    prefixIcon: Icon(Icons.calendar_today_outlined),
                   ),
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Stok wajib diisi';
-                    }
-                    if (int.tryParse(value) == null) {
-                      return 'Format stok tidak valid';
+                    if (value != null && value.isNotEmpty) {
+                      if (int.tryParse(value) == null) {
+                        return 'Format tidak valid';
+                      }
                     }
                     return null;
                   },

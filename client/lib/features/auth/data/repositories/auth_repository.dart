@@ -7,7 +7,6 @@ import '../../../../core/api/api_endpoints.dart';
 import '../../../../core/error/failures.dart';
 import '../models/auth_request.dart';
 import '../models/auth_response.dart';
-import '../models/user.dart';
 
 /// Repository for authentication operations.
 class AuthRepository {
@@ -15,7 +14,7 @@ class AuthRepository {
   final SharedPreferences _prefs;
 
   static const _tokenKey = 'auth_token';
-  static const _userKey = 'user_data';
+  static const _authDataKey = 'auth_data';
 
   AuthRepository(this._apiClient, this._prefs);
 
@@ -56,20 +55,21 @@ class AuthRepository {
   }
 
   /// Check if user is logged in and restore session.
-  Future<User?> tryRestoreSession() async {
+  /// Returns AuthResponse if session is valid, null otherwise.
+  Future<AuthResponse?> tryRestoreSession() async {
     final token = _prefs.getString(_tokenKey);
-    final userData = _prefs.getString(_userKey);
+    final authDataJson = _prefs.getString(_authDataKey);
 
-    if (token == null || userData == null) {
+    if (token == null || authDataJson == null) {
       return null;
     }
 
-    _apiClient.setAuthToken(token);
-
     try {
-      // TODO: Call /api/auth/me endpoint if available to validate token
-      // For now, just parse cached user data
-      return User.fromJson(jsonDecode(userData) as Map<String, dynamic>);
+      final authData = AuthResponse.fromJson(
+        jsonDecode(authDataJson) as Map<String, dynamic>,
+      );
+      _apiClient.setAuthToken(token);
+      return authData;
     } catch (e) {
       await logout();
       return null;
@@ -79,20 +79,26 @@ class AuthRepository {
   /// Log out the current user.
   Future<void> logout() async {
     await _prefs.remove(_tokenKey);
-    await _prefs.remove(_userKey);
+    await _prefs.remove(_authDataKey);
     _apiClient.clearAuthToken();
   }
 
-  /// Get the current cached user.
-  User? get currentUser {
-    final userData = _prefs.getString(_userKey);
-    if (userData == null) return null;
-    return User.fromJson(jsonDecode(userData) as Map<String, dynamic>);
+  /// Get the current cached auth response.
+  AuthResponse? get currentAuthData {
+    final authDataJson = _prefs.getString(_authDataKey);
+    if (authDataJson == null) return null;
+    try {
+      return AuthResponse.fromJson(
+        jsonDecode(authDataJson) as Map<String, dynamic>,
+      );
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> _saveAuthData(AuthResponse authResponse) async {
     await _prefs.setString(_tokenKey, authResponse.token);
-    // await _prefs.setString(_userKey, jsonEncode(authResponse.user.toJson()));
+    await _prefs.setString(_authDataKey, jsonEncode(authResponse.toJson()));
   }
 
   Failure _handleDioError(DioException e) {

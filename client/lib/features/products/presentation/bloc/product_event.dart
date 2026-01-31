@@ -21,7 +21,7 @@ final class ProductCreateRequested extends ProductEvent {
 }
 
 final class ProductUpdateRequested extends ProductEvent {
-  final String id;
+  final int id;
   final UpdateProductRequest request;
 
   const ProductUpdateRequested({required this.id, required this.request});
@@ -31,7 +31,7 @@ final class ProductUpdateRequested extends ProductEvent {
 }
 
 final class ProductDeleteRequested extends ProductEvent {
-  final String id;
+  final int id;
 
   const ProductDeleteRequested(this.id);
 

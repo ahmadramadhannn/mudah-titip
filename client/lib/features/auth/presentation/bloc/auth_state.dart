@@ -18,14 +18,27 @@ final class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
-/// User is authenticated.
+/// User is authenticated with full user info.
 final class AuthAuthenticated extends AuthState {
+  final int userId;
   final String name;
+  final String email;
+  final UserRole role;
+  final int? shopId;
 
-  const AuthAuthenticated(this.name);
+  const AuthAuthenticated({
+    required this.userId,
+    required this.name,
+    required this.email,
+    required this.role,
+    this.shopId,
+  });
+
+  bool get isConsignor => role == UserRole.consignor;
+  bool get isShopOwner => role == UserRole.shopOwner;
 
   @override
-  List<Object?> get props => [name];
+  List<Object?> get props => [userId, name, email, role, shopId];
 }
 
 /// User is not authenticated.

@@ -173,36 +173,29 @@ class _ProductCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Rp ${product.price.toStringAsFixed(0)}',
+                          'Rp ${product.basePrice.toStringAsFixed(0)}',
                           style: Theme.of(context).textTheme.titleSmall
                               ?.copyWith(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
+                        if (product.category != null)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              product.category!,
+                              style: Theme.of(context).textTheme.labelSmall
+                                  ?.copyWith(color: AppColors.primary),
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                            color: product.stock > 0
-                                ? AppColors.success.withValues(alpha: 0.1)
-                                : AppColors.error.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            product.stock > 0
-                                ? 'Stok: ${product.stock}'
-                                : 'Habis',
-                            style: Theme.of(context).textTheme.labelSmall
-                                ?.copyWith(
-                                  color: product.stock > 0
-                                      ? AppColors.success
-                                      : AppColors.error,
-                                ),
-                          ),
-                        ),
                       ],
                     ),
                   ],

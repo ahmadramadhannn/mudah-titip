@@ -90,3 +90,23 @@ Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password_has
 Hibernate: select s1_0.id,s1_0.address,s1_0.created_at,s1_0.description,s1_0.is_active,s1_0.name,s1_0.owner_id,o1_0.id,o1_0.created_at,o1_0.email,o1_0.name,o1_0.password_hash,o1_0.phone,o1_0.role,o1_0.updated_at,s1_0.phone,s1_0.updated_at from shops s1_0 join users o1_0 on o1_0.id=s1_0.owner_id where s1_0.owner_id=?
 Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password_hash,u1_0.phone,u1_0.role,u1_0.updated_at from users u1_0 where u1_0.email=?
 Hibernate: select s1_0.id,s1_0.address,s1_0.created_at,s1_0.description,s1_0.is_active,s1_0.name,s1_0.owner_id,o1_0.id,o1_0.created_at,o1_0.email,o1_0.name,o1_0.password_hash,o1_0.phone,o1_0.role,o1_0.updated_at,s1_0.phone,s1_0.updated_at from shops s1_0 join users o1_0 on o1_0.id=s1_0.owner_id where s1_0.owner_id=?
+Hibernate: select u1_0.id,u1_0.created_at,u1_0.email,u1_0.name,u1_0.password_hash,u1_0.phone,u1_0.role,u1_0.updated_at from users u1_0 where u1_0.email=?
+Hibernate: select s1_0.id,s1_0.address,s1_0.created_at,s1_0.description,s1_0.is_active,s1_0.name,s1_0.owner_id,o1_0.id,o1_0.created_at,o1_0.email,o1_0.name,o1_0.password_hash,o1_0.phone,o1_0.role,o1_0.updated_at,s1_0.phone,s1_0.updated_at from shops s1_0 join users o1_0 on o1_0.id=s1_0.owner_id where s1_0.owner_id=?
+2026-01-30T20:38:33.537+07:00  INFO 802909 --- [mudahtitip] [ionShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2026-01-30T20:38:33.540+07:00  INFO 802909 --- [mudahtitip] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2026-01-30T20:38:33.588+07:00  INFO 802909 --- [mudahtitip] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-30T20:38:33.614+07:00  INFO 802909 --- [mudahtitip] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-30T20:38:33.619+07:00  INFO 802909 --- [mudahtitip] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  09:55 h
+[INFO] Finished at: 2026-01-30T20:38:33+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.7:run (default-cli) on project mudahtitip: Process terminated with exit code: 143 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

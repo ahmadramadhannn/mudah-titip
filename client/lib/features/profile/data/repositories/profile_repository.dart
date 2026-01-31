@@ -3,64 +3,58 @@ import 'package:dio/dio.dart';
 import '../../../../core/api/api_client.dart';
 import '../../../../core/api/api_endpoints.dart';
 import '../../../../core/error/failures.dart';
-import '../models/product.dart';
-import '../models/product_request.dart';
+import '../models/profile_request.dart';
+import '../models/profile_response.dart';
 
-class ProductRepository {
+/// Repository for profile operations.
+class ProfileRepository {
   final ApiClient _apiClient;
 
-  ProductRepository(this._apiClient);
+  ProfileRepository(this._apiClient);
 
-  Future<List<Product>> getMyProducts() async {
+  /// Get current user's profile.
+  Future<ProfileResponse> getProfile() async {
     try {
-      final response = await _apiClient.get(ApiEndpoints.myProducts);
-      final List<dynamic> data = response.data as List<dynamic>;
-      return data
-          .map((json) => Product.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final response = await _apiClient.get(ApiEndpoints.profile);
+      return ProfileResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleDioError(e);
     }
   }
 
-  Future<Product> getProduct(int id) async {
-    try {
-      final response = await _apiClient.get(
-        ApiEndpoints.product(id.toString()),
-      );
-      return Product.fromJson(response.data as Map<String, dynamic>);
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  Future<Product> createProduct(CreateProductRequest request) async {
-    try {
-      final response = await _apiClient.post(
-        ApiEndpoints.products,
-        data: request.toJson(),
-      );
-      return Product.fromJson(response.data as Map<String, dynamic>);
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  Future<Product> updateProduct(int id, UpdateProductRequest request) async {
+  /// Update profile (name and/or phone).
+  Future<ProfileResponse> updateProfile(UpdateProfileRequest request) async {
     try {
       final response = await _apiClient.put(
-        ApiEndpoints.product(id.toString()),
+        ApiEndpoints.profile,
         data: request.toJson(),
       );
-      return Product.fromJson(response.data as Map<String, dynamic>);
+      return ProfileResponse.fromJson(response.data);
     } on DioException catch (e) {
       throw _handleDioError(e);
     }
   }
 
-  Future<void> deleteProduct(int id) async {
+  /// Update email (requires password verification).
+  Future<ProfileResponse> updateEmail(UpdateEmailRequest request) async {
     try {
-      await _apiClient.delete(ApiEndpoints.product(id.toString()));
+      final response = await _apiClient.put(
+        ApiEndpoints.profileEmail,
+        data: request.toJson(),
+      );
+      return ProfileResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    }
+  }
+
+  /// Change password (requires current password verification).
+  Future<void> updatePassword(UpdatePasswordRequest request) async {
+    try {
+      await _apiClient.put(
+        ApiEndpoints.profilePassword,
+        data: request.toJson(),
+      );
     } on DioException catch (e) {
       throw _handleDioError(e);
     }
@@ -74,6 +68,10 @@ class ProductRepository {
 
     final statusCode = e.response?.statusCode;
     final data = e.response?.data;
+
+    if (statusCode == 401) {
+      return const AuthFailure('Sesi telah berakhir, silakan login kembali');
+    }
 
     if (statusCode == 400 || statusCode == 422) {
       final message = data is Map ? data['message'] as String? : null;

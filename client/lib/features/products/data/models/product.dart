@@ -1,38 +1,45 @@
 import 'package:equatable/equatable.dart';
 
+/// Product model matching backend Product entity.
 class Product extends Equatable {
-  final String id;
+  final int id;
   final String name;
   final String? description;
-  final double price;
-  final int stock;
+  final String? category;
+  final int? shelfLifeDays;
+  final double basePrice;
   final String? imageUrl;
-  final String shopId; // For consignments later
+  final bool isActive;
   final DateTime createdAt;
+  final DateTime? updatedAt;
 
   const Product({
     required this.id,
     required this.name,
     this.description,
-    required this.price,
-    required this.stock,
+    this.category,
+    this.shelfLifeDays,
+    required this.basePrice,
     this.imageUrl,
-    required this.shopId,
+    required this.isActive,
     required this.createdAt,
+    this.updatedAt,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'] as String,
+      id: json['id'] as int,
       name: json['name'] as String,
       description: json['description'] as String?,
-      price: (json['price'] as num).toDouble(),
-      stock: (json['stock'] as num).toInt(),
-      imageUrl: json['image_url'] as String?,
-      shopId: json['shop_id'] as String? ?? '', // Providing default for now
-      createdAt:
-          DateTime.tryParse(json['created_at'] as String? ?? '') ??
-          DateTime.now(),
+      category: json['category'] as String?,
+      shelfLifeDays: json['shelfLifeDays'] as int?,
+      basePrice: (json['basePrice'] as num).toDouble(),
+      imageUrl: json['imageUrl'] as String?,
+      isActive: json['isActive'] as bool? ?? true,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
     );
   }
 
@@ -41,11 +48,13 @@ class Product extends Equatable {
       'id': id,
       'name': name,
       'description': description,
-      'price': price,
-      'stock': stock,
-      'image_url': imageUrl,
-      'shop_id': shopId,
-      'created_at': createdAt.toIso8601String(),
+      'category': category,
+      'shelfLifeDays': shelfLifeDays,
+      'basePrice': basePrice,
+      'imageUrl': imageUrl,
+      'isActive': isActive,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
@@ -54,10 +63,12 @@ class Product extends Equatable {
     id,
     name,
     description,
-    price,
-    stock,
+    category,
+    shelfLifeDays,
+    basePrice,
     imageUrl,
-    shopId,
+    isActive,
     createdAt,
+    updatedAt,
   ];
 }

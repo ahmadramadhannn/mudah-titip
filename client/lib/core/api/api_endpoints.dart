@@ -35,4 +35,9 @@ class ApiEndpoints {
   static const String pendingAgreements = '/agreements/pending';
   static String settlement(String consignmentId) =>
       '/agreements/settlement/$consignmentId';
+
+  // Profile
+  static const String profile = '/profile';
+  static const String profileEmail = '/profile/email';
+  static const String profilePassword = '/profile/password';
 }

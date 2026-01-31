@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../data/models/auth_request.dart';
-import '../../data/models/user.dart';
 import '../../data/models/user_role.dart';
 import '../../data/repositories/auth_repository.dart';
 
@@ -27,9 +26,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final user = await _authRepository.tryRestoreSession();
-    if (user != null) {
-      emit(AuthAuthenticated(user.name));
+    final authData = await _authRepository.tryRestoreSession();
+    if (authData != null) {
+      emit(
+        AuthAuthenticated(
+          userId: authData.userId,
+          name: authData.name,
+          email: authData.email,
+          role: authData.role,
+          shopId: authData.shopId,
+        ),
+      );
     } else {
       emit(const AuthUnauthenticated());
     }
@@ -45,7 +52,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final response = await _authRepository.login(
         LoginRequest(email: event.email, password: event.password),
       );
-      emit(AuthAuthenticated(response.name));
+      emit(
+        AuthAuthenticated(
+          userId: response.userId,
+          name: response.name,
+          email: response.email,
+          role: response.role,
+          shopId: response.shopId,
+        ),
+      );
     } on Failure catch (e) {
       emit(AuthFailure(e.message));
       emit(const AuthUnauthenticated());
@@ -72,7 +87,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           shopDescription: event.shopDescription,
         ),
       );
-      // emit(AuthAuthenticated(response.user));
+      emit(
+        AuthAuthenticated(
+          userId: response.userId,
+          name: response.name,
+          email: response.email,
+          role: response.role,
+          shopId: response.shopId,
+        ),
+      );
     } on Failure catch (e) {
       emit(AuthFailure(e.message));
       emit(const AuthUnauthenticated());
