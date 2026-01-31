@@ -16,6 +16,9 @@ class ApiEndpoints {
   static const String myProducts = '/products/my';
   static String product(String id) => '/products/$id';
   static const String searchProducts = '/products/search';
+  static String guestProducts(String guestId) => '/products/guest/$guestId';
+  static String createProductForGuest(String guestId) =>
+      '/products/for-guest/$guestId';
 
   // Consignments
   static const String consignments = '/consignments';
@@ -42,4 +45,9 @@ class ApiEndpoints {
   static const String profile = '/profile';
   static const String profileEmail = '/profile/email';
   static const String profilePassword = '/profile/password';
+
+  // Guest Consignors
+  static const String guestConsignors = '/guest-consignors';
+  static String guestConsignor(String id) => '/guest-consignors/$id';
+  static const String searchGuestConsignors = '/guest-consignors/search';
 }

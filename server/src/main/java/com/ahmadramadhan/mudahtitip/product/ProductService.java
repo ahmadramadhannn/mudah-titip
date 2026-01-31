@@ -1,6 +1,9 @@
 package com.ahmadramadhan.mudahtitip.product;
 
 import com.ahmadramadhan.mudahtitip.auth.User;
+import com.ahmadramadhan.mudahtitip.auth.UserRole;
+import com.ahmadramadhan.mudahtitip.consignor.GuestConsignor;
+import com.ahmadramadhan.mudahtitip.consignor.GuestConsignorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,29 +18,58 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final GuestConsignorRepository guestConsignorRepository;
 
     /**
-     * Create a new product for a consignor.
+     * Create a new product for a registered consignor.
      */
     @Transactional
     public Product createProduct(Product product, User owner) {
         product.setOwner(owner);
+        product.setGuestOwner(null);
         product.setIsActive(true);
         return productRepository.save(product);
     }
 
     /**
-     * Get all products owned by a consignor.
+     * Create a new product for a guest consignor.
+     * Only shop owners can do this.
+     */
+    @Transactional
+    public Product createProductForGuest(Product product, Long guestConsignorId, User shopOwner) {
+        if (shopOwner.getRole() != UserRole.SHOP_OWNER) {
+            throw new IllegalStateException("Hanya pemilik toko yang dapat membuat produk untuk penitip");
+        }
+
+        GuestConsignor guestConsignor = guestConsignorRepository.findByIdAndManagedBy(guestConsignorId, shopOwner)
+                .filter(GuestConsignor::getIsActive)
+                .orElseThrow(() -> new IllegalArgumentException("Penitip tidak ditemukan"));
+
+        product.setOwner(null);
+        product.setGuestOwner(guestConsignor);
+        product.setIsActive(true);
+        return productRepository.save(product);
+    }
+
+    /**
+     * Get all products owned by a registered consignor.
      */
     public List<Product> getProductsByOwner(Long ownerId) {
         return productRepository.findByOwnerId(ownerId);
     }
 
     /**
-     * Get active products owned by a consignor.
+     * Get active products owned by a registered consignor.
      */
     public List<Product> getActiveProductsByOwner(Long ownerId) {
         return productRepository.findByOwnerIdAndIsActiveTrue(ownerId);
+    }
+
+    /**
+     * Get products for a guest consignor.
+     */
+    public List<Product> getProductsByGuestOwner(Long guestOwnerId) {
+        return productRepository.findByGuestOwnerIdAndIsActiveTrue(guestOwnerId);
     }
 
     /**
@@ -55,8 +87,8 @@ public class ProductService {
     public Product updateProduct(Long id, Product updates, User currentUser) {
         Product product = getById(id);
 
-        // Verify ownership
-        if (!product.getOwner().getId().equals(currentUser.getId())) {
+        // Verify ownership (user owner or managed guest owner)
+        if (!canUserEditProduct(product, currentUser)) {
             throw new IllegalArgumentException("Anda tidak memiliki akses ke produk ini");
         }
 
@@ -83,7 +115,7 @@ public class ProductService {
     public void deactivateProduct(Long id, User currentUser) {
         Product product = getById(id);
 
-        if (!product.getOwner().getId().equals(currentUser.getId())) {
+        if (!canUserEditProduct(product, currentUser)) {
             throw new IllegalArgumentException("Anda tidak memiliki akses ke produk ini");
         }
 
@@ -96,5 +128,23 @@ public class ProductService {
      */
     public List<Product> searchByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    /**
+     * Check if user can edit a product.
+     * User can edit if they own it directly, or if they manage the guest owner.
+     */
+    private boolean canUserEditProduct(Product product, User user) {
+        // Direct owner check
+        if (product.getOwner() != null && product.getOwner().getId().equals(user.getId())) {
+            return true;
+        }
+
+        // Guest owner check (shop owner manages the guest)
+        if (product.getGuestOwner() != null && user.getRole() == UserRole.SHOP_OWNER) {
+            return product.getGuestOwner().getManagedBy().getId().equals(user.getId());
+        }
+
+        return false;
     }
 }

@@ -3,6 +3,7 @@ package com.ahmadramadhan.mudahtitip.product;
 import com.ahmadramadhan.mudahtitip.auth.User;
 import com.ahmadramadhan.mudahtitip.common.entity.BaseEntity;
 import com.ahmadramadhan.mudahtitip.consignment.Consignment;
+import com.ahmadramadhan.mudahtitip.consignor.GuestConsignor;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,6 +29,12 @@ import java.util.List;
 /**
  * Product entity representing a product type owned by a consignor.
  * Each product can be consigned to multiple shops.
+ * 
+ * A product can be owned by either:
+ * - A registered User (consignor with app account)
+ * - A GuestConsignor (consignor managed by shop owner)
+ * 
+ * Exactly one of owner/guestOwner must be set.
  */
 @Entity
 @Table(name = "products")
@@ -72,12 +79,43 @@ public class Product extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
+    /**
+     * Owner for registered consignors (users with app accounts).
+     * Either owner OR guestOwner must be set, not both.
+     */
     @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
+    @JoinColumn(name = "owner_id")
     private User owner;
+
+    /**
+     * Owner for guest consignors (managed by shop owner).
+     * Either owner OR guestOwner must be set, not both.
+     */
+    @ManyToOne
+    @JoinColumn(name = "guest_owner_id")
+    private GuestConsignor guestOwner;
 
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Consignment> consignments = new ArrayList<>();
+
+    /**
+     * Check if this product is owned by a guest consignor.
+     */
+    public boolean isGuestOwned() {
+        return guestOwner != null;
+    }
+
+    /**
+     * Get the owner name (works for both user and guest owners).
+     */
+    public String getOwnerName() {
+        if (owner != null) {
+            return owner.getName();
+        } else if (guestOwner != null) {
+            return guestOwner.getName();
+        }
+        return null;
+    }
 }

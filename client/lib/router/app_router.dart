@@ -9,6 +9,10 @@ import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../features/guest_consignor/data/models/guest_consignor.dart';
+import '../features/guest_consignor/presentation/pages/add_guest_consignor_page.dart';
+import '../features/guest_consignor/presentation/pages/guest_consignor_detail_page.dart';
+import '../features/guest_consignor/presentation/pages/guest_consignors_page.dart';
 import '../features/products/data/models/product.dart';
 import '../features/products/presentation/pages/add_product_page.dart';
 import '../features/products/presentation/pages/products_page.dart';
@@ -111,6 +115,36 @@ class AppRouter {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfilePage(),
+      ),
+      // Guest consignor routes (shop owner only)
+      GoRoute(
+        path: '/guest-consignors',
+        builder: (context, state) => const GuestConsignorsPage(),
+      ),
+      GoRoute(
+        path: '/guest-consignors/add',
+        builder: (context, state) => const AddGuestConsignorPage(),
+      ),
+      GoRoute(
+        path: '/guest-consignors/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return GuestConsignorDetailPage(guestConsignorId: id);
+        },
+      ),
+      GoRoute(
+        path: '/guest-consignors/:id/edit',
+        builder: (context, state) {
+          final guestConsignor = state.extra as GuestConsignor?;
+          return AddGuestConsignorPage(editConsignor: guestConsignor);
+        },
+      ),
+      GoRoute(
+        path: '/guest-consignors/:guestId/products/add',
+        builder: (context, state) {
+          // TODO: Implement add product for guest consignor
+          return _PlaceholderPage(title: 'Tambah Produk Penitip');
+        },
       ),
     ],
   );

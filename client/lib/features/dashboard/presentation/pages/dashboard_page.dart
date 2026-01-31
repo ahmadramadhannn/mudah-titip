@@ -498,6 +498,11 @@ class _QuickActionsGrid extends StatelessWidget {
           ]
         : [
             _QuickAction(
+              'Kelola Penitip',
+              Icons.people_outline,
+              '/guest-consignors',
+            ),
+            _QuickAction(
               'Catat Penjualan',
               Icons.add_shopping_cart,
               '/sales/add',
@@ -507,7 +512,6 @@ class _QuickActionsGrid extends StatelessWidget {
               Icons.inventory_outlined,
               '/consignments',
             ),
-            _QuickAction('Riwayat Penjualan', Icons.history_outlined, '/sales'),
             _QuickAction('Perjanjian', Icons.handshake_outlined, '/agreements'),
           ];
 
