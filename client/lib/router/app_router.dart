@@ -8,6 +8,9 @@ import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
+import '../features/consignment/presentation/pages/add_consignment_page.dart';
+import '../features/consignment/presentation/pages/consignment_detail_page.dart';
+import '../features/consignment/presentation/pages/consignments_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/guest_consignor/data/models/guest_consignor.dart';
 import '../features/guest_consignor/presentation/pages/add_guest_consignor_page.dart';
@@ -17,6 +20,8 @@ import '../features/products/data/models/product.dart';
 import '../features/products/presentation/pages/add_product_page.dart';
 import '../features/products/presentation/pages/products_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
+import '../features/sale/presentation/pages/record_sale_page.dart';
+import '../features/sale/presentation/pages/sales_page.dart';
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -78,19 +83,23 @@ class AppRouter {
       ),
       GoRoute(
         path: '/consignments',
-        builder: (context, state) => _PlaceholderPage(title: 'Titipan'),
+        builder: (context, state) => const ConsignmentsPage(),
       ),
       GoRoute(
         path: '/consignments/add',
-        builder: (context, state) => _PlaceholderPage(title: 'Titipkan Produk'),
+        builder: (context, state) => const AddConsignmentPage(),
       ),
       GoRoute(
-        path: '/sales',
-        builder: (context, state) => _PlaceholderPage(title: 'Penjualan'),
+        path: '/consignments/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return ConsignmentDetailPage(consignmentId: id);
+        },
       ),
+      GoRoute(path: '/sales', builder: (context, state) => const SalesPage()),
       GoRoute(
         path: '/sales/add',
-        builder: (context, state) => _PlaceholderPage(title: 'Catat Penjualan'),
+        builder: (context, state) => const RecordSalePage(),
       ),
       GoRoute(
         path: '/agreements',

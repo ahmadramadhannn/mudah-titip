@@ -7,6 +7,8 @@ import '../../features/agreement/data/repositories/agreement_repository.dart';
 import '../../features/agreement/presentation/bloc/agreement_bloc.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/consignment/data/consignment_repository.dart';
+import '../../features/sale/data/sale_repository.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/guest_consignor/data/repositories/guest_consignor_repository.dart';
@@ -59,6 +61,14 @@ Future<void> configureDependencies() async {
 
   getIt.registerLazySingleton<GuestConsignorRepository>(
     () => GuestConsignorRepository(getIt<ApiClient>()),
+  );
+
+  getIt.registerLazySingleton<ConsignmentRepository>(
+    () => ConsignmentRepository(getIt<ApiClient>()),
+  );
+
+  getIt.registerLazySingleton<SaleRepository>(
+    () => SaleRepository(getIt<ApiClient>()),
   );
 
   // ============================================================
