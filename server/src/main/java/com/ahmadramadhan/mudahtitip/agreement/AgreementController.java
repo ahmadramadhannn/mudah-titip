@@ -9,14 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
+
 import java.util.List;
 import java.util.Map;
 
 /**
  * REST controller for agreement negotiation.
  */
-@RestController
-@RequestMapping("/api/agreements")
+@ApiV1Controller
+@RequestMapping("/agreements")
 @RequiredArgsConstructor
 public class AgreementController {
 

@@ -30,9 +30,9 @@ class EnvConfig {
 
   /// API base URL for the current environment.
   static String get baseUrl => switch (current) {
-    Environment.dev => 'http://localhost:8080/api',
-    Environment.staging => 'https://staging.mudahtitip.com/api',
-    Environment.prod => 'https://api.mudahtitip.com/api',
+    Environment.dev => 'http://localhost:8080/api/v1',
+    Environment.staging => 'https://staging.mudahtitip.com/api/v1',
+    Environment.prod => 'https://api.mudahtitip.com/api/v1',
   };
 
   /// Whether the current environment is development.

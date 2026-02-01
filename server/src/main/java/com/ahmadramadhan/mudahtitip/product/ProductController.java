@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
+
 import java.util.List;
 
 /**
@@ -16,8 +18,8 @@ import java.util.List;
  * Consignors can create/update their own products.
  * Shop owners can create/update products for their guest consignors.
  */
-@RestController
-@RequestMapping("/api/products")
+@ApiV1Controller
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 

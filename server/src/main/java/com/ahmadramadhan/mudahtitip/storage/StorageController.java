@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
 
 import com.ahmadramadhan.mudahtitip.storage.dto.PresignedUrlRequest;
 import com.ahmadramadhan.mudahtitip.storage.dto.PresignedUrlResponse;
@@ -19,8 +20,8 @@ import lombok.RequiredArgsConstructor;
  * REST controller for file storage operations.
  * Provides presigned URLs for direct client uploads to R2.
  */
-@RestController
-@RequestMapping("/api/storage")
+@ApiV1Controller
+@RequestMapping("/storage")
 @RequiredArgsConstructor
 @Tag(name = "Storage", description = "File upload and storage operations")
 public class StorageController {

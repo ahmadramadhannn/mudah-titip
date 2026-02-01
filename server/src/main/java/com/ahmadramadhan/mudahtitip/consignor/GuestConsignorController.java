@@ -9,14 +9,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
+
 import java.util.List;
 
 /**
  * REST controller for guest consignor management.
  * Only shop owners can manage guest consignors.
  */
-@RestController
-@RequestMapping("/api/guest-consignors")
+@ApiV1Controller
+@RequestMapping("/guest-consignors")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('SHOP_OWNER')")
 public class GuestConsignorController {

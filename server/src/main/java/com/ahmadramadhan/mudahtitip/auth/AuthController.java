@@ -9,13 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
 
 /**
  * REST controller for authentication endpoints.
  */
-@RestController
-@RequestMapping("/api/auth")
+@ApiV1Controller
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 

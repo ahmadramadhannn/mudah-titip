@@ -11,6 +11,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,8 +24,8 @@ import java.util.Map;
 /**
  * REST controller for sale operations.
  */
-@RestController
-@RequestMapping("/api/sales")
+@ApiV1Controller
+@RequestMapping("/sales")
 @RequiredArgsConstructor
 public class SaleController {
 

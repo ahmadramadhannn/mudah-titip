@@ -9,13 +9,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
+
 import java.util.List;
 
 /**
  * REST controller for consignment management.
  */
-@RestController
-@RequestMapping("/api/consignments")
+@ApiV1Controller
+@RequestMapping("/consignments")
 @RequiredArgsConstructor
 public class ConsignmentController {
 
