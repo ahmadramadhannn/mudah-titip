@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/api_client.dart';
+import '../services/image_upload_service.dart';
 import '../../features/agreement/data/repositories/agreement_repository.dart';
 import '../../features/agreement/presentation/bloc/agreement_bloc.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
@@ -28,6 +29,10 @@ Future<void> configureDependencies() async {
   // Core
   // ============================================================
   getIt.registerLazySingleton<ApiClient>(() => ApiClient());
+
+  getIt.registerLazySingleton<ImageUploadService>(
+    () => ImageUploadService(getIt<ApiClient>()),
+  );
 
   // ============================================================
   // Repositories

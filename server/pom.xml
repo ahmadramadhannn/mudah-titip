@@ -105,6 +105,13 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.8.6</version>
 		</dependency>
+
+		<!-- AWS S3 SDK v2 for Cloudflare R2 object storage -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.29.51</version>
+		</dependency>
 	</dependencies>
 
 	<build>
