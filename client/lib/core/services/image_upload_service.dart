@@ -93,7 +93,7 @@ class ImageUploadService {
     required String folder,
   }) async {
     final response = await _apiClient.post<Map<String, dynamic>>(
-      '/api/storage/presigned-url',
+      '/storage/presigned-url',
       data: {
         'fileName': fileName,
         'contentType': contentType,
@@ -125,7 +125,7 @@ class ImageUploadService {
   Future<bool> isStorageAvailable() async {
     try {
       final response = await _apiClient.get<Map<String, dynamic>>(
-        '/api/storage/status',
+        '/storage/status',
       );
       return response.data?['configured'] == true;
     } catch (e) {
