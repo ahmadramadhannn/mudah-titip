@@ -494,7 +494,7 @@ class _QuickActionsGrid extends StatelessWidget {
               Icons.receipt_long_outlined,
               '/sales',
             ),
-            _QuickAction('Perjanjian', Icons.handshake_outlined, '/agreements'),
+            _QuickAction('Analytics', Icons.analytics_outlined, '/analytics'),
           ]
         : [
             _QuickAction(
@@ -507,11 +507,7 @@ class _QuickActionsGrid extends StatelessWidget {
               Icons.add_shopping_cart,
               '/sales/add',
             ),
-            _QuickAction(
-              'Lihat Titipan',
-              Icons.inventory_outlined,
-              '/consignments',
-            ),
+            _QuickAction('Analytics', Icons.analytics_outlined, '/analytics'),
             _QuickAction('Perjanjian', Icons.handshake_outlined, '/agreements'),
           ];
 
