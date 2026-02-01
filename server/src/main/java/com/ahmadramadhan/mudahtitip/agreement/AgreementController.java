@@ -18,7 +18,7 @@ import java.util.Map;
  * REST controller for agreement negotiation.
  */
 @ApiV1Controller
-@RequestMapping("/agreements")
+@RequestMapping("/api/v1/agreements")
 @RequiredArgsConstructor
 public class AgreementController {
 

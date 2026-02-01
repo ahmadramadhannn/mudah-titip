@@ -17,7 +17,7 @@ import java.util.List;
  * REST controller for consignment management.
  */
 @ApiV1Controller
-@RequestMapping("/consignments")
+@RequestMapping("/api/v1/consignments")
 @RequiredArgsConstructor
 public class ConsignmentController {
 

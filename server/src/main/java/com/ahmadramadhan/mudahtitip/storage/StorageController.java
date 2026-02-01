@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
  * Provides presigned URLs for direct client uploads to R2.
  */
 @ApiV1Controller
-@RequestMapping("/storage")
+@RequestMapping("/api/v1/storage")
 @RequiredArgsConstructor
 @Tag(name = "Storage", description = "File upload and storage operations")
 public class StorageController {

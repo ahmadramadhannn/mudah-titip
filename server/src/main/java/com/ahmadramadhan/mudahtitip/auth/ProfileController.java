@@ -20,7 +20,7 @@ import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
  * REST controller for user profile management endpoints.
  */
 @ApiV1Controller
-@RequestMapping("/profile")
+@RequestMapping("/api/v1/profile")
 @RequiredArgsConstructor
 public class ProfileController {
 

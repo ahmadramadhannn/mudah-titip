@@ -18,7 +18,7 @@ import java.util.List;
  * Only shop owners can manage guest consignors.
  */
 @ApiV1Controller
-@RequestMapping("/guest-consignors")
+@RequestMapping("/api/v1/guest-consignors")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('SHOP_OWNER')")
 public class GuestConsignorController {

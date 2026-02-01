@@ -19,7 +19,7 @@ import java.util.List;
  * Shop owners can create/update products for their guest consignors.
  */
 @ApiV1Controller
-@RequestMapping("/products")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 

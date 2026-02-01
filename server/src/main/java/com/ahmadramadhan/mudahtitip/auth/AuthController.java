@@ -16,7 +16,7 @@ import com.ahmadramadhan.mudahtitip.common.config.ApiV1Controller;
  * REST controller for authentication endpoints.
  */
 @ApiV1Controller
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 

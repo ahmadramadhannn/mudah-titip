@@ -25,7 +25,7 @@ import java.util.Map;
  * REST controller for sale operations.
  */
 @ApiV1Controller
-@RequestMapping("/sales")
+@RequestMapping("/api/v1/sales")
 @RequiredArgsConstructor
 public class SaleController {
 
