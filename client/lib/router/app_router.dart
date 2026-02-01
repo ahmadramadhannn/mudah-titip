@@ -22,6 +22,7 @@ import '../features/products/presentation/pages/products_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/sale/presentation/pages/record_sale_page.dart';
 import '../features/sale/presentation/pages/sales_page.dart';
+import '../features/analytics/presentation/pages/analytics_page.dart';
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -100,6 +101,10 @@ class AppRouter {
       GoRoute(
         path: '/sales/add',
         builder: (context, state) => const RecordSalePage(),
+      ),
+      GoRoute(
+        path: '/analytics',
+        builder: (context, state) => const AnalyticsPage(),
       ),
       GoRoute(
         path: '/agreements',

@@ -56,6 +56,9 @@ dependencies:
   # Utilities
   intl: ^0.20.2
 
+  # Charts
+  fl_chart: ^0.70.0
+
   # Image Picker
   image_picker: ^1.1.2
 
