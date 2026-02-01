@@ -1,5 +1,6 @@
 package com.ahmadramadhan.mudahtitip.sale;
 
+import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignment.Consignment;
 import com.ahmadramadhan.mudahtitip.consignment.ConsignmentService;
 import com.ahmadramadhan.mudahtitip.sale.dto.SaleRequest;
@@ -21,6 +22,7 @@ public class SaleService {
 
     private final SaleRepository saleRepository;
     private final ConsignmentService consignmentService;
+    private final MessageService messageService;
 
     /**
      * Record a sale for a consignment.
@@ -36,7 +38,7 @@ public class SaleService {
         // Validate stock availability
         if (consignment.getCurrentQuantity() < request.getQuantity()) {
             throw new IllegalArgumentException(
-                    String.format("Stok tidak mencukupi. Tersedia: %d, diminta: %d",
+                    messageService.getMessage("consignment.stock.insufficient.detail",
                             consignment.getCurrentQuantity(), request.getQuantity()));
         }
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/consignment.dart';
 import '../bloc/consignment_bloc.dart';
 
@@ -55,15 +56,16 @@ class _ConsignmentsViewState extends State<_ConsignmentsView>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Titipan'),
+        title: Text(l10n.consignments),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
           tabs: [
-            const Tab(text: 'Semua'),
+            Tab(text: l10n.all),
             ...ConsignmentStatus.values.map((s) => Tab(text: s.displayName)),
           ],
         ),
@@ -91,7 +93,7 @@ class _ConsignmentsViewState extends State<_ConsignmentsView>
                     onPressed: () => context.read<ConsignmentBloc>().add(
                       LoadConsignments(status: _tabs[_tabController.index]),
                     ),
-                    child: const Text('Coba Lagi'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -127,12 +129,14 @@ class _ConsignmentsViewState extends State<_ConsignmentsView>
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/consignments/add'),
         icon: const Icon(Icons.add),
-        label: const Text('Titipkan Produk'),
+        label: Text(l10n.addConsignment),
       ),
     );
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -144,12 +148,12 @@ class _ConsignmentsViewState extends State<_ConsignmentsView>
           ),
           const SizedBox(height: 16),
           Text(
-            'Belum ada titipan',
+            l10n.noConsignments,
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           Text(
-            'Mulai titipkan produk Anda ke toko mitra',
+            l10n.addFirstProduct,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.outline,
             ),
@@ -158,7 +162,7 @@ class _ConsignmentsViewState extends State<_ConsignmentsView>
           FilledButton.icon(
             onPressed: () => context.push('/consignments/add'),
             icon: const Icon(Icons.add),
-            label: const Text('Titipkan Produk'),
+            label: Text(l10n.addConsignment),
           ),
         ],
       ),
@@ -174,6 +178,7 @@ class _ConsignmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -225,20 +230,20 @@ class _ConsignmentCard extends StatelessWidget {
               Row(
                 children: [
                   _InfoItem(
-                    label: 'Stok',
+                    label: l10n.quantity,
                     value:
                         '${consignment.currentQuantity}/${consignment.initialQuantity}',
                     icon: Icons.inventory,
                   ),
                   const SizedBox(width: 24),
                   _InfoItem(
-                    label: 'Harga',
+                    label: l10n.price,
                     value: currencyFormat.format(consignment.sellingPrice),
                     icon: Icons.sell,
                   ),
                   const SizedBox(width: 24),
                   _InfoItem(
-                    label: 'Komisi',
+                    label: l10n.commission,
                     value:
                         '${consignment.commissionPercent.toStringAsFixed(0)}%',
                     icon: Icons.percent,
@@ -270,7 +275,7 @@ class _ConsignmentCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Kadaluarsa: ${DateFormat('dd MMM yyyy', 'id').format(consignment.expiryDate!)}',
+                          '${l10n.expiryDate}: ${DateFormat('dd MMM yyyy', 'id').format(consignment.expiryDate!)}',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.colorScheme.onErrorContainer,
                           ),

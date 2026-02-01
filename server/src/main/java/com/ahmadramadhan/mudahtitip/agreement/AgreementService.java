@@ -3,6 +3,7 @@ package com.ahmadramadhan.mudahtitip.agreement;
 import com.ahmadramadhan.mudahtitip.agreement.dto.AgreementRequest;
 import com.ahmadramadhan.mudahtitip.agreement.dto.SettlementResult;
 import com.ahmadramadhan.mudahtitip.auth.User;
+import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignment.Consignment;
 import com.ahmadramadhan.mudahtitip.consignment.ConsignmentRepository;
 import com.ahmadramadhan.mudahtitip.sale.SaleRepository;
@@ -24,6 +25,7 @@ public class AgreementService {
     private final AgreementRepository agreementRepository;
     private final ConsignmentRepository consignmentRepository;
     private final SaleRepository saleRepository;
+    private final MessageService messageService;
 
     /**
      * Propose a new agreement for a consignment.
@@ -32,12 +34,12 @@ public class AgreementService {
     @Transactional
     public Agreement propose(AgreementRequest request, User currentUser) {
         Consignment consignment = consignmentRepository.findById(request.getConsignmentId())
-                .orElseThrow(() -> new IllegalArgumentException("Titipan tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignment.not.found")));
 
         // Check if there's already an accepted agreement
         if (agreementRepository.findByConsignmentIdAndStatus(
                 consignment.getId(), AgreementStatus.ACCEPTED).isPresent()) {
-            throw new IllegalStateException("Sudah ada kesepakatan untuk titipan ini");
+            throw new IllegalStateException(messageService.getMessage("agreement.exists"));
         }
 
         Agreement agreement = buildAgreement(request, consignment, currentUser, null);
@@ -52,11 +54,12 @@ public class AgreementService {
     @Transactional
     public Agreement counter(Long agreementId, AgreementRequest request, User currentUser) {
         Agreement previous = agreementRepository.findById(agreementId)
-                .orElseThrow(() -> new IllegalArgumentException("Kesepakatan tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("agreement.not.found")));
 
         if (previous.getStatus() != AgreementStatus.PROPOSED &&
                 previous.getStatus() != AgreementStatus.COUNTER) {
-            throw new IllegalStateException("Tidak bisa counter kesepakatan dengan status: " + previous.getStatus());
+            throw new IllegalStateException(
+                    messageService.getMessage("agreement.counter.invalid.status", previous.getStatus()));
         }
 
         // Mark previous as countered
@@ -76,15 +79,15 @@ public class AgreementService {
     @Transactional
     public Agreement accept(Long agreementId, User currentUser, String message) {
         Agreement agreement = agreementRepository.findById(agreementId)
-                .orElseThrow(() -> new IllegalArgumentException("Kesepakatan tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("agreement.not.found")));
 
         if (agreement.getStatus() != AgreementStatus.PROPOSED) {
-            throw new IllegalStateException("Hanya bisa menerima proposal yang masih menunggu");
+            throw new IllegalStateException(messageService.getMessage("agreement.accept.pending.only"));
         }
 
         // Can't accept your own proposal
         if (agreement.getProposedBy().getId().equals(currentUser.getId())) {
-            throw new IllegalArgumentException("Tidak bisa menerima proposal sendiri");
+            throw new IllegalArgumentException(messageService.getMessage("agreement.accept.self.denied"));
         }
 
         agreement.setStatus(AgreementStatus.ACCEPTED);
@@ -99,14 +102,14 @@ public class AgreementService {
     @Transactional
     public Agreement reject(Long agreementId, User currentUser, String reason) {
         Agreement agreement = agreementRepository.findById(agreementId)
-                .orElseThrow(() -> new IllegalArgumentException("Kesepakatan tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("agreement.not.found")));
 
         if (agreement.getStatus() != AgreementStatus.PROPOSED) {
-            throw new IllegalStateException("Hanya bisa menolak proposal yang masih menunggu");
+            throw new IllegalStateException(messageService.getMessage("agreement.reject.pending.only"));
         }
 
         if (agreement.getProposedBy().getId().equals(currentUser.getId())) {
-            throw new IllegalArgumentException("Tidak bisa menolak proposal sendiri");
+            throw new IllegalArgumentException(messageService.getMessage("agreement.reject.self.denied"));
         }
 
         agreement.setStatus(AgreementStatus.REJECTED);
@@ -120,11 +123,11 @@ public class AgreementService {
      */
     public SettlementResult calculateSettlement(Long consignmentId) {
         Consignment consignment = consignmentRepository.findById(consignmentId)
-                .orElseThrow(() -> new IllegalArgumentException("Titipan tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignment.not.found")));
 
         Agreement agreement = agreementRepository
                 .findByConsignmentIdAndStatus(consignmentId, AgreementStatus.ACCEPTED)
-                .orElseThrow(() -> new IllegalArgumentException("Belum ada kesepakatan untuk titipan ini"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("agreement.no.accepted")));
 
         int sold = consignment.getInitialQuantity() - consignment.getCurrentQuantity();
         BigDecimal soldPercent = BigDecimal.valueOf(sold)

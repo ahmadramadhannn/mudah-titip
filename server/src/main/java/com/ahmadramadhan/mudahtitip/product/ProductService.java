@@ -2,6 +2,7 @@ package com.ahmadramadhan.mudahtitip.product;
 
 import com.ahmadramadhan.mudahtitip.auth.User;
 import com.ahmadramadhan.mudahtitip.auth.UserRole;
+import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignor.GuestConsignor;
 import com.ahmadramadhan.mudahtitip.consignor.GuestConsignorRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final GuestConsignorRepository guestConsignorRepository;
+    private final MessageService messageService;
 
     /**
      * Create a new product for a registered consignor.
@@ -38,12 +40,12 @@ public class ProductService {
     @Transactional
     public Product createProductForGuest(Product product, Long guestConsignorId, User shopOwner) {
         if (shopOwner.getRole() != UserRole.SHOP_OWNER) {
-            throw new IllegalStateException("Hanya pemilik toko yang dapat membuat produk untuk penitip");
+            throw new IllegalStateException(messageService.getMessage("product.owner.required"));
         }
 
         GuestConsignor guestConsignor = guestConsignorRepository.findByIdAndManagedBy(guestConsignorId, shopOwner)
                 .filter(GuestConsignor::getIsActive)
-                .orElseThrow(() -> new IllegalArgumentException("Penitip tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignor.not.found")));
 
         product.setOwner(null);
         product.setGuestOwner(guestConsignor);
@@ -77,7 +79,7 @@ public class ProductService {
      */
     public Product getById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produk tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("product.not.found")));
     }
 
     /**
@@ -89,7 +91,7 @@ public class ProductService {
 
         // Verify ownership (user owner or managed guest owner)
         if (!canUserEditProduct(product, currentUser)) {
-            throw new IllegalArgumentException("Anda tidak memiliki akses ke produk ini");
+            throw new IllegalArgumentException(messageService.getMessage("product.access.denied"));
         }
 
         if (updates.getName() != null)
@@ -116,7 +118,7 @@ public class ProductService {
         Product product = getById(id);
 
         if (!canUserEditProduct(product, currentUser)) {
-            throw new IllegalArgumentException("Anda tidak memiliki akses ke produk ini");
+            throw new IllegalArgumentException(messageService.getMessage("product.access.denied"));
         }
 
         product.setIsActive(false);

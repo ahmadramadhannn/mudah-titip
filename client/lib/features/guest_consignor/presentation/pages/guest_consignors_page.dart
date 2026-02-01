@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/guest_consignor.dart';
 import '../../data/repositories/guest_consignor_repository.dart';
 import '../bloc/guest_consignor_bloc.dart';
@@ -28,9 +29,11 @@ class _GuestConsignorsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kelola Penitip'),
+        title: Text(l10n.guestConsignors),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -86,7 +89,7 @@ class _GuestConsignorsContent extends StatelessWidget {
                     onPressed: () => context.read<GuestConsignorBloc>().add(
                       const GuestConsignorLoadRequested(),
                     ),
-                    child: const Text('Coba Lagi'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -99,12 +102,14 @@ class _GuestConsignorsContent extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/guest-consignors/add'),
         icon: const Icon(Icons.person_add),
-        label: const Text('Tambah Penitip'),
+        label: Text(l10n.addGuestConsignor),
       ),
     );
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -112,14 +117,14 @@ class _GuestConsignorsContent extends StatelessWidget {
           Icon(Icons.people_outline, size: 64, color: AppColors.neutral400),
           const SizedBox(height: 16),
           Text(
-            'Belum ada penitip',
+            l10n.noGuestConsignors,
             style: Theme.of(
               context,
             ).textTheme.titleMedium?.copyWith(color: AppColors.neutral500),
           ),
           const SizedBox(height: 8),
           Text(
-            'Tambahkan penitip yang tidak menggunakan aplikasi',
+            l10n.noData,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppColors.neutral400),
@@ -129,7 +134,7 @@ class _GuestConsignorsContent extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: () => context.push('/guest-consignors/add'),
             icon: const Icon(Icons.person_add),
-            label: const Text('Tambah Penitip'),
+            label: Text(l10n.addGuestConsignor),
           ),
         ],
       ),
@@ -159,24 +164,24 @@ class _GuestConsignorsContent extends StatelessWidget {
 
   void _showSearchDialog(BuildContext context) {
     final searchController = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Cari Penitip'),
+        title: Text(l10n.search),
         content: TextField(
           controller: searchController,
-          decoration: const InputDecoration(
-            labelText: 'Nama atau Nomor Telepon',
-            hintText: 'Masukkan nama atau nomor telepon',
-            prefixIcon: Icon(Icons.search),
+          decoration: InputDecoration(
+            labelText: '${l10n.name} / ${l10n.phone}',
+            prefixIcon: const Icon(Icons.search),
           ),
           autofocus: true,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: const Text('Batal'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -193,7 +198,7 @@ class _GuestConsignorsContent extends StatelessWidget {
               }
               Navigator.of(dialogContext).pop();
             },
-            child: const Text('Cari'),
+            child: Text(l10n.search),
           ),
         ],
       ),

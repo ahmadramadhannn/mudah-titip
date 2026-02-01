@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/language_selector.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/profile_response.dart';
 import '../../data/repositories/profile_repository.dart';
 import '../bloc/profile_bloc.dart';
@@ -68,9 +70,11 @@ class _ProfileContentState extends State<_ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
+        title: Text(l10n.profile),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
@@ -101,6 +105,8 @@ class _ProfileContentState extends State<_ProfileContent> {
   }
 
   Widget _buildBody(ProfileState state) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (state is ProfileLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -117,7 +123,7 @@ class _ProfileContentState extends State<_ProfileContent> {
             ElevatedButton(
               onPressed: () =>
                   context.read<ProfileBloc>().add(const ProfileLoadRequested()),
-              child: const Text('Coba Lagi'),
+              child: Text(l10n.retry),
             ),
           ],
         ),
@@ -459,6 +465,15 @@ class _ProfileContentState extends State<_ProfileContent> {
           _buildInfoRow('Tipe Akun', profile.role.displayName),
           const SizedBox(height: 8),
           _buildInfoRow('Bergabung', _formatDate(profile.createdAt)),
+
+          const SizedBox(height: 24),
+          const Divider(),
+          const SizedBox(height: 16),
+
+          // Settings section
+          Text(l10n.settings, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 16),
+          const LanguageSettingsTile(),
         ],
       ),
     );

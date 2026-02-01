@@ -1,5 +1,7 @@
 package com.ahmadramadhan.mudahtitip.common.config;
 
+import com.ahmadramadhan.mudahtitip.common.MessageService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -15,7 +17,10 @@ import java.util.Map;
  * Global exception handler for REST API errors.
  */
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final MessageService messageService;
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
@@ -39,7 +44,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("error", "Validation Failed");
+        response.put("error", messageService.getMessage("error.validation.failed"));
         response.put("errors", errors);
 
         return ResponseEntity.badRequest().body(response);
@@ -47,7 +52,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Terjadi kesalahan pada server");
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, messageService.getMessage("error.server"));
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus status, String message) {

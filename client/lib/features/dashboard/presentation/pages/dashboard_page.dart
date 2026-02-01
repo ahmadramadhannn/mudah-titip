@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../products/data/repositories/product_repository.dart';
 import '../../data/repositories/dashboard_repository.dart';
@@ -43,9 +44,11 @@ class _DashboardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mudah Titip'),
+        title: Text(l10n.appTitle),
         actions: [
           PopupMenuButton<String>(
             icon: const CircleAvatar(
@@ -77,23 +80,23 @@ class _DashboardContent extends StatelessWidget {
                 ),
               ),
               const PopupMenuDivider(),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'profile',
                 child: Row(
                   children: [
-                    Icon(Icons.person_outlined, size: 20),
-                    SizedBox(width: 8),
-                    Text('Profil'),
+                    const Icon(Icons.person_outlined, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l10n.profile),
                   ],
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'logout',
                 child: Row(
                   children: [
-                    Icon(Icons.logout, size: 20),
-                    SizedBox(width: 8),
-                    Text('Keluar'),
+                    const Icon(Icons.logout, size: 20),
+                    const SizedBox(width: 8),
+                    Text(l10n.logout),
                   ],
                 ),
               ),
@@ -121,7 +124,7 @@ class _DashboardContent extends StatelessWidget {
                     onPressed: () => context.read<DashboardBloc>().add(
                       DashboardLoadRequested(isConsignor: auth.isConsignor),
                     ),
-                    child: const Text('Coba Lagi'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -147,7 +150,7 @@ class _DashboardContent extends StatelessWidget {
 
                     // Quick stats
                     Text(
-                      'Ringkasan',
+                      l10n.summary,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
@@ -156,7 +159,7 @@ class _DashboardContent extends StatelessWidget {
 
                     // Quick actions
                     Text(
-                      'Aksi Cepat',
+                      l10n.quickActions,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
@@ -167,7 +170,7 @@ class _DashboardContent extends StatelessWidget {
                     if (state.expiringConsignments.isNotEmpty ||
                         state.lowStockConsignments.isNotEmpty) ...[
                       Text(
-                        'Perhatian',
+                        l10n.attention,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 12),
@@ -182,11 +185,20 @@ class _DashboardContent extends StatelessWidget {
           return const SizedBox.shrink();
         },
       ),
-      bottomNavigationBar: _buildBottomNavBar(context),
+      bottomNavigationBar: _BottomNavBar(auth: auth),
     );
   }
+}
 
-  Widget _buildBottomNavBar(BuildContext context) {
+class _BottomNavBar extends StatelessWidget {
+  final AuthAuthenticated auth;
+
+  const _BottomNavBar({required this.auth});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return NavigationBar(
       selectedIndex: 0,
       onDestinationSelected: (index) {
@@ -210,48 +222,48 @@ class _DashboardContent extends StatelessWidget {
         }
       },
       destinations: auth.isConsignor
-          ? const [
+          ? [
               NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined),
-                selectedIcon: Icon(Icons.dashboard),
-                label: 'Beranda',
+                icon: const Icon(Icons.dashboard_outlined),
+                selectedIcon: const Icon(Icons.dashboard),
+                label: l10n.dashboard,
               ),
               NavigationDestination(
-                icon: Icon(Icons.inventory_2_outlined),
-                selectedIcon: Icon(Icons.inventory_2),
-                label: 'Produk',
+                icon: const Icon(Icons.inventory_2_outlined),
+                selectedIcon: const Icon(Icons.inventory_2),
+                label: l10n.products,
               ),
               NavigationDestination(
-                icon: Icon(Icons.local_shipping_outlined),
-                selectedIcon: Icon(Icons.local_shipping),
-                label: 'Titipan',
+                icon: const Icon(Icons.local_shipping_outlined),
+                selectedIcon: const Icon(Icons.local_shipping),
+                label: l10n.consignments,
               ),
               NavigationDestination(
-                icon: Icon(Icons.handshake_outlined),
-                selectedIcon: Icon(Icons.handshake),
-                label: 'Perjanjian',
+                icon: const Icon(Icons.handshake_outlined),
+                selectedIcon: const Icon(Icons.handshake),
+                label: l10n.agreements,
               ),
             ]
-          : const [
+          : [
               NavigationDestination(
-                icon: Icon(Icons.dashboard_outlined),
-                selectedIcon: Icon(Icons.dashboard),
-                label: 'Beranda',
+                icon: const Icon(Icons.dashboard_outlined),
+                selectedIcon: const Icon(Icons.dashboard),
+                label: l10n.dashboard,
               ),
               NavigationDestination(
-                icon: Icon(Icons.local_shipping_outlined),
-                selectedIcon: Icon(Icons.local_shipping),
-                label: 'Titipan',
+                icon: const Icon(Icons.local_shipping_outlined),
+                selectedIcon: const Icon(Icons.local_shipping),
+                label: l10n.consignments,
               ),
               NavigationDestination(
-                icon: Icon(Icons.point_of_sale_outlined),
-                selectedIcon: Icon(Icons.point_of_sale),
-                label: 'Penjualan',
+                icon: const Icon(Icons.point_of_sale_outlined),
+                selectedIcon: const Icon(Icons.point_of_sale),
+                label: l10n.sales,
               ),
               NavigationDestination(
-                icon: Icon(Icons.handshake_outlined),
-                selectedIcon: Icon(Icons.handshake),
-                label: 'Perjanjian',
+                icon: const Icon(Icons.handshake_outlined),
+                selectedIcon: const Icon(Icons.handshake),
+                label: l10n.agreements,
               ),
             ],
     );
@@ -265,16 +277,17 @@ class _GreetingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final hour = DateTime.now().hour;
     String greeting;
     if (hour < 12) {
-      greeting = 'Selamat Pagi';
+      greeting = l10n.goodMorning;
     } else if (hour < 15) {
-      greeting = 'Selamat Siang';
+      greeting = l10n.goodAfternoon;
     } else if (hour < 18) {
-      greeting = 'Selamat Sore';
+      greeting = l10n.goodEvening;
     } else {
-      greeting = 'Selamat Malam';
+      greeting = l10n.goodNight;
     }
 
     return Container(
@@ -359,47 +372,49 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final stats = auth.isConsignor
         ? [
             _StatItem(
-              'Total Produk',
+              l10n.totalProducts,
               state.totalProducts.toString(),
               Icons.inventory_2_outlined,
             ),
             _StatItem(
-              'Titipan Aktif',
+              l10n.activeConsignments,
               state.activeConsignments.length.toString(),
               Icons.local_shipping_outlined,
             ),
             _StatItem(
-              'Terjual',
+              l10n.sold,
               state.summary.totalItemsSold.toString(),
               Icons.sell_outlined,
             ),
             _StatItem(
-              'Pendapatan',
+              l10n.earnings,
               _formatCurrency(state.summary.totalEarnings),
               Icons.payments_outlined,
             ),
           ]
         : [
             _StatItem(
-              'Titipan Aktif',
+              l10n.activeConsignments,
               state.activeConsignments.length.toString(),
               Icons.local_shipping_outlined,
             ),
             _StatItem(
-              'Terjual',
+              l10n.sold,
               '${state.summary.totalItemsSold} item',
               Icons.today_outlined,
             ),
             _StatItem(
-              'Komisi',
+              l10n.commission,
               _formatCurrency(state.summary.totalEarnings),
               Icons.payments_outlined,
             ),
             _StatItem(
-              'Stok Rendah',
+              l10n.lowStock,
               state.lowStockConsignments.length.toString(),
               Icons.warning_outlined,
             ),
@@ -477,38 +492,48 @@ class _QuickActionsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final actions = auth.isConsignor
         ? [
             _QuickAction(
-              'Tambah Produk',
+              l10n.addProduct,
               Icons.add_box_outlined,
               '/products/add',
             ),
             _QuickAction(
-              'Titipkan',
+              l10n.consign,
               Icons.upload_outlined,
               '/consignments/add',
             ),
+            _QuickAction(l10n.viewSales, Icons.receipt_long_outlined, '/sales'),
             _QuickAction(
-              'Lihat Penjualan',
-              Icons.receipt_long_outlined,
-              '/sales',
+              l10n.analytics,
+              Icons.analytics_outlined,
+              '/analytics',
             ),
-            _QuickAction('Analytics', Icons.analytics_outlined, '/analytics'),
           ]
         : [
             _QuickAction(
-              'Kelola Penitip',
+              l10n.manageConsignors,
               Icons.people_outline,
               '/guest-consignors',
             ),
             _QuickAction(
-              'Catat Penjualan',
+              l10n.recordSale,
               Icons.add_shopping_cart,
               '/sales/add',
             ),
-            _QuickAction('Analytics', Icons.analytics_outlined, '/analytics'),
-            _QuickAction('Perjanjian', Icons.handshake_outlined, '/agreements'),
+            _QuickAction(
+              l10n.analytics,
+              Icons.analytics_outlined,
+              '/analytics',
+            ),
+            _QuickAction(
+              l10n.agreements,
+              Icons.handshake_outlined,
+              '/agreements',
+            ),
           ];
 
     return GridView.builder(
@@ -577,15 +602,16 @@ class _AlertsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         if (state.expiringConsignments.isNotEmpty)
           _AlertCard(
             icon: Icons.schedule,
             iconColor: AppColors.warning,
-            title:
-                '${state.expiringConsignments.length} titipan akan kedaluwarsa',
-            subtitle: 'Segera periksa dan ambil tindakan',
+            title: l10n.expiringConsignments(state.expiringConsignments.length),
+            subtitle: l10n.checkAndTakeAction,
             onTap: () => context.push('/consignments'),
           ),
         if (state.lowStockConsignments.isNotEmpty) ...[
@@ -593,8 +619,8 @@ class _AlertsSection extends StatelessWidget {
           _AlertCard(
             icon: Icons.inventory_outlined,
             iconColor: AppColors.error,
-            title: '${state.lowStockConsignments.length} stok titipan rendah',
-            subtitle: 'Perlu restock atau tarik barang',
+            title: l10n.lowStockConsignments(state.lowStockConsignments.length),
+            subtitle: l10n.needRestockOrWithdraw,
             onTap: () => context.push('/consignments'),
           ),
         ],

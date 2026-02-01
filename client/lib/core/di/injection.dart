@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/api_client.dart';
+import '../locale/locale_cubit.dart';
 import '../services/image_upload_service.dart';
 import '../../features/agreement/data/repositories/agreement_repository.dart';
 import '../../features/agreement/presentation/bloc/agreement_bloc.dart';
@@ -32,6 +33,11 @@ Future<void> configureDependencies() async {
   // Core
   // ============================================================
   getIt.registerLazySingleton<ApiClient>(() => ApiClient());
+
+  // LocaleCubit (singleton to persist across app)
+  getIt.registerLazySingleton<LocaleCubit>(
+    () => LocaleCubit(getIt<SharedPreferences>()),
+  );
 
   getIt.registerLazySingleton<ImageUploadService>(
     () => ImageUploadService(getIt<ApiClient>()),

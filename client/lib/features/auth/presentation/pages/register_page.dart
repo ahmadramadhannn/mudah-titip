@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/user_role.dart';
 import '../bloc/auth_bloc.dart';
 
@@ -45,35 +46,39 @@ class _RegisterPageState extends State<RegisterPage> {
   void _onSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-            AuthRegisterRequested(
-              name: _nameController.text.trim(),
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-              phone: _phoneController.text.trim().isEmpty
-                  ? null
-                  : _phoneController.text.trim(),
-              role: _selectedRole,
-              shopName: _selectedRole == UserRole.shopOwner
-                  ? _shopNameController.text.trim()
-                  : null,
-              shopAddress: _selectedRole == UserRole.shopOwner
-                  ? _shopAddressController.text.trim()
-                  : null,
-              shopPhone: _selectedRole == UserRole.shopOwner &&
-                      _shopPhoneController.text.trim().isNotEmpty
-                  ? _shopPhoneController.text.trim()
-                  : null,
-              shopDescription: _selectedRole == UserRole.shopOwner &&
-                      _shopDescriptionController.text.trim().isNotEmpty
-                  ? _shopDescriptionController.text.trim()
-                  : null,
-            ),
-          );
+        AuthRegisterRequested(
+          name: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+          phone: _phoneController.text.trim().isEmpty
+              ? null
+              : _phoneController.text.trim(),
+          role: _selectedRole,
+          shopName: _selectedRole == UserRole.shopOwner
+              ? _shopNameController.text.trim()
+              : null,
+          shopAddress: _selectedRole == UserRole.shopOwner
+              ? _shopAddressController.text.trim()
+              : null,
+          shopPhone:
+              _selectedRole == UserRole.shopOwner &&
+                  _shopPhoneController.text.trim().isNotEmpty
+              ? _shopPhoneController.text.trim()
+              : null,
+          shopDescription:
+              _selectedRole == UserRole.shopOwner &&
+                  _shopDescriptionController.text.trim().isNotEmpty
+              ? _shopDescriptionController.text.trim()
+              : null,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         setState(() => _isLoading = state is AuthLoading);
@@ -93,7 +98,7 @@ class _RegisterPageState extends State<RegisterPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Daftar'),
+          title: Text(l10n.register),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => context.pop(),
@@ -111,17 +116,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   TextFormField(
                     controller: _nameController,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Nama Lengkap',
-                      hintText: 'Masukkan nama lengkap',
-                      prefixIcon: Icon(Icons.person_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.fullName,
+                      prefixIcon: const Icon(Icons.person_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Nama wajib diisi';
+                        return l10n.nameRequired;
                       }
                       if (value.length < 2) {
-                        return 'Nama minimal 2 karakter';
+                        return l10n.minCharacters(2);
                       }
                       return null;
                     },
@@ -133,17 +137,17 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Masukkan email',
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.email,
+                      hintText: l10n.enterEmail,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Email wajib diisi';
+                        return l10n.emailRequired;
                       }
                       if (!value.contains('@')) {
-                        return 'Format email tidak valid';
+                        return l10n.invalidEmail;
                       }
                       return null;
                     },
@@ -156,8 +160,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: _obscurePassword,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Minimal 6 karakter',
+                      labelText: l10n.password,
+                      hintText: l10n.minCharacters(6),
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -172,10 +176,10 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password wajib diisi';
+                        return l10n.passwordRequired;
                       }
                       if (value.length < 6) {
-                        return 'Password minimal 6 karakter';
+                        return l10n.passwordTooShort;
                       }
                       return null;
                     },
@@ -187,17 +191,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Nomor Telepon (Opsional)',
-                      hintText: 'Contoh: 08123456789',
-                      prefixIcon: Icon(Icons.phone_outlined),
+                    decoration: InputDecoration(
+                      labelText: '${l10n.phone} (Optional)',
+                      prefixIcon: const Icon(Icons.phone_outlined),
                     ),
                   ),
                   const SizedBox(height: 24),
 
                   // Role selection
                   Text(
-                    'Daftar sebagai',
+                    l10n.selectRole,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 12),
@@ -205,21 +208,23 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       Expanded(
                         child: _RoleCard(
-                          role: UserRole.consignor,
+                          label: l10n.consignor,
                           icon: Icons.inventory_2_outlined,
                           isSelected: _selectedRole == UserRole.consignor,
-                          onTap: () =>
-                              setState(() => _selectedRole = UserRole.consignor),
+                          onTap: () => setState(
+                            () => _selectedRole = UserRole.consignor,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _RoleCard(
-                          role: UserRole.shopOwner,
+                          label: l10n.shopOwner,
                           icon: Icons.storefront_outlined,
                           isSelected: _selectedRole == UserRole.shopOwner,
-                          onTap: () =>
-                              setState(() => _selectedRole = UserRole.shopOwner),
+                          onTap: () => setState(
+                            () => _selectedRole = UserRole.shopOwner,
+                          ),
                         ),
                       ),
                     ],
@@ -231,7 +236,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     const Divider(),
                     const SizedBox(height: 16),
                     Text(
-                      'Detail Toko',
+                      l10n.shopName,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 16),
@@ -239,15 +244,14 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _shopNameController,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Nama Toko',
-                        hintText: 'Masukkan nama toko',
-                        prefixIcon: Icon(Icons.store_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.shopName,
+                        prefixIcon: const Icon(Icons.store_outlined),
                       ),
                       validator: (value) {
                         if (_selectedRole == UserRole.shopOwner &&
                             (value == null || value.isEmpty)) {
-                          return 'Nama toko wajib diisi';
+                          return l10n.fieldRequired;
                         }
                         return null;
                       },
@@ -258,15 +262,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _shopAddressController,
                       textInputAction: TextInputAction.next,
                       maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: 'Alamat Toko',
-                        hintText: 'Masukkan alamat toko',
-                        prefixIcon: Icon(Icons.location_on_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.address,
+                        prefixIcon: const Icon(Icons.location_on_outlined),
                       ),
                       validator: (value) {
                         if (_selectedRole == UserRole.shopOwner &&
                             (value == null || value.isEmpty)) {
-                          return 'Alamat toko wajib diisi';
+                          return l10n.fieldRequired;
                         }
                         return null;
                       },
@@ -277,10 +280,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _shopPhoneController,
                       keyboardType: TextInputType.phone,
                       textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        labelText: 'Telepon Toko (Opsional)',
-                        hintText: 'Nomor telepon toko',
-                        prefixIcon: Icon(Icons.phone_outlined),
+                      decoration: InputDecoration(
+                        labelText: '${l10n.phone} (Optional)',
+                        prefixIcon: const Icon(Icons.phone_outlined),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -289,10 +291,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _shopDescriptionController,
                       textInputAction: TextInputAction.done,
                       maxLines: 3,
-                      decoration: const InputDecoration(
-                        labelText: 'Deskripsi Toko (Opsional)',
-                        hintText: 'Ceritakan tentang toko anda',
-                        prefixIcon: Icon(Icons.description_outlined),
+                      decoration: InputDecoration(
+                        labelText: '${l10n.productDescription} (Optional)',
+                        prefixIcon: const Icon(Icons.description_outlined),
                       ),
                     ),
                   ],
@@ -311,7 +312,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Daftar'),
+                        : Text(l10n.register),
                   ),
                   const SizedBox(height: 24),
 
@@ -320,12 +321,12 @@ class _RegisterPageState extends State<RegisterPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Sudah punya akun? ',
+                        '${l10n.alreadyHaveAccount} ',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       TextButton(
                         onPressed: () => context.pop(),
-                        child: const Text('Masuk'),
+                        child: Text(l10n.login),
                       ),
                     ],
                   ),
@@ -340,13 +341,13 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class _RoleCard extends StatelessWidget {
-  final UserRole role;
+  final String label;
   final IconData icon;
   final bool isSelected;
   final VoidCallback onTap;
 
   const _RoleCard({
-    required this.role,
+    required this.label,
     required this.icon,
     required this.isSelected,
     required this.onTap,
@@ -378,11 +379,10 @@ class _RoleCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              role.displayName,
+              label,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color:
-                        isSelected ? AppColors.primary : AppColors.neutral700,
-                  ),
+                color: isSelected ? AppColors.primary : AppColors.neutral700,
+              ),
               textAlign: TextAlign.center,
             ),
           ],

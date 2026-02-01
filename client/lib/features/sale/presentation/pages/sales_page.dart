@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/sale.dart';
 import '../bloc/sale_bloc.dart';
 
@@ -48,6 +49,7 @@ class _SalesViewState extends State<_SalesView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -56,7 +58,7 @@ class _SalesViewState extends State<_SalesView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Penjualan'),
+        title: Text(l10n.sales),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -85,7 +87,7 @@ class _SalesViewState extends State<_SalesView> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loadSales,
-                    child: const Text('Coba Lagi'),
+                    child: Text(l10n.retry),
                   ),
                 ],
               ),
@@ -132,12 +134,14 @@ class _SalesViewState extends State<_SalesView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/sales/add'),
         icon: const Icon(Icons.add),
-        label: const Text('Catat Penjualan'),
+        label: Text(l10n.recordSale),
       ),
     );
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -148,13 +152,10 @@ class _SalesViewState extends State<_SalesView> {
             color: Theme.of(context).colorScheme.outline,
           ),
           const SizedBox(height: 16),
-          Text(
-            'Belum ada penjualan',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+          Text(l10n.noSales, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
-            'Penjualan akan muncul di sini',
+            l10n.noData,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Theme.of(context).colorScheme.outline,
             ),
@@ -165,6 +166,8 @@ class _SalesViewState extends State<_SalesView> {
   }
 
   void _showDateFilter(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       builder: (ctx) => Padding(
@@ -173,11 +176,11 @@ class _SalesViewState extends State<_SalesView> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Filter Tanggal', style: Theme.of(ctx).textTheme.titleLarge),
+            Text(l10n.filter, style: Theme.of(ctx).textTheme.titleLarge),
             const SizedBox(height: 16),
             ListTile(
               leading: const Icon(Icons.calendar_today),
-              title: const Text('7 Hari Terakhir'),
+              title: Text(l10n.thisWeek),
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() {
@@ -189,7 +192,7 @@ class _SalesViewState extends State<_SalesView> {
             ),
             ListTile(
               leading: const Icon(Icons.calendar_month),
-              title: const Text('30 Hari Terakhir'),
+              title: Text(l10n.thisMonth),
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() {
@@ -201,7 +204,7 @@ class _SalesViewState extends State<_SalesView> {
             ),
             ListTile(
               leading: const Icon(Icons.date_range),
-              title: const Text('3 Bulan Terakhir'),
+              title: Text('3 ${l10n.thisMonth}'),
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() {
@@ -213,7 +216,7 @@ class _SalesViewState extends State<_SalesView> {
             ),
             ListTile(
               leading: const Icon(Icons.all_inclusive),
-              title: const Text('Semua'),
+              title: Text(l10n.all),
               onTap: () {
                 Navigator.pop(ctx);
                 setState(() {
@@ -239,6 +242,7 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat('dd MMM', 'id');
 
     return Card(
@@ -253,7 +257,7 @@ class _SummaryCard extends StatelessWidget {
                 Icon(Icons.analytics, color: theme.colorScheme.primary),
                 const SizedBox(width: 8),
                 Text(
-                  'Ringkasan',
+                  l10n.summary,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -272,7 +276,7 @@ class _SummaryCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: _SummaryItem(
-                    label: 'Total Pendapatan',
+                    label: l10n.totalEarnings,
                     value: currencyFormat.format(summary.totalEarnings),
                     icon: Icons.monetization_on,
                     color: Colors.green,
@@ -280,7 +284,7 @@ class _SummaryCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: _SummaryItem(
-                    label: 'Total Transaksi',
+                    label: l10n.totalSales,
                     value: '${summary.totalSales}',
                     icon: Icons.receipt,
                     color: Colors.blue,
@@ -288,7 +292,7 @@ class _SummaryCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: _SummaryItem(
-                    label: 'Item Terjual',
+                    label: l10n.soldItems,
                     value: '${summary.totalItemsSold}',
                     icon: Icons.shopping_bag,
                     color: Colors.orange,
@@ -358,6 +362,7 @@ class _SaleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final dateFormat = DateFormat('dd MMM yyyy, HH:mm', 'id');
 
     return Card(
@@ -423,13 +428,16 @@ class _SaleCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _InfoChip(label: 'Qty', value: '${sale.quantitySold}'),
                   _InfoChip(
-                    label: 'Komisi Toko',
+                    label: l10n.quantity,
+                    value: '${sale.quantitySold}',
+                  ),
+                  _InfoChip(
+                    label: l10n.shopCommission,
                     value: currencyFormat.format(sale.shopCommission),
                   ),
                   _InfoChip(
-                    label: 'Pendapatan',
+                    label: l10n.earnings,
                     value: currencyFormat.format(sale.consignorEarning),
                   ),
                 ],

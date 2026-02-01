@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/analytics_models.dart';
 import '../bloc/analytics_bloc.dart';
 
@@ -50,10 +51,11 @@ class _AnalyticsViewState extends State<_AnalyticsView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Analytics'),
+        title: Text(l10n.analytics),
         actions: [
           PopupMenuButton<int>(
             icon: const Icon(Icons.calendar_today),
@@ -62,10 +64,10 @@ class _AnalyticsViewState extends State<_AnalyticsView> {
               _loadData();
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(value: 7, child: Text('7 Hari')),
-              const PopupMenuItem(value: 14, child: Text('14 Hari')),
-              const PopupMenuItem(value: 30, child: Text('30 Hari')),
-              const PopupMenuItem(value: 90, child: Text('90 Hari')),
+              PopupMenuItem(value: 7, child: Text('7 ${l10n.thisWeek}')),
+              PopupMenuItem(value: 14, child: Text('14 ${l10n.thisWeek}')),
+              PopupMenuItem(value: 30, child: Text('30 ${l10n.thisMonth}')),
+              PopupMenuItem(value: 90, child: Text('90 ${l10n.thisMonth}')),
             ],
           ),
         ],
@@ -89,10 +91,7 @@ class _AnalyticsViewState extends State<_AnalyticsView> {
                   const SizedBox(height: 16),
                   Text(state.message),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _loadData,
-                    child: const Text('Coba Lagi'),
-                  ),
+                  ElevatedButton(onPressed: _loadData, child: Text(l10n.retry)),
                 ],
               ),
             );
@@ -106,7 +105,7 @@ class _AnalyticsViewState extends State<_AnalyticsView> {
                 children: [
                   // Period indicator
                   Text(
-                    '$_selectedDays Hari Terakhir',
+                    '$_selectedDays ${l10n.thisWeek}',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -115,7 +114,7 @@ class _AnalyticsViewState extends State<_AnalyticsView> {
 
                   // Sales Trend Chart
                   _SectionTitle(
-                    title: 'Tren Pendapatan',
+                    title: l10n.salesTrend,
                     icon: Icons.trending_up,
                   ),
                   const SizedBox(height: 8),
@@ -123,14 +122,14 @@ class _AnalyticsViewState extends State<_AnalyticsView> {
                   const SizedBox(height: 24),
 
                   // Top Products Chart
-                  _SectionTitle(title: 'Produk Terlaris', icon: Icons.star),
+                  _SectionTitle(title: l10n.topProducts, icon: Icons.star),
                   const SizedBox(height: 8),
                   _TopProductsChart(products: state.topProducts),
                   const SizedBox(height: 24),
 
                   // Earnings Breakdown
                   _SectionTitle(
-                    title: 'Distribusi Pendapatan',
+                    title: l10n.earningsBreakdown,
                     icon: Icons.pie_chart,
                   ),
                   const SizedBox(height: 8),
@@ -179,9 +178,10 @@ class _TrendChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (trends.isEmpty || trends.every((t) => t.earnings == 0)) {
-      return _EmptyChart(message: 'Belum ada data penjualan');
+      return _EmptyChart(message: l10n.noAnalyticsData);
     }
 
     final maxY = trends.map((t) => t.earnings).reduce((a, b) => a > b ? a : b);
@@ -288,6 +288,7 @@ class _TopProductsChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -295,7 +296,7 @@ class _TopProductsChart extends StatelessWidget {
     );
 
     if (products.isEmpty) {
-      return _EmptyChart(message: 'Belum ada produk terjual');
+      return _EmptyChart(message: l10n.noAnalyticsData);
     }
 
     final maxY = products
@@ -400,7 +401,7 @@ class _TopProductsChart extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      '${entry.value.productName} (${entry.value.totalSold})',
+                      '${entry.value.productName} (${entry.value.totalSold} ${l10n.units})',
                       style: theme.textTheme.labelSmall,
                     ),
                   ],
@@ -423,6 +424,7 @@ class _BreakdownChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final currencyFormat = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -430,7 +432,7 @@ class _BreakdownChart extends StatelessWidget {
     );
 
     if (breakdown.isEmpty) {
-      return _EmptyChart(message: 'Belum ada data pendapatan');
+      return _EmptyChart(message: l10n.noAnalyticsData);
     }
 
     final colors = [

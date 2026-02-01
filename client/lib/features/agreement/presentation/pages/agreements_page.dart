@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/agreement.dart';
 import '../../data/models/agreement_status.dart';
 import '../bloc/agreement_bloc.dart';
@@ -26,10 +27,11 @@ class _AgreementsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Perjanjian'),
+        title: Text(l10n.agreements),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -42,7 +44,7 @@ class _AgreementsView extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showProposeDialog(context),
         icon: const Icon(Icons.add),
-        label: const Text('Ajukan'),
+        label: Text(l10n.propose),
       ),
       body: BlocConsumer<AgreementBloc, AgreementState>(
         listener: (context, state) {
@@ -95,23 +97,23 @@ class _AgreementsView extends StatelessWidget {
 
   void _showProposeDialog(BuildContext context) {
     final controller = TextEditingController();
+    final l10n = AppLocalizations.of(context)!;
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Ajukan Perjanjian Baru'),
+        title: Text(l10n.proposeAgreement),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Masukkan ID konsinyasi untuk mengajukan perjanjian:'),
+            Text('${l10n.selectConsignment}:'),
             const SizedBox(height: 16),
             TextField(
               controller: controller,
-              decoration: const InputDecoration(
-                labelText: 'ID Konsinyasi',
-                hintText: 'Contoh: 1',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.consignments,
+                border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
             ),
@@ -120,7 +122,7 @@ class _AgreementsView extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Batal'),
+            child: Text(l10n.cancel),
           ),
           FilledButton(
             onPressed: () {
@@ -130,7 +132,7 @@ class _AgreementsView extends StatelessWidget {
                 context.push('/agreements/propose/$id');
               }
             },
-            child: const Text('Lanjutkan'),
+            child: Text(l10n.next),
           ),
         ],
       ),
@@ -139,6 +141,7 @@ class _AgreementsView extends StatelessWidget {
 
   Widget _buildEmptyState(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -153,14 +156,14 @@ class _AgreementsView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Tidak Ada Perjanjian',
+              l10n.noAgreements,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Anda tidak memiliki perjanjian yang perlu ditanggapi saat ini.',
+              l10n.noData,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -174,6 +177,7 @@ class _AgreementsView extends StatelessWidget {
 
   Widget _buildErrorState(BuildContext context, String message) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: Padding(
@@ -196,7 +200,7 @@ class _AgreementsView extends StatelessWidget {
                 );
               },
               icon: const Icon(Icons.refresh),
-              label: const Text('Coba Lagi'),
+              label: Text(l10n.retry),
             ),
           ],
         ),
@@ -292,7 +296,7 @@ class _AgreementCard extends StatelessWidget {
               // Proposed by
               const SizedBox(height: 8),
               Text(
-                'Diajukan oleh ${agreement.proposedBy.name}',
+                '${AppLocalizations.of(context)!.propose}: ${agreement.proposedBy.name}',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.outline,
                 ),

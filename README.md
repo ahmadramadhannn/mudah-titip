@@ -1,144 +1,163 @@
-# Mudah Titip
+# 📦 Mudah Titip
 
-A consignment marketplace platform that connects product owners with shop owners.
+> **Connect. Consign. Profit.**
+> A modern consignment marketplace platform bridging the gap between product owners and shop owners.
 
-Got stuff to sell but no store? Or have a store but need products? This is where you meet.
-
-## What is Mudah Titip?
-
-It's a digital **consignment** system:
-
-1. **Consignors (Product Owners)** — register, upload products, set prices and commission terms
-2. **Shop Owners** — accept consignments, sell at their store, earn commission from sales
-3. **Guest Consignors** — shop owners can manage products from consignors who don't have accounts
-4. **Agreements** — flexible negotiation system (percentage, fixed per item, or tiered bonus)
-
-Everything tracked. Everything transparent.
-
-## Tech Stack
-
-### Backend (Java Spring Boot)
-- Spring Boot 3.5.7 + Java 17
-- Spring Security + JWT for authentication
-- Spring Data JPA + MySQL
-- **Cloudflare R2 Object Storage** (AWS S3 compatible) for images
-- Lombok for cleaner code
-- OpenAPI + Scalar for API documentation
-
-### Client (Flutter)
-- Dart SDK 3.10+
-- State management: flutter_bloc
-- Navigation: go_router
-- DI: get_it + injectable
-- Charts: fl_chart
-- UI: Material 3 with Google Fonts
-
-## Project Structure
-
-```
-mudah-titip/
-├── server/                    # Spring Boot backend (package-by-feature)
-│   └── src/main/java/com/ahmadramadhan/mudahtitip/
-│       ├── agreement/         # Agreement entities, services, controllers
-│       ├── analytics/         # Sales analytics & charts data
-│       ├── auth/              # Authentication & JWT
-│       ├── common/            # Shared config (security, OpenAPI, seeder)
-│       ├── consignment/       # Consignment management
-│       ├── consignor/         # Guest consignor feature
-│       ├── product/           # Product management
-│       ├── sale/              # Sales recording
-│       ├── shop/              # Shop management
-│       └── storage/           # R2 Object Storage integration
-│
-└── client/                    # Flutter mobile app
-    └── lib/
-        ├── core/              # API client, theme, DI setup
-        ├── features/
-        │   ├── agreement/     # Consignment agreements & negotiation
-        │   ├── analytics/     # Analytics dashboard with charts
-        │   ├── auth/          # Login & registration
-        │   ├── consignment/   # Consignment tracking
-        │   ├── dashboard/     # Main dashboard with stats
-        │   ├── guest_consignor/  # Manage non-app consignors
-        │   ├── products/      # Product CRUD
-        │   ├── profile/       # User profile management
-        │   └── sale/          # Sales processing
-        └── router/            # App routing
-```
-
-## Getting Started
-
-### 1. Database Setup (MySQL)
-
-Create a database and configure your environment:
-
-```bash
-cd server
-cp .env.example .env
-# Edit .env with your:
-# - MYSQL_USER & MYSQL_ROOT_PASSWORD
-# - R2_ACCESS_KEY_ID & R2_SECRET_ACCESS_KEY (for image uploads)
-```
-
-### 2. Run the Backend
-
-```bash
-cd server
-./mvnw spring-boot:run
-```
-
-- Server runs at `http://localhost:8080`
-- API documentation: `http://localhost:8080/scalar/api`
-- **Data Seeding**: On first run, dummy data (Shop Owner, Consignor, Products) is automatically created.
-    - Owner: `owner@example.com` / `password123`
-    - Consignor: `consignor@example.com` / `password123`
-
-### 3. Run the Client
-
-```bash
-cd client
-flutter pub get
-flutter run
-```
-
-## Features
-
-### ✅ Implemented
-
-**Backend**
-- Authentication (login & register) with JWT
-- User & Shop management
-- Product CRUD with **Image Upload (R2)**
-- Consignment system with status tracking
-- Agreements with multiple commission types
-- Negotiation workflow (propose, counter, accept, reject)
-- Sales recording & **Analytics**
-- Guest consignor management
-- Automatic Data Seeding
-- OpenAPI/Scalar API documentation
-
-**Frontend**
-- Authentication flow (login, register, splash)
-- Dashboard with real-time stats
-- **Analytics Dashboard** (Charts for sales trends, top products)
-- Profile management
-- Product management (list, add, edit, upload images)
-- Agreement management with negotiation
-- Guest consignor management
-- Consignment tracking
-
-### 🚧 Work in Progress
-
-- Push notifications
-- Advanced reporting export
-
-## Development Notes
-
-This project follows:
-- **Clean Architecture** in Flutter (feature-based structure)
-- **Package-by-Feature** architecture in Spring Boot
-- **Conventional Commits** for git messages
+![Flutter](https://img.shields.io/badge/Flutter-3.10+-02569B?style=for-the-badge&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.1-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Java](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 
 ---
 
-> "Mudah Titip" means "Easy Consignment" in Indonesian. Simple as that.
+## 📖 About The Project
+
+**Mudah Titip** (Indonesian for *"Easy Consignment"*) is a comprehensive digital solution for the consignment business model. It solves the chaos of manual tracking by providing a transparent, real-time platform for:
+
+1.  **Consignors (Product Owners)**: Start selling without owning a store. Upload products, propose agreements, and track sales live.
+2.  **Shop Owners**: Fill empty shelves without capital risk. Manage incoming products, set terms, and earn commissions.
+
+### 🌟 Key Features
+
+*   **👥 Role-Based Ecosystem**: Distinct, tailored interfaces for Shop Owners and Consignors.
+*   **📊 Analytics Dashboard**: Beautiful, real-time charts using `fl_chart` to visualize sales trends, top products, and earnings.
+*   **🌍 Multi-Language Support**: Fully localized in **Indonesian (ID)** and **English (EN)**.
+*   **📝 Agreement Workflow**: Flexible negotiation system with support for Percentage, Fixed, or Tiered commission models.
+*   **☁️ Cloud Integration**: Robust image hosting using **Cloudflare R2** (S3-compatible) for fast, secure assets.
+*   **👤 Guest Consignors**: Shop owners can manage products from non-app users, bridging the offline-online gap.
+*   **🔐 Secure Authentication**: JWT-based security with seamless login/registration flows.
+
+---
+
+## 🛠 Tech Stack
+
+### Client (Mobile App)
+*   **Framework**: Flutter (Dart)
+*   **State Management**: `flutter_bloc`
+*   **Navigation**: `go_router`
+*   **Dependency Injection**: `get_it` + `injectable`
+*   **UI/UX**: Material 3 Design, Google Fonts, `fl_chart`
+*   **Localization**: `flutter_localizations` (ARB files)
+
+### Backend (API)
+*   **Framework**: Spring Boot 3
+*   **Language**: Java 17
+*   **Database**: MySQL / PostgreSQL
+*   **ORM**: Spring Data JPA
+*   **Storage**: Cloudflare R2 (AWS S3 SDK)
+*   **Documentation**: OpenAPI + Scalar
+*   **Structure**: Package-by-Feature Architecture
+
+---
+
+## 📂 Project Structure
+
+Verified architecture for scalability and maintainability.
+
+```
+mudah-titip/
+├── server/                    # Spring Boot Backend
+│   └── src/main/java/com/ahmadramadhan/mudahtitip/
+│       ├── analytics/         # 📈 Sales intelligence
+│       ├── agreement/         # 🤝 Negotiation logic
+│       ├── auth/              # 🔐 Security & Users
+│       ├── consignment/       # 📦 Core consignment logic
+│       ├── consignor/         # 👤 Guest consignor features
+│       ├── product/           # 🏷️ Product catalog
+│       ├── sale/              # 💰 Transaction records
+│       └── storage/           # ☁️ R2 integration
+│
+└── client/                    # Flutter Frontend
+    └── lib/
+        ├── core/              # Shared logic, Config, Theme
+        ├── features/          # Feature-based folders
+        │   ├── analytics/     # Dashboard charts
+        │   ├── auth/          # Login screens
+        │   ├── agreement/     # Agreement UI
+        │   ├── dashboard/     # Home dashboard
+        │   ├── products/      # Product management
+        │   ├── profile/       # User settings
+        │   └── splash/        # Startup logic
+        └── l10n/              # 🌏 Localization (app_en.arb, app_id.arb)
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+*   **Java**: JDK 17 or higher
+*   **Flutter**: SDK 3.10.x or higher
+*   **Database**: MySQL (local or docker)
+
+### 1. Backend Setup
+
+1.  Navigate to the server directory:
+    ```bash
+    cd server
+    ```
+2.  Configure Environment Variables:
+    ```bash
+    cp .env.example .env
+    ```
+    Update `.env` with your credentials:
+    ```properties
+    MYSQL_USER=root
+    MYSQL_ROOT_PASSWORD=your_password
+    
+    # Cloudflare R2 (Required for Image Uploads)
+    R2_ACCESS_KEY_ID=your_key
+    R2_SECRET_ACCESS_KEY=your_secret
+    R2_ACCOUNT_ID=your_account_id
+    R2_BUCKET_NAME=your_bucket
+    R2_PUBLIC_URL=https://your-domain.com
+    ```
+3.  Run the application:
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+    > 🟢 Server will start at `http://localhost:8080`
+    > 📄 API Docs available at `http://localhost:8080/scalar/api`
+
+    **Note**: The app automatically seeds dummy data on the first run.
+    *   **Shop Owner**: `owner@example.com` / `password123`
+    *   **Consignor**: `consignor@example.com` / `password123`
+
+### 2. Client Setup
+
+1.  Navigate to the client directory:
+    ```bash
+    cd client
+    ```
+2.  Install dependencies:
+    ```bash
+    flutter pub get
+    ```
+3.  Run the app:
+    ```bash
+    flutter run
+    ```
+
+---
+
+## 🚧 Roadmap
+
+- [x] Core Consignment System
+- [x] Negotiation Workflow
+- [x] Analytics Dashboard
+- [x] Image Uploads (R2)
+- [x] Localization (ID/EN)
+- [ ] Push Notifications
+- [ ] Export Reports to PDF/Excel
+- [ ] Chat System
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+> Built with ❤️ by Ahmad Ramadhan & Antigravity Agent.

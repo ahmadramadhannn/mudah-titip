@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/models/product.dart';
 import '../bloc/product_bloc.dart';
 
@@ -23,8 +24,10 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Produk Saya')),
+      appBar: AppBar(title: Text(l10n.ownerProducts)),
       body: BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) {
           if (state is ProductFailure) {
@@ -56,14 +59,14 @@ class _ProductsPageState extends State<ProductsPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Belum ada produk',
+                      l10n.noProducts,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: AppColors.neutral700,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Mulai tambahkan produk anda sekarang',
+                      l10n.addFirstProduct,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.neutral500,
                       ),
@@ -72,7 +75,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     ElevatedButton.icon(
                       onPressed: () => context.push('/products/add'),
                       icon: const Icon(Icons.add),
-                      label: const Text('Tambah Produk'),
+                      label: Text(l10n.addProduct),
                     ),
                   ],
                 ),
@@ -113,10 +116,11 @@ class _ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Card(
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to detail/edit
           context.push('/products/add', extra: product);
         },
         borderRadius: BorderRadius.circular(12),
@@ -161,7 +165,7 @@ class _ProductCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      product.description ?? 'Tidak ada deskripsi',
+                      product.description ?? l10n.noData,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.neutral500,
                       ),

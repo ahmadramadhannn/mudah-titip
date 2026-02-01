@@ -2,6 +2,7 @@ package com.ahmadramadhan.mudahtitip.consignment;
 
 import com.ahmadramadhan.mudahtitip.auth.User;
 import com.ahmadramadhan.mudahtitip.auth.UserRole;
+import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignment.dto.ConsignmentRequest;
 import com.ahmadramadhan.mudahtitip.product.Product;
 import com.ahmadramadhan.mudahtitip.product.ProductRepository;
@@ -24,6 +25,7 @@ public class ConsignmentService {
     private final ConsignmentRepository consignmentRepository;
     private final ProductRepository productRepository;
     private final ShopRepository shopRepository;
+    private final MessageService messageService;
 
     /**
      * Create a new consignment.
@@ -31,15 +33,15 @@ public class ConsignmentService {
     @Transactional
     public Consignment createConsignment(ConsignmentRequest request, User currentUser) {
         Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Produk tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("product.not.found")));
 
         // Verify product ownership
         if (!product.getOwner().getId().equals(currentUser.getId())) {
-            throw new IllegalArgumentException("Anda tidak memiliki akses ke produk ini");
+            throw new IllegalArgumentException(messageService.getMessage("product.access.denied"));
         }
 
         Shop shop = shopRepository.findById(request.getShopId())
-                .orElseThrow(() -> new IllegalArgumentException("Toko tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("shop.not.found")));
 
         // Calculate expiry date if not provided
         LocalDate expiryDate = request.getExpiryDate();
@@ -71,7 +73,7 @@ public class ConsignmentService {
      */
     public Consignment getById(Long id) {
         return consignmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Titipan tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignment.not.found")));
     }
 
     /**
@@ -103,7 +105,7 @@ public class ConsignmentService {
                 || consignment.getShop().getOwner().getId().equals(currentUser.getId());
 
         if (!hasAccess) {
-            throw new IllegalArgumentException("Anda tidak memiliki akses ke titipan ini");
+            throw new IllegalArgumentException(messageService.getMessage("consignment.access.denied"));
         }
 
         consignment.setStatus(newStatus);
@@ -118,7 +120,7 @@ public class ConsignmentService {
         Consignment consignment = getById(consignmentId);
 
         if (consignment.getCurrentQuantity() < quantity) {
-            throw new IllegalArgumentException("Stok tidak mencukupi");
+            throw new IllegalArgumentException(messageService.getMessage("consignment.stock.insufficient"));
         }
 
         consignment.setCurrentQuantity(consignment.getCurrentQuantity() - quantity);

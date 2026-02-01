@@ -2,6 +2,7 @@ package com.ahmadramadhan.mudahtitip.consignor;
 
 import com.ahmadramadhan.mudahtitip.auth.User;
 import com.ahmadramadhan.mudahtitip.auth.UserRole;
+import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignor.dto.GuestConsignorRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class GuestConsignorService {
 
     private final GuestConsignorRepository repository;
+    private final MessageService messageService;
 
     /**
      * Create a new guest consignor.
@@ -27,7 +29,7 @@ public class GuestConsignorService {
 
         // Check if phone already exists for this manager
         if (repository.existsByManagedByAndPhoneAndIsActiveTrue(shopOwner, request.getPhone())) {
-            throw new IllegalArgumentException("Penitip dengan nomor telepon ini sudah terdaftar");
+            throw new IllegalArgumentException(messageService.getMessage("consignor.phone.exists"));
         }
 
         GuestConsignor guestConsignor = GuestConsignor.builder()
@@ -50,12 +52,12 @@ public class GuestConsignorService {
         validateShopOwner(shopOwner);
 
         GuestConsignor existing = repository.findByIdAndManagedBy(id, shopOwner)
-                .orElseThrow(() -> new IllegalArgumentException("Penitip tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignor.not.found")));
 
         // Check if new phone conflicts with another guest consignor
         if (!existing.getPhone().equals(request.getPhone())) {
             if (repository.existsByManagedByAndPhoneAndIsActiveTrue(shopOwner, request.getPhone())) {
-                throw new IllegalArgumentException("Penitip dengan nomor telepon ini sudah terdaftar");
+                throw new IllegalArgumentException(messageService.getMessage("consignor.phone.exists"));
             }
         }
 
@@ -75,7 +77,7 @@ public class GuestConsignorService {
 
         return repository.findByIdAndManagedBy(id, shopOwner)
                 .filter(GuestConsignor::getIsActive)
-                .orElseThrow(() -> new IllegalArgumentException("Penitip tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignor.not.found")));
     }
 
     /**
@@ -110,7 +112,7 @@ public class GuestConsignorService {
         validateShopOwner(shopOwner);
 
         GuestConsignor existing = repository.findByIdAndManagedBy(id, shopOwner)
-                .orElseThrow(() -> new IllegalArgumentException("Penitip tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("consignor.not.found")));
 
         existing.setIsActive(false);
         repository.save(existing);
@@ -118,7 +120,7 @@ public class GuestConsignorService {
 
     private void validateShopOwner(User user) {
         if (user.getRole() != UserRole.SHOP_OWNER) {
-            throw new IllegalStateException("Hanya pemilik toko yang dapat mengelola penitip");
+            throw new IllegalStateException(messageService.getMessage("consignor.owner.required"));
         }
     }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 
 /// Login page with email and password form.
@@ -30,16 +31,18 @@ class _LoginPageState extends State<LoginPage> {
   void _onSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-            AuthLoginRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        AuthLoginRequested(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         setState(() => _isLoading = state is AuthLoading);
@@ -69,26 +72,22 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 48),
 
                   // Logo & Title
-                  Icon(
-                    Icons.store_rounded,
-                    size: 64,
-                    color: AppColors.primary,
-                  ),
+                  Icon(Icons.store_rounded, size: 64, color: AppColors.primary),
                   const SizedBox(height: 16),
                   Text(
-                    'Mudah Titip',
+                    l10n.appTitle,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Kelola titipan jadi lebih mudah',
+                    l10n.appTagline,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: AppColors.neutral500,
-                        ),
+                      color: AppColors.neutral500,
+                    ),
                     textAlign: TextAlign.center,
                   ),
 
@@ -99,17 +98,17 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      hintText: 'Masukkan email anda',
-                      prefixIcon: Icon(Icons.email_outlined),
+                    decoration: InputDecoration(
+                      labelText: l10n.email,
+                      hintText: l10n.enterEmail,
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Email wajib diisi';
+                        return l10n.emailRequired;
                       }
                       if (!value.contains('@')) {
-                        return 'Format email tidak valid';
+                        return l10n.invalidEmail;
                       }
                       return null;
                     },
@@ -123,8 +122,8 @@ class _LoginPageState extends State<LoginPage> {
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _onSubmit(),
                     decoration: InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Masukkan password',
+                      labelText: l10n.password,
+                      hintText: l10n.enterPassword,
                       prefixIcon: const Icon(Icons.lock_outlined),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -139,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password wajib diisi';
+                        return l10n.passwordRequired;
                       }
                       return null;
                     },
@@ -158,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Masuk'),
+                        : Text(l10n.login),
                   ),
                   const SizedBox(height: 24),
 
@@ -167,12 +166,12 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Belum punya akun? ',
+                        '${l10n.noAccount} ',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                       TextButton(
                         onPressed: () => context.push('/register'),
-                        child: const Text('Daftar'),
+                        child: Text(l10n.register),
                       ),
                     ],
                   ),

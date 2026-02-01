@@ -2,10 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_endpoints.dart';
 
-/// Dio API client with interceptors for auth tokens and error handling.
+/// Dio API client with interceptors for auth tokens, locale, and error handling.
 class ApiClient {
   late final Dio _dio;
   String? _authToken;
+  String _locale = 'id'; // Default to Indonesian
 
   ApiClient() {
     _dio = Dio(
@@ -20,8 +21,12 @@ class ApiClient {
       ),
     );
 
+    _dio.interceptors.add(_localeInterceptor());
     _dio.interceptors.add(_authInterceptor());
     _dio.interceptors.add(_loggingInterceptor());
+
+    // Initialize locale from platform
+    _initializeLocale();
   }
 
   Dio get dio => _dio;
@@ -32,6 +37,34 @@ class ApiClient {
 
   void clearAuthToken() {
     _authToken = null;
+  }
+
+  /// Set the locale for API requests
+  void setLocale(String locale) {
+    _locale = locale;
+  }
+
+  /// Get current locale
+  String get locale => _locale;
+
+  /// Initialize locale from platform settings
+  void _initializeLocale() {
+    try {
+      final platformLocale = PlatformDispatcher.instance.locale;
+      // Use just the language code (en, id, etc.)
+      _locale = platformLocale.languageCode;
+    } catch (_) {
+      _locale = 'id'; // Fallback to Indonesian
+    }
+  }
+
+  InterceptorsWrapper _localeInterceptor() {
+    return InterceptorsWrapper(
+      onRequest: (options, handler) {
+        options.headers['Accept-Language'] = _locale;
+        handler.next(options);
+      },
+    );
   }
 
   InterceptorsWrapper _authInterceptor() {

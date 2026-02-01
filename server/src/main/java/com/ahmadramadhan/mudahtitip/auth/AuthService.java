@@ -7,6 +7,7 @@ import com.ahmadramadhan.mudahtitip.auth.dto.RegisterRequest;
 import com.ahmadramadhan.mudahtitip.auth.dto.UpdateEmailRequest;
 import com.ahmadramadhan.mudahtitip.auth.dto.UpdatePasswordRequest;
 import com.ahmadramadhan.mudahtitip.auth.dto.UpdateProfileRequest;
+import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.common.security.JwtUtil;
 import com.ahmadramadhan.mudahtitip.shop.Shop;
 import com.ahmadramadhan.mudahtitip.shop.ShopRepository;
@@ -26,6 +27,7 @@ public class AuthService {
     private final ShopRepository shopRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final MessageService messageService;
 
     /**
      * Register a new user. If role is SHOP_OWNER, also creates a shop.
@@ -34,13 +36,13 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         // Check if email already exists
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email sudah terdaftar");
+            throw new IllegalArgumentException(messageService.getMessage("auth.email.exists"));
         }
 
         // Validate shop details for shop owners
         if (request.getRole() == UserRole.SHOP_OWNER) {
             if (request.getShopName() == null || request.getShopName().isBlank()) {
-                throw new IllegalArgumentException("Nama toko wajib diisi untuk pemilik toko");
+                throw new IllegalArgumentException(messageService.getMessage("auth.shop.name.required"));
             }
         }
 
@@ -91,10 +93,10 @@ public class AuthService {
      */
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Email atau password salah"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("auth.credentials.invalid")));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Email atau password salah");
+            throw new IllegalArgumentException(messageService.getMessage("auth.credentials.invalid"));
         }
 
         Long shopId = null;
@@ -122,7 +124,7 @@ public class AuthService {
      */
     public ProfileResponse getProfile(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("auth.user.not.found")));
         return ProfileResponse.fromUser(user);
     }
 
@@ -132,7 +134,7 @@ public class AuthService {
     @Transactional
     public ProfileResponse updateProfile(Long userId, UpdateProfileRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("auth.user.not.found")));
 
         if (request.getName() != null && !request.getName().isBlank()) {
             user.setName(request.getName());
@@ -151,17 +153,17 @@ public class AuthService {
     @Transactional
     public ProfileResponse updateEmail(Long userId, UpdateEmailRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("auth.user.not.found")));
 
         // Verify current password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Password saat ini salah");
+            throw new IllegalArgumentException(messageService.getMessage("auth.password.invalid"));
         }
 
         // Check if new email is already taken
         if (!user.getEmail().equals(request.getNewEmail())
                 && userRepository.existsByEmail(request.getNewEmail())) {
-            throw new IllegalArgumentException("Email sudah digunakan");
+            throw new IllegalArgumentException(messageService.getMessage("auth.email.taken"));
         }
 
         user.setEmail(request.getNewEmail());
@@ -175,11 +177,11 @@ public class AuthService {
     @Transactional
     public void updatePassword(Long userId, UpdatePasswordRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User tidak ditemukan"));
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("auth.user.not.found")));
 
         // Verify current password
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
-            throw new IllegalArgumentException("Password saat ini salah");
+            throw new IllegalArgumentException(messageService.getMessage("auth.password.invalid"));
         }
 
         user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));

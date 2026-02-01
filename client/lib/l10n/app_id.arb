@@ -1,0 +1,249 @@
+{
+  "@@locale": "id",
+  
+  "appTitle": "Mudah Titip",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  "appTagline": "Kelola titipan jadi lebih mudah",
+
+  "login": "Masuk",
+  "register": "Daftar",
+  "logout": "Keluar",
+  "email": "Email",
+  "password": "Kata Sandi",
+  "confirmPassword": "Konfirmasi Kata Sandi",
+  "name": "Nama",
+  "phone": "Telepon",
+  "address": "Alamat",
+  
+  "welcomeBack": "Selamat Datang Kembali!",
+  "loginToContinue": "Masuk untuk melanjutkan",
+  "noAccount": "Belum punya akun?",
+  "alreadyHaveAccount": "Sudah punya akun?",
+  "forgotPassword": "Lupa kata sandi?",
+  
+  "registerTitle": "Buat Akun",
+  "registerSubtitle": "Daftar untuk memulai",
+  "fullName": "Nama Lengkap",
+  "shopName": "Nama Toko",
+  "shopOwner": "Pemilik Toko",
+  "consignor": "Penitip",
+  "selectRole": "Pilih Peran",
+  
+  "dashboard": "Beranda",
+  "products": "Produk",
+  "consignments": "Titipan",
+  "sales": "Penjualan",
+  "analytics": "Analitik",
+  "profile": "Profil",
+  "settings": "Pengaturan",
+  
+  "hello": "Halo",
+  "goodMorning": "Selamat Pagi",
+  "goodAfternoon": "Selamat Siang",
+  "goodEvening": "Selamat Sore",
+  "goodNight": "Selamat Malam",
+  "summary": "Ringkasan",
+  "attention": "Perhatian",
+  "totalProducts": "Total Produk",
+  "totalSales": "Total Penjualan",
+  "totalEarnings": "Total Pendapatan",
+  "activeConsignments": "Titipan Aktif",
+  "pendingAgreements": "Kesepakatan Tertunda",
+  "sold": "Terjual",
+  "soldItems": "Item Terjual",
+  "earnings": "Pendapatan",
+  "lowStock": "Stok Rendah",
+  "quickActions": "Aksi Cepat",
+  "viewAll": "Lihat Semua",
+  "viewSales": "Lihat Penjualan",
+  "recentActivity": "Aktivitas Terkini",
+  "consign": "Titipkan",
+  "manageConsignors": "Kelola Penitip",
+  
+  "addProduct": "Tambah Produk",
+  "editProduct": "Edit Produk",
+  "productName": "Nama Produk",
+  "productDescription": "Deskripsi Produk",
+  "category": "Kategori",
+  "price": "Harga",
+  "basePrice": "Harga Dasar",
+  "sellingPrice": "Harga Jual",
+  "quantity": "Jumlah",
+  "shelfLife": "Masa Simpan (hari)",
+  "noProducts": "Belum ada produk",
+  "addFirstProduct": "Tambahkan produk pertama Anda!",
+  "ownerProducts": "Produk Saya",
+  "guestProducts": "Produk Titipan",
+  
+  "addConsignment": "Tambah Titipan",
+  "shop": "Toko",
+  "product": "Produk",
+  "startDate": "Tanggal Mulai",
+  "expiryDate": "Tanggal Kadaluarsa",
+  "commission": "Komisi",
+  "commissionPercent": "Persentase Komisi",
+  "notes": "Catatan",
+  "noConsignments": "Belum ada titipan",
+  "consignmentDetail": "Detail Titipan",
+  "currentQuantity": "Jumlah Saat Ini",
+  "initialQuantity": "Jumlah Awal",
+  "expiringConsignments": "{count} titipan akan kedaluwarsa",
+  "@expiringConsignments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "lowStockConsignments": "{count} stok titipan rendah",
+  "@lowStockConsignments": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "checkAndTakeAction": "Segera periksa dan ambil tindakan",
+  "needRestockOrWithdraw": "Perlu restock atau tarik barang",
+  
+  "status": "Status",
+  "active": "Aktif",
+  "completed": "Selesai",
+  "expired": "Kadaluarsa",
+  "pending": "Menunggu",
+  "accepted": "Diterima",
+  "rejected": "Ditolak",
+  
+  "recordSale": "Catat Penjualan",
+  "quantitySold": "Jumlah Terjual",
+  "totalAmount": "Total Jumlah",
+  "shopCommission": "Komisi Toko",
+  "consignorEarning": "Pendapatan Penitip",
+  "noSales": "Belum ada penjualan",
+  "saleRecorded": "Penjualan berhasil dicatat",
+  "salesDetail": "Detail Penjualan",
+  
+  "agreement": "Kesepakatan",
+  "agreements": "Kesepakatan",
+  "propose": "Ajukan",
+  "counter": "Counter",
+  "accept": "Terima",
+  "reject": "Tolak",
+  "terms": "Ketentuan",
+  "proposeAgreement": "Ajukan Kesepakatan",
+  "noAgreements": "Belum ada kesepakatan",
+  "agreementDetail": "Detail Kesepakatan",
+  
+  "guestConsignors": "Penitip Non-Akun",
+  "addGuestConsignor": "Tambah Penitip",
+  "guestConsignorName": "Nama Penitip",
+  "noGuestConsignors": "Belum ada penitip tamu",
+  "guestConsignorDetail": "Detail Penitip",
+  
+  "save": "Simpan",
+  "cancel": "Batal",
+  "delete": "Hapus",
+  "edit": "Edit",
+  "search": "Cari",
+  "filter": "Filter",
+  "refresh": "Segarkan",
+  "loading": "Memuat...",
+  "noData": "Tidak ada data",
+  "error": "Terjadi kesalahan",
+  "retry": "Coba Lagi",
+  "success": "Berhasil!",
+  "submit": "Kirim",
+  "close": "Tutup",
+  "back": "Kembali",
+  "next": "Selanjutnya",
+  "done": "Selesai",
+  "selectDate": "Pilih Tanggal",
+  "selectShop": "Pilih Toko",
+  "selectProduct": "Pilih Produk",
+  "selectConsignment": "Pilih Titipan",
+  
+  "required": "Wajib diisi",
+  "invalidEmail": "Email tidak valid",
+  "passwordTooShort": "Kata sandi minimal 6 karakter",
+  "passwordsDoNotMatch": "Kata sandi tidak cocok",
+  "enterEmail": "Masukkan email anda",
+  "enterPassword": "Masukkan password",
+  "emailRequired": "Email wajib diisi",
+  "passwordRequired": "Password wajib diisi",
+  "nameRequired": "Nama wajib diisi",
+  "fieldRequired": "Field ini wajib diisi",
+  
+  "profileInfo": "Informasi Profil",
+  "accountInfo": "Informasi Akun",
+  "security": "Keamanan",
+  "accountType": "Tipe Akun",
+  "joinedDate": "Bergabung",
+  "updateProfile": "Perbarui Profil",
+  "changePassword": "Ubah Kata Sandi",
+  "currentPassword": "Password Saat Ini",
+  "newPassword": "Password Baru",
+  "newEmail": "Email Baru",
+  "minCharacters": "Minimal {count} karakter",
+  "@minCharacters": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "passwordConfirmNoMatch": "Konfirmasi password tidak cocok",
+  "fillAllFields": "Lengkapi semua field",
+  "fillEmailAndPassword": "Lengkapi email dan password",
+  
+  "today": "Hari Ini",
+  "thisWeek": "Minggu Ini",
+  "thisMonth": "Bulan Ini",
+  "thisYear": "Tahun Ini",
+  "all": "Semua",
+  
+  "rupiah": "Rp{amount}",
+  "@rupiah": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "itemCount": "{count} item",
+  "@itemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "greeting": "Halo, {name}!",
+  "@greeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "confirmDelete": "Apakah Anda yakin ingin menghapus ini?",
+  "confirmLogout": "Apakah Anda yakin ingin keluar?",
+  "yes": "Ya",
+  "no": "Tidak",
+  
+  "salesTrend": "Tren Penjualan",
+  "topProducts": "Produk Terlaris",
+  "earningsBreakdown": "Rincian Pendapatan",
+  "units": "unit",
+  "noAnalyticsData": "Belum ada data analitik",
+  "notFilled": "Belum diisi",
+  
+  "language": "Bahasa",
+  "indonesian": "Indonesia",
+  "english": "Inggris",
+  "selectLanguage": "Pilih Bahasa"
+}
