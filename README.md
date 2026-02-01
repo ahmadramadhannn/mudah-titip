@@ -21,6 +21,7 @@ Everything tracked. Everything transparent.
 - Spring Boot 3.5.7 + Java 17
 - Spring Security + JWT for authentication
 - Spring Data JPA + MySQL
+- **Cloudflare R2 Object Storage** (AWS S3 compatible) for images
 - Lombok for cleaner code
 - OpenAPI + Scalar for API documentation
 
@@ -29,6 +30,7 @@ Everything tracked. Everything transparent.
 - State management: flutter_bloc
 - Navigation: go_router
 - DI: get_it + injectable
+- Charts: fl_chart
 - UI: Material 3 with Google Fonts
 
 ## Project Structure
@@ -38,24 +40,29 @@ mudah-titip/
 ├── server/                    # Spring Boot backend (package-by-feature)
 │   └── src/main/java/com/ahmadramadhan/mudahtitip/
 │       ├── agreement/         # Agreement entities, services, controllers
+│       ├── analytics/         # Sales analytics & charts data
 │       ├── auth/              # Authentication & JWT
-│       ├── common/            # Shared config (security, OpenAPI)
+│       ├── common/            # Shared config (security, OpenAPI, seeder)
 │       ├── consignment/       # Consignment management
 │       ├── consignor/         # Guest consignor feature
 │       ├── product/           # Product management
 │       ├── sale/              # Sales recording
-│       └── shop/              # Shop management
+│       ├── shop/              # Shop management
+│       └── storage/           # R2 Object Storage integration
 │
 └── client/                    # Flutter mobile app
     └── lib/
         ├── core/              # API client, theme, DI setup
         ├── features/
         │   ├── agreement/     # Consignment agreements & negotiation
+        │   ├── analytics/     # Analytics dashboard with charts
         │   ├── auth/          # Login & registration
+        │   ├── consignment/   # Consignment tracking
         │   ├── dashboard/     # Main dashboard with stats
         │   ├── guest_consignor/  # Manage non-app consignors
         │   ├── products/      # Product CRUD
-        │   └── profile/       # User profile management
+        │   ├── profile/       # User profile management
+        │   └── sale/          # Sales processing
         └── router/            # App routing
 ```
 
@@ -68,7 +75,9 @@ Create a database and configure your environment:
 ```bash
 cd server
 cp .env.example .env
-# Edit .env with your MYSQL_USER and MYSQL_ROOT_PASSWORD
+# Edit .env with your:
+# - MYSQL_USER & MYSQL_ROOT_PASSWORD
+# - R2_ACCESS_KEY_ID & R2_SECRET_ACCESS_KEY (for image uploads)
 ```
 
 ### 2. Run the Backend
@@ -78,9 +87,11 @@ cd server
 ./mvnw spring-boot:run
 ```
 
-Server runs at `http://localhost:8080`
-
-API documentation available at `http://localhost:8080/scalar/api` (Scalar UI)
+- Server runs at `http://localhost:8080`
+- API documentation: `http://localhost:8080/scalar/api`
+- **Data Seeding**: On first run, dummy data (Shop Owner, Consignor, Products) is automatically created.
+    - Owner: `owner@example.com` / `password123`
+    - Consignor: `consignor@example.com` / `password123`
 
 ### 3. Run the Client
 
@@ -97,30 +108,29 @@ flutter run
 **Backend**
 - Authentication (login & register) with JWT
 - User & Shop management
-- Product CRUD
+- Product CRUD with **Image Upload (R2)**
 - Consignment system with status tracking
-- Agreements with multiple commission types:
-  - Percentage (e.g., 10% of sales)
-  - Fixed per item (e.g., $5 per item sold)
-  - Tiered bonus (bonuses based on sales targets)
+- Agreements with multiple commission types
 - Negotiation workflow (propose, counter, accept, reject)
-- Sales recording
-- Guest consignor management (for non-app users)
-- Health check endpoint
+- Sales recording & **Analytics**
+- Guest consignor management
+- Automatic Data Seeding
 - OpenAPI/Scalar API documentation
 
 **Frontend**
 - Authentication flow (login, register, splash)
-- Dashboard with real-time stats for shop owners and consignors
+- Dashboard with real-time stats
+- **Analytics Dashboard** (Charts for sales trends, top products)
 - Profile management
-- Product management (list, add, edit)
+- Product management (list, add, edit, upload images)
 - Agreement management with negotiation
 - Guest consignor management
+- Consignment tracking
 
 ### 🚧 Work in Progress
 
 - Push notifications
-- Full analytics & reporting
+- Advanced reporting export
 
 ## Development Notes
 
