@@ -284,6 +284,40 @@ class _ConsignmentCard extends StatelessWidget {
                     ),
                   ),
                 ),
+
+              // Low stock warning if applicable
+              if (consignment.isLowStock())
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade100,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.inventory_outlined,
+                          size: 16,
+                          color: Colors.orange.shade700,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${l10n.lowStock}: ${consignment.currentQuantity} ${l10n.units}',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.orange.shade700,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

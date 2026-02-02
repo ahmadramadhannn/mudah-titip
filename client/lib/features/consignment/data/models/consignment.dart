@@ -91,6 +91,11 @@ class Consignment extends Equatable {
     return DateTime.now().add(Duration(days: days)).isAfter(expiryDate!);
   }
 
+  /// Check if quantity is low (at or below threshold).
+  bool isLowStock({int threshold = 5}) {
+    return currentQuantity <= threshold;
+  }
+
   factory Consignment.fromJson(Map<String, dynamic> json) {
     return Consignment(
       id: json['id'] as int,
