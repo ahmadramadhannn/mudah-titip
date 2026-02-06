@@ -11,6 +11,7 @@ import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
+import '../features/auth/data/models/user_role.dart';
 import '../features/consignment/presentation/pages/add_consignment_page.dart';
 import '../features/consignment/presentation/pages/consignment_detail_page.dart';
 import '../features/consignment/presentation/pages/consignments_page.dart';
@@ -28,6 +29,10 @@ import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/sale/presentation/pages/record_sale_page.dart';
 import '../features/sale/presentation/pages/sales_page.dart';
 import '../features/analytics/presentation/pages/analytics_page.dart';
+import '../features/admin/presentation/pages/admin_dashboard_page.dart';
+import '../features/admin/presentation/pages/user_management_page.dart';
+import '../features/admin/presentation/pages/shop_verification_page.dart';
+import '../features/admin/presentation/bloc/admin_bloc.dart';
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -60,6 +65,18 @@ class AppRouter {
       // If authenticated and on login/register, go to dashboard
       if (isAuth && isLoggingIn) {
         return '/dashboard';
+      }
+
+      // Admin route protection - only SUPER_ADMIN can access
+      if (state.matchedLocation.startsWith('/admin')) {
+        if (authState is AuthAuthenticated) {
+          // Check if user has SUPER_ADMIN role
+          if (authState.role != UserRole.superAdmin) {
+            return '/dashboard'; // Redirect non-admins to dashboard
+          }
+        } else {
+          return '/login'; // Not authenticated
+        }
       }
 
       return null;
@@ -171,6 +188,28 @@ class AppRouter {
           // TODO: Implement add product for guest consignor
           return _PlaceholderPage(title: 'Tambah Produk Penitip');
         },
+      ),
+      // Admin routes - protected by navigation guard
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AdminBloc>(),
+          child: const AdminDashboardPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/admin/users',
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AdminBloc>(),
+          child: const UserManagementPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/admin/shops',
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AdminBloc>(),
+          child: const ShopVerificationPage(),
+        ),
       ),
     ],
   );
