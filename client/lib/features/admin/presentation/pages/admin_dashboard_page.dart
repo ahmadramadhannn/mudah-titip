@@ -5,6 +5,7 @@ import '../bloc/admin_bloc.dart';
 import '../bloc/admin_event.dart';
 import '../bloc/admin_state.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/responsive_helper.dart';
 
 /// Admin dashboard overview page
 class AdminDashboardPage extends StatefulWidget {
@@ -26,52 +27,111 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          // Sidebar navigation
-          NavigationRail(
-            selectedIndex: _selectedIndex,
-            onDestinationSelected: (index) {
-              setState(() => _selectedIndex = index);
-              _handleNavigation(index);
-            },
-            labelType: NavigationRailLabelType.all,
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(Icons.dashboard_outlined),
-                selectedIcon: Icon(Icons.dashboard),
-                label: Text('Overview'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.people_outline),
-                selectedIcon: Icon(Icons.people),
-                label: Text('Users'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.store_outlined),
-                selectedIcon: Icon(Icons.store),
-                label: Text('Shops'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.analytics_outlined),
-                selectedIcon: Icon(Icons.analytics),
-                label: Text('Analytics'),
-              ),
-            ],
-          ),
-          const VerticalDivider(thickness: 1, width: 1),
+    final isMobile = ResponsiveHelper.isMobile(context);
 
-          // Main content area
-          Expanded(
-            child: _selectedIndex == 0
-                ? _buildOverviewContent()
-                : Center(
-                    child: Text('Feature coming soon: ${_getPageTitle()}'),
-                  ),
-          ),
-        ],
-      ),
+    return Scaffold(
+      appBar: isMobile
+          ? AppBar(
+              title: Text(_getPageTitle()),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () {
+                    context.read<AdminBloc>().add(const LoadPlatformMetrics());
+                  },
+                ),
+              ],
+            )
+          : null,
+      body: isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
+      bottomNavigationBar: isMobile ? _buildBottomNavigation() : null,
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Row(
+      children: [
+        // Sidebar navigation
+        NavigationRail(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (index) {
+            setState(() => _selectedIndex = index);
+            _handleNavigation(index);
+          },
+          labelType: NavigationRailLabelType.all,
+          destinations: const [
+            NavigationRailDestination(
+              icon: Icon(Icons.dashboard_outlined),
+              selectedIcon: Icon(Icons.dashboard),
+              label: Text('Overview'),
+            ),
+            NavigationRailDestination(
+              icon: Icon(Icons.people_outline),
+              selectedIcon: Icon(Icons.people),
+              label: Text('Users'),
+            ),
+            NavigationRailDestination(
+              icon: Icon(Icons.store_outlined),
+              selectedIcon: Icon(Icons.store),
+              label: Text('Shops'),
+            ),
+            NavigationRailDestination(
+              icon: Icon(Icons.analytics_outlined),
+              selectedIcon: Icon(Icons.analytics),
+              label: Text('Analytics'),
+            ),
+          ],
+        ),
+        const VerticalDivider(thickness: 1, width: 1),
+
+        // Main content area
+        Expanded(
+          child: _selectedIndex == 0
+              ? _buildOverviewContent()
+              : Center(child: Text('Feature coming soon: ${_getPageTitle()}')),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return _selectedIndex == 0
+        ? _buildOverviewContent()
+        : Center(child: Text('Feature coming soon: ${_getPageTitle()}'));
+  }
+
+  Widget _buildBottomNavigation() {
+    return BottomNavigationBar(
+      currentIndex: _selectedIndex,
+      onTap: (index) {
+        setState(() => _selectedIndex = index);
+        _handleNavigation(index);
+      },
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.neutral500,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.dashboard_outlined),
+          activeIcon: Icon(Icons.dashboard),
+          label: 'Overview',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people_outline),
+          activeIcon: Icon(Icons.people),
+          label: 'Users',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.store_outlined),
+          activeIcon: Icon(Icons.store),
+          label: 'Shops',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.analytics_outlined),
+          activeIcon: Icon(Icons.analytics),
+          label: 'Analytics',
+        ),
+      ],
     );
   }
 
@@ -184,12 +244,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
           // Metrics grid
           GridView.count(
-            crossAxisCount: 4,
+            crossAxisCount: ResponsiveHelper.getGridColumns(context),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            childAspectRatio: 1.5,
+            mainAxisSpacing: ResponsiveHelper.getResponsiveSpacing(context),
+            crossAxisSpacing: ResponsiveHelper.getResponsiveSpacing(context),
+            childAspectRatio: ResponsiveHelper.isMobile(context) ? 1.2 : 1.5,
             children: [
               _MetricCard(
                 title: 'Total Users',

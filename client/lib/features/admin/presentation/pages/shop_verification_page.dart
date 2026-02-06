@@ -6,6 +6,7 @@ import '../bloc/admin_event.dart';
 import '../bloc/admin_state.dart';
 import '../../data/models/shop_admin.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/responsive_helper.dart';
 
 /// Shop verification page for admin
 class ShopVerificationPage extends StatefulWidget {
@@ -298,28 +299,51 @@ class _ShopCard extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Action buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                OutlinedButton.icon(
-                  onPressed: onReject,
-                  icon: const Icon(Icons.close),
-                  label: const Text('Reject'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.error,
+            ResponsiveHelper.isMobile(context)
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: onVerify,
+                        icon: const Icon(Icons.check),
+                        label: const Text('Verify Shop'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.success,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        onPressed: onReject,
+                        icon: const Icon(Icons.close),
+                        label: const Text('Reject Shop'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.error,
+                        ),
+                      ),
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: onReject,
+                        icon: const Icon(Icons.close),
+                        label: const Text('Reject'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.error,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton.icon(
+                        onPressed: onVerify,
+                        icon: const Icon(Icons.check),
+                        label: const Text('Verify'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.success,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  onPressed: onVerify,
-                  icon: const Icon(Icons.check),
-                  label: const Text('Verify'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.success,
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),

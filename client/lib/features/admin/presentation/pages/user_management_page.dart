@@ -7,6 +7,8 @@ import '../bloc/admin_event.dart';
 import '../bloc/admin_state.dart';
 import '../../data/models/user_admin.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/utils/responsive_helper.dart';
+import '../widgets/user_card.dart';
 
 /// User management page for admin
 class UserManagementPage extends StatefulWidget {
@@ -32,6 +34,52 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
+  Widget _buildRoleFilter() {
+    return SizedBox(
+      width: ResponsiveHelper.isMobile(context) ? double.infinity : 200,
+      child: DropdownButtonFormField<String>(
+        value: _selectedRole,
+        decoration: const InputDecoration(
+          labelText: 'Role',
+          border: OutlineInputBorder(),
+        ),
+        items: const [
+          DropdownMenuItem(value: null, child: Text('All Roles')),
+          DropdownMenuItem(value: 'SHOP_OWNER', child: Text('Shop Owner')),
+          DropdownMenuItem(value: 'CONSIGNOR', child: Text('Consignor')),
+          DropdownMenuItem(value: 'SUPER_ADMIN', child: Text('Super Admin')),
+        ],
+        onChanged: (value) {
+          setState(() => _selectedRole = value);
+          _loadUsers();
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatusFilter() {
+    return SizedBox(
+      width: ResponsiveHelper.isMobile(context) ? double.infinity : 200,
+      child: DropdownButtonFormField<String>(
+        value: _selectedStatus,
+        decoration: const InputDecoration(
+          labelText: 'Status',
+          border: OutlineInputBorder(),
+        ),
+        items: const [
+          DropdownMenuItem(value: null, child: Text('All Statuses')),
+          DropdownMenuItem(value: 'ACTIVE', child: Text('Active')),
+          DropdownMenuItem(value: 'SUSPENDED', child: Text('Suspended')),
+          DropdownMenuItem(value: 'BANNED', child: Text('Banned')),
+        ],
+        onChanged: (value) {
+          setState(() => _selectedStatus = value);
+          _loadUsers();
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,70 +97,22 @@ class _UserManagementPageState extends State<UserManagementPage> {
         children: [
           // Filters
           Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Role filter
-                SizedBox(
-                  width: 200,
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedRole,
-                    decoration: const InputDecoration(
-                      labelText: 'Role',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: null, child: Text('All Roles')),
-                      DropdownMenuItem(
-                        value: 'SHOP_OWNER',
-                        child: Text('Shop Owner'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'CONSIGNOR',
-                        child: Text('Consignor'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'SUPER_ADMIN',
-                        child: Text('Super Admin'),
-                      ),
+            padding: ResponsiveHelper.getResponsivePadding(context),
+            child: ResponsiveHelper.isMobile(context)
+                ? Column(
+                    children: [
+                      _buildRoleFilter(),
+                      const SizedBox(height: 12),
+                      _buildStatusFilter(),
                     ],
-                    onChanged: (value) {
-                      setState(() => _selectedRole = value);
-                      _loadUsers();
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-
-                // Status filter
-                SizedBox(
-                  width: 200,
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedStatus,
-                    decoration: const InputDecoration(
-                      labelText: 'Status',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: null,
-                        child: Text('All Statuses'),
-                      ),
-                      DropdownMenuItem(value: 'ACTIVE', child: Text('Active')),
-                      DropdownMenuItem(
-                        value: 'SUSPENDED',
-                        child: Text('Suspended'),
-                      ),
-                      DropdownMenuItem(value: 'BANNED', child: Text('Banned')),
+                  )
+                : Row(
+                    children: [
+                      _buildRoleFilter(),
+                      const SizedBox(width: 16),
+                      _buildStatusFilter(),
                     ],
-                    onChanged: (value) {
-                      setState(() => _selectedStatus = value);
-                      _loadUsers();
-                    },
                   ),
-                ),
-              ],
-            ),
           ),
 
           // Data table
@@ -155,6 +155,11 @@ class _UserManagementPageState extends State<UserManagementPage> {
   }
 
   Widget _buildUserTable(List<UserAdmin> users) {
+    // Use card layout for mobile, table for desktop
+    if (ResponsiveHelper.isMobile(context)) {
+      return _buildUserList(users);
+    }
+
     final dateFormat = DateFormat('dd MMM yyyy');
 
     return DataTable2(
@@ -185,6 +190,25 @@ class _UserManagementPageState extends State<UserManagementPage> {
           ],
         );
       }).toList(),
+    );
+  }
+
+  Widget _buildUserList(List<UserAdmin> users) {
+    return ListView.builder(
+      itemCount: users.length,
+      itemBuilder: (context, index) {
+        final user = users[index];
+        return UserCard(
+          user: user,
+          onSuspend: user.status == 'ACTIVE'
+              ? () => _showSuspendDialog(user)
+              : null,
+          onActivate: user.status == 'SUSPENDED'
+              ? () => _activateUser(user)
+              : null,
+          onBan: user.status == 'ACTIVE' ? () => _showBanDialog(user) : null,
+        );
+      },
     );
   }
 
