@@ -7,6 +7,8 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../notification/presentation/bloc/notification_bloc.dart';
+import '../../../notification/presentation/widgets/notification_badge.dart';
 import '../../../products/data/repositories/product_repository.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../bloc/dashboard_bloc.dart';
@@ -25,11 +27,21 @@ class DashboardPage extends StatelessWidget {
           );
         }
 
-        return BlocProvider(
-          create: (context) => DashboardBloc(
-            getIt<DashboardRepository>(),
-            getIt<ProductRepository>(),
-          )..add(DashboardLoadRequested(isConsignor: authState.isConsignor)),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  DashboardBloc(
+                    getIt<DashboardRepository>(),
+                    getIt<ProductRepository>(),
+                  )..add(
+                    DashboardLoadRequested(isConsignor: authState.isConsignor),
+                  ),
+            ),
+            BlocProvider.value(
+              value: getIt<NotificationBloc>()..add(LoadUnreadCount()),
+            ),
+          ],
           child: _DashboardContent(auth: authState),
         );
       },
@@ -50,6 +62,11 @@ class _DashboardContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.appTitle),
         actions: [
+          // Notification bell with badge
+          IconButton(
+            icon: NotificationBadge(child: Icon(Icons.notifications_outlined)),
+            onPressed: () => context.push('/notifications'),
+          ),
           PopupMenuButton<String>(
             icon: const CircleAvatar(
               backgroundColor: AppColors.primary,

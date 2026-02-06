@@ -14,6 +14,8 @@ import '../../features/analytics/data/analytics_repository.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/guest_consignor/data/repositories/guest_consignor_repository.dart';
+import '../../features/notification/data/repositories/notification_repository.dart';
+import '../../features/notification/presentation/bloc/notification_bloc.dart';
 import '../../features/products/data/repositories/product_repository.dart';
 import '../../features/products/presentation/bloc/product_bloc.dart';
 import '../../features/profile/data/repositories/profile_repository.dart';
@@ -82,6 +84,10 @@ Future<void> configureDependencies() async {
     () => AnalyticsRepository(getIt<ApiClient>()),
   );
 
+  getIt.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepository(getIt<ApiClient>().dio),
+  );
+
   // ============================================================
   // Blocs
   // ============================================================
@@ -106,5 +112,10 @@ Future<void> configureDependencies() async {
 
   getIt.registerFactory<AgreementBloc>(
     () => AgreementBloc(getIt<AgreementRepository>()),
+  );
+
+  // NotificationBloc - singleton for persistent unread count badge
+  getIt.registerLazySingleton<NotificationBloc>(
+    () => NotificationBloc(getIt<NotificationRepository>()),
   );
 }

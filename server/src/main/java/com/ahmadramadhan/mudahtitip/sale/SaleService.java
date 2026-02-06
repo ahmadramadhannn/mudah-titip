@@ -3,6 +3,7 @@ package com.ahmadramadhan.mudahtitip.sale;
 import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignment.Consignment;
 import com.ahmadramadhan.mudahtitip.consignment.ConsignmentService;
+import com.ahmadramadhan.mudahtitip.notification.NotificationService;
 import com.ahmadramadhan.mudahtitip.sale.dto.SaleRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class SaleService {
     private final SaleRepository saleRepository;
     private final ConsignmentService consignmentService;
     private final MessageService messageService;
+    private final NotificationService notificationService;
 
     /**
      * Record a sale for a consignment.
@@ -67,6 +69,9 @@ public class SaleService {
 
         // Reduce stock
         consignmentService.reduceStock(consignment.getId(), request.getQuantity());
+
+        // Notify consignor about the sale
+        notificationService.notifySaleRecorded(sale);
 
         return sale;
     }

@@ -53,6 +53,14 @@ public class Shop extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
+    @Builder.Default
+    @Column(name = "is_verified", nullable = false)
+    private Boolean isVerified = false;
+
+    private String verificationMessage;
+
+    private java.time.LocalDateTime verifiedAt;
+
     @OneToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

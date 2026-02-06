@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../core/di/injection.dart';
 
 import '../features/agreement/presentation/pages/agreement_detail_page.dart';
 import '../features/agreement/presentation/pages/agreements_page.dart';
@@ -16,6 +19,8 @@ import '../features/guest_consignor/data/models/guest_consignor.dart';
 import '../features/guest_consignor/presentation/pages/add_guest_consignor_page.dart';
 import '../features/guest_consignor/presentation/pages/guest_consignor_detail_page.dart';
 import '../features/guest_consignor/presentation/pages/guest_consignors_page.dart';
+import '../features/notification/presentation/bloc/notification_bloc.dart';
+import '../features/notification/presentation/pages/notifications_page.dart';
 import '../features/products/data/models/product.dart';
 import '../features/products/presentation/pages/add_product_page.dart';
 import '../features/products/presentation/pages/products_page.dart';
@@ -129,6 +134,13 @@ class AppRouter {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: '/notifications',
+        builder: (context, state) => BlocProvider.value(
+          value: getIt<NotificationBloc>()..add(LoadNotifications()),
+          child: const NotificationsPage(),
+        ),
       ),
       // Guest consignor routes (shop owner only)
       GoRoute(

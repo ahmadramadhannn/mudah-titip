@@ -6,6 +6,7 @@ import com.ahmadramadhan.mudahtitip.auth.User;
 import com.ahmadramadhan.mudahtitip.common.MessageService;
 import com.ahmadramadhan.mudahtitip.consignment.Consignment;
 import com.ahmadramadhan.mudahtitip.consignment.ConsignmentRepository;
+import com.ahmadramadhan.mudahtitip.notification.NotificationService;
 import com.ahmadramadhan.mudahtitip.sale.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class AgreementService {
     private final ConsignmentRepository consignmentRepository;
     private final SaleRepository saleRepository;
     private final MessageService messageService;
+    private final NotificationService notificationService;
 
     /**
      * Propose a new agreement for a consignment.
@@ -45,7 +47,9 @@ public class AgreementService {
         Agreement agreement = buildAgreement(request, consignment, currentUser, null);
         agreement.setStatus(AgreementStatus.PROPOSED);
 
-        return agreementRepository.save(agreement);
+        agreement = agreementRepository.save(agreement);
+        notificationService.notifyAgreementProposed(agreement);
+        return agreement;
     }
 
     /**
@@ -70,7 +74,9 @@ public class AgreementService {
         Agreement counter = buildAgreement(request, previous.getConsignment(), currentUser, previous);
         counter.setStatus(AgreementStatus.PROPOSED);
 
-        return agreementRepository.save(counter);
+        counter = agreementRepository.save(counter);
+        notificationService.notifyAgreementCountered(counter, previous);
+        return counter;
     }
 
     /**
@@ -93,7 +99,9 @@ public class AgreementService {
         agreement.setStatus(AgreementStatus.ACCEPTED);
         agreement.setResponseMessage(message);
 
-        return agreementRepository.save(agreement);
+        agreement = agreementRepository.save(agreement);
+        notificationService.notifyAgreementAccepted(agreement);
+        return agreement;
     }
 
     /**
@@ -115,7 +123,9 @@ public class AgreementService {
         agreement.setStatus(AgreementStatus.REJECTED);
         agreement.setResponseMessage(reason);
 
-        return agreementRepository.save(agreement);
+        agreement = agreementRepository.save(agreement);
+        notificationService.notifyAgreementRejected(agreement);
+        return agreement;
     }
 
     /**

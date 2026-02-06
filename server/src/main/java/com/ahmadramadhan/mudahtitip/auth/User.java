@@ -53,6 +53,15 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private UserRole role;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus status = UserStatus.ACTIVE;
+
+    private java.time.LocalDateTime lastLoginAt;
+
+    private String suspensionReason;
+
     @JsonIgnore
     @OneToOne(mappedBy = "owner")
     private Shop shop;
