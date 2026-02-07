@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../api/api_client.dart';
 import '../locale/locale_cubit.dart';
 import '../services/image_upload_service.dart';
+import '../../features/admin/data/repositories/admin_repository.dart';
+import '../../features/admin/presentation/bloc/admin_bloc.dart';
 import '../../features/agreement/data/repositories/agreement_repository.dart';
 import '../../features/agreement/presentation/bloc/agreement_bloc.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
@@ -88,6 +90,10 @@ Future<void> configureDependencies() async {
     () => NotificationRepository(getIt<ApiClient>().dio),
   );
 
+  getIt.registerLazySingleton<AdminRepository>(
+    () => AdminRepository(getIt<ApiClient>().dio),
+  );
+
   // ============================================================
   // Blocs
   // ============================================================
@@ -118,4 +124,7 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<NotificationBloc>(
     () => NotificationBloc(getIt<NotificationRepository>()),
   );
+
+  // AdminBloc - factory for admin dashboard
+  getIt.registerFactory<AdminBloc>(() => AdminBloc(getIt<AdminRepository>()));
 }

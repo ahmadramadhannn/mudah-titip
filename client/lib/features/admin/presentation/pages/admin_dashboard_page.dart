@@ -337,6 +337,7 @@ class _MetricCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
@@ -350,17 +351,25 @@ class _MetricCard extends StatelessWidget {
                   ),
               ],
             ),
-            const Spacer(),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            const SizedBox(height: 8),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               title,
               style: TextStyle(fontSize: 12, color: AppColors.neutral600),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             if (subtitle != null) ...[
               const SizedBox(height: 4),

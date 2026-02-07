@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../data/repositories/admin_repository.dart';
@@ -34,6 +35,21 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       emit(const AdminLoading());
       final metrics = await _repository.getPlatformMetrics();
       emit(PlatformMetricsLoaded(metrics));
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403) {
+        emit(
+          const AdminError(
+            'Access denied. You do not have admin permissions. '
+            'Please log out and log in with an admin account.',
+          ),
+        );
+      } else if (e.response?.statusCode == 401) {
+        emit(
+          const AdminError('Session expired. Please log out and log in again.'),
+        );
+      } else {
+        emit(AdminError('Failed to load platform metrics: ${e.message}'));
+      }
     } catch (e) {
       emit(AdminError('Failed to load platform metrics: ${e.toString()}'));
     }
