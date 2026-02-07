@@ -30,4 +30,11 @@ enum UserRole {
         return 'Finance Admin';
     }
   }
+
+  /// Returns true if this role is an admin role (has access to admin dashboard)
+  bool get isAdminRole {
+    return this == UserRole.superAdmin ||
+        this == UserRole.moderator ||
+        this == UserRole.financeAdmin;
+  }
 }

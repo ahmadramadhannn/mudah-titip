@@ -11,7 +11,7 @@ import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
-import '../features/auth/data/models/user_role.dart';
+
 import '../features/consignment/presentation/pages/add_consignment_page.dart';
 import '../features/consignment/presentation/pages/consignment_detail_page.dart';
 import '../features/consignment/presentation/pages/consignments_page.dart';
@@ -52,9 +52,17 @@ class AppRouter {
           state.matchedLocation == '/register';
       final isSplash = state.matchedLocation == '/';
 
+      // Helper to get home route based on role
+      String getHomeRoute(AuthAuthenticated auth) {
+        return auth.role.isAdminRole ? '/admin' : '/dashboard';
+      }
+
       // If on splash and auth check complete, redirect accordingly
       if (isSplash && authState is! AuthInitial && authState is! AuthLoading) {
-        return isAuth ? '/dashboard' : '/login';
+        if (authState is AuthAuthenticated) {
+          return getHomeRoute(authState);
+        }
+        return '/login';
       }
 
       // If not authenticated and not on login/register, go to login
@@ -62,20 +70,24 @@ class AppRouter {
         return '/login';
       }
 
-      // If authenticated and on login/register, go to dashboard
-      if (isAuth && isLoggingIn) {
-        return '/dashboard';
+      // If authenticated and on login/register, go to appropriate home
+      if (isLoggingIn && authState is AuthAuthenticated) {
+        return getHomeRoute(authState);
       }
 
-      // Admin route protection - only SUPER_ADMIN can access
-      if (state.matchedLocation.startsWith('/admin')) {
-        if (authState is AuthAuthenticated) {
-          // Check if user has SUPER_ADMIN role
-          if (authState.role != UserRole.superAdmin) {
-            return '/dashboard'; // Redirect non-admins to dashboard
-          }
-        } else {
-          return '/login'; // Not authenticated
+      // Route protection for authenticated users
+      if (authState is AuthAuthenticated) {
+        final isAdminRoute = state.matchedLocation.startsWith('/admin');
+        final isAdminUser = authState.role.isAdminRole;
+
+        // Admin route protection - only admin roles can access
+        if (isAdminRoute && !isAdminUser) {
+          return '/dashboard';
+        }
+
+        // Regular route protection - admin roles cannot access regular user pages
+        if (!isAdminRoute && !isSplash && !isLoggingIn && isAdminUser) {
+          return '/admin';
         }
       }
 
