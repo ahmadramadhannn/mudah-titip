@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../bloc/admin_bloc.dart';
 import '../bloc/admin_event.dart';
 import '../bloc/admin_state.dart';
+import '../widgets/users_content.dart';
+import '../widgets/shops_content.dart';
+import '../widgets/analytics_content.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/responsive_helper.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 
 /// Admin dashboard overview page
 class AdminDashboardPage extends StatefulWidget {
@@ -30,19 +35,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final isMobile = ResponsiveHelper.isMobile(context);
 
     return Scaffold(
-      appBar: isMobile
-          ? AppBar(
-              title: Text(_getPageTitle()),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.refresh),
-                  onPressed: () {
-                    context.read<AdminBloc>().add(const LoadPlatformMetrics());
-                  },
-                ),
-              ],
-            )
-          : null,
+      appBar: AppBar(
+        title: Text(_getPageTitle()),
+        automaticallyImplyLeading: isMobile,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              context.read<AuthBloc>().add(const AuthLogoutRequested());
+              context.go('/login');
+            },
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
       body: isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
       bottomNavigationBar: isMobile ? _buildBottomNavigation() : null,
     );
@@ -85,19 +91,28 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         const VerticalDivider(thickness: 1, width: 1),
 
         // Main content area
-        Expanded(
-          child: _selectedIndex == 0
-              ? _buildOverviewContent()
-              : Center(child: Text('Feature coming soon: ${_getPageTitle()}')),
-        ),
+        Expanded(child: _buildContentForIndex(_selectedIndex)),
       ],
     );
   }
 
   Widget _buildMobileLayout() {
-    return _selectedIndex == 0
-        ? _buildOverviewContent()
-        : Center(child: Text('Feature coming soon: ${_getPageTitle()}'));
+    return _buildContentForIndex(_selectedIndex);
+  }
+
+  Widget _buildContentForIndex(int index) {
+    switch (index) {
+      case 0:
+        return _buildOverviewContent();
+      case 1:
+        return const UsersContent();
+      case 2:
+        return const ShopsContent();
+      case 3:
+        return const AnalyticsContent();
+      default:
+        return _buildOverviewContent();
+    }
   }
 
   Widget _buildBottomNavigation() {
