@@ -186,6 +186,7 @@ class _NotificationTile extends StatelessWidget {
 
   IconData _getIconForType(NotificationType type) {
     switch (type) {
+      // Agreement lifecycle
       case NotificationType.agreementProposed:
         return Icons.description_outlined;
       case NotificationType.agreementAccepted:
@@ -194,12 +195,34 @@ class _NotificationTile extends StatelessWidget {
         return Icons.cancel_outlined;
       case NotificationType.agreementCountered:
         return Icons.swap_horiz;
+      case NotificationType.agreementExtended:
+        return Icons.update;
+      case NotificationType.agreementDiscontinued:
+        return Icons.stop_circle_outlined;
+
+      // Stock & Inventory
+      case NotificationType.stockLow:
+        return Icons.inventory_2_outlined;
+      case NotificationType.stockOut:
+        return Icons.remove_shopping_cart_outlined;
+      case NotificationType.stockWeeklySummary:
+        return Icons.summarize_outlined;
+
+      // Sales
       case NotificationType.saleRecorded:
         return Icons.shopping_cart_outlined;
+
+      // Consignment lifecycle
       case NotificationType.consignmentExpiring:
         return Icons.schedule;
       case NotificationType.consignmentExpired:
         return Icons.warning_amber;
+      case NotificationType.consignmentCompleted:
+        return Icons.celebration;
+
+      // Financial
+      case NotificationType.payoutReady:
+        return Icons.account_balance_wallet_outlined;
     }
   }
 

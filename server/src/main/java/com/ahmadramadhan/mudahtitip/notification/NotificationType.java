@@ -4,6 +4,7 @@ package com.ahmadramadhan.mudahtitip.notification;
  * Types of notifications that can be sent to users.
  */
 public enum NotificationType {
+    // ===== Agreement Lifecycle =====
     /**
      * Someone proposed an agreement for a consignment.
      */
@@ -25,10 +26,38 @@ public enum NotificationType {
     AGREEMENT_COUNTERED,
 
     /**
+     * An agreement was extended.
+     */
+    AGREEMENT_EXTENDED,
+
+    /**
+     * Shop requested to discontinue agreement early.
+     */
+    AGREEMENT_DISCONTINUED,
+
+    // ===== Stock & Inventory =====
+    /**
+     * Stock is running low (below threshold).
+     */
+    STOCK_LOW,
+
+    /**
+     * Stock is completely out.
+     */
+    STOCK_OUT,
+
+    /**
+     * Weekly summary of stock levels.
+     */
+    STOCK_WEEKLY_SUMMARY,
+
+    // ===== Sales =====
+    /**
      * A sale was recorded for your product.
      */
     SALE_RECORDED,
 
+    // ===== Consignment Lifecycle =====
     /**
      * A consignment is expiring soon.
      */
@@ -37,5 +66,16 @@ public enum NotificationType {
     /**
      * A consignment has expired.
      */
-    CONSIGNMENT_EXPIRED
+    CONSIGNMENT_EXPIRED,
+
+    /**
+     * All products sold, consignment completed.
+     */
+    CONSIGNMENT_COMPLETED,
+
+    // ===== Financial =====
+    /**
+     * Payout/settlement is ready for collection.
+     */
+    PAYOUT_READY
 }

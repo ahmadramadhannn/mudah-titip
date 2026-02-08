@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../models/notification_model.dart';
+import '../models/notification_preferences_model.dart';
 
 /// Repository for notification API operations.
 class NotificationRepository {
@@ -35,5 +36,26 @@ class NotificationRepository {
       '/api/notifications/read-all',
     );
     return (response.data?['markedCount'] as int?) ?? 0;
+  }
+
+  // ===== Preferences API =====
+
+  /// Get notification preferences for the current user.
+  Future<NotificationPreferencesModel> getPreferences() async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/api/notifications/preferences',
+    );
+    return NotificationPreferencesModel.fromJson(response.data ?? {});
+  }
+
+  /// Update notification preferences.
+  Future<NotificationPreferencesModel> updatePreferences(
+    NotificationPreferencesModel preferences,
+  ) async {
+    final response = await _dio.put<Map<String, dynamic>>(
+      '/api/notifications/preferences',
+      data: preferences.toJson(),
+    );
+    return NotificationPreferencesModel.fromJson(response.data ?? {});
   }
 }

@@ -1,11 +1,13 @@
 package com.ahmadramadhan.mudahtitip.notification;
 
 import com.ahmadramadhan.mudahtitip.common.security.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,7 @@ import java.util.Map;
 public class NotificationController {
 
     private final NotificationService notificationService;
+    private final NotificationPreferenceService preferenceService;
     private final JwtUtil jwtUtil;
 
     /**
@@ -70,6 +73,31 @@ public class NotificationController {
         Long userId = extractUserId(authHeader);
         int count = notificationService.markAllAsRead(userId);
         return ResponseEntity.ok(Map.of("markedCount", count));
+    }
+
+    // ===== Preferences Endpoints =====
+
+    /**
+     * Get notification preferences for the current user.
+     */
+    @GetMapping("/preferences")
+    public ResponseEntity<NotificationPreferenceDto> getPreferences(
+            @RequestHeader("Authorization") String authHeader) {
+        Long userId = extractUserId(authHeader);
+        NotificationPreferenceDto dto = preferenceService.getPreferencesDto(userId);
+        return ResponseEntity.ok(dto);
+    }
+
+    /**
+     * Update notification preferences for the current user.
+     */
+    @PutMapping("/preferences")
+    public ResponseEntity<NotificationPreferenceDto> updatePreferences(
+            @RequestHeader("Authorization") String authHeader,
+            @Valid @RequestBody NotificationPreferenceDto dto) {
+        Long userId = extractUserId(authHeader);
+        NotificationPreferenceDto updated = preferenceService.updatePreferences(userId, dto);
+        return ResponseEntity.ok(updated);
     }
 
     private Long extractUserId(String authHeader) {

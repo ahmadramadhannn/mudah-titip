@@ -147,6 +147,100 @@ public class NotificationService {
                 "SALE");
     }
 
+    // ===== Stock Notifications =====
+
+    /**
+     * Notify consignor when stock is running low.
+     */
+    public void notifyStockLow(Consignment consignment, int currentQuantity) {
+        User consignor = consignment.getProduct().getOwner();
+
+        if (consignor == null) {
+            log.warn("Cannot notify stock low - product has no registered owner");
+            return;
+        }
+
+        String productName = consignment.getProduct().getName();
+        String shopName = consignment.getShop().getName();
+        createNotification(
+                consignor,
+                NotificationType.STOCK_LOW,
+                "Stok Menipis",
+                String.format("Stok %s di %s tinggal %d unit",
+                        productName, shopName, currentQuantity),
+                consignment.getId(),
+                "CONSIGNMENT");
+    }
+
+    /**
+     * Notify consignor when stock is completely out.
+     */
+    public void notifyStockOut(Consignment consignment) {
+        User consignor = consignment.getProduct().getOwner();
+
+        if (consignor == null) {
+            log.warn("Cannot notify stock out - product has no registered owner");
+            return;
+        }
+
+        String productName = consignment.getProduct().getName();
+        String shopName = consignment.getShop().getName();
+        createNotification(
+                consignor,
+                NotificationType.STOCK_OUT,
+                "Stok Habis",
+                String.format("Stok %s di %s sudah habis!", productName, shopName),
+                consignment.getId(),
+                "CONSIGNMENT");
+    }
+
+    /**
+     * Notify consignor about upcoming expiry.
+     */
+    public void notifyExpiryReminder(Consignment consignment, int daysRemaining) {
+        User consignor = consignment.getProduct().getOwner();
+
+        if (consignor == null) {
+            log.warn("Cannot notify expiry - product has no registered owner");
+            return;
+        }
+
+        String productName = consignment.getProduct().getName();
+        String shopName = consignment.getShop().getName();
+        createNotification(
+                consignor,
+                NotificationType.CONSIGNMENT_EXPIRING,
+                "Konsinyasi Akan Berakhir",
+                String.format("Konsinyasi %s di %s akan berakhir dalam %d hari",
+                        productName, shopName, daysRemaining),
+                consignment.getId(),
+                "CONSIGNMENT");
+    }
+
+    /**
+     * Notify when consignment is completed (all sold).
+     */
+    public void notifyConsignmentCompleted(Consignment consignment) {
+        User consignor = consignment.getProduct().getOwner();
+
+        if (consignor == null) {
+            log.warn("Cannot notify completion - product has no registered owner");
+            return;
+        }
+
+        String productName = consignment.getProduct().getName();
+        String shopName = consignment.getShop().getName();
+        createNotification(
+                consignor,
+                NotificationType.CONSIGNMENT_COMPLETED,
+                "Konsinyasi Selesai",
+                String.format("Semua %s di %s telah terjual!", productName, shopName),
+                consignment.getId(),
+                "CONSIGNMENT");
+    }
+
+    // ===== Retrieval Methods =====
+
     /**
      * Get all notifications for a user.
      */

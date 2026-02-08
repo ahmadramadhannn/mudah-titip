@@ -1,12 +1,28 @@
 /// Types of notifications that can be sent to users.
 enum NotificationType {
+  // Agreement lifecycle
   agreementProposed('AGREEMENT_PROPOSED'),
   agreementAccepted('AGREEMENT_ACCEPTED'),
   agreementRejected('AGREEMENT_REJECTED'),
   agreementCountered('AGREEMENT_COUNTERED'),
+  agreementExtended('AGREEMENT_EXTENDED'),
+  agreementDiscontinued('AGREEMENT_DISCONTINUED'),
+
+  // Stock & Inventory
+  stockLow('STOCK_LOW'),
+  stockOut('STOCK_OUT'),
+  stockWeeklySummary('STOCK_WEEKLY_SUMMARY'),
+
+  // Sales
   saleRecorded('SALE_RECORDED'),
+
+  // Consignment lifecycle
   consignmentExpiring('CONSIGNMENT_EXPIRING'),
-  consignmentExpired('CONSIGNMENT_EXPIRED');
+  consignmentExpired('CONSIGNMENT_EXPIRED'),
+  consignmentCompleted('CONSIGNMENT_COMPLETED'),
+
+  // Financial
+  payoutReady('PAYOUT_READY');
 
   const NotificationType(this.value);
   final String value;
