@@ -19,7 +19,7 @@ import java.util.Map;
  * REST controller for notification endpoints.
  */
 @RestController
-@RequestMapping("/api/notifications")
+@RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
 

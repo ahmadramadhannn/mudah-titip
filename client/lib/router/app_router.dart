@@ -21,6 +21,7 @@ import '../features/guest_consignor/presentation/pages/add_guest_consignor_page.
 import '../features/guest_consignor/presentation/pages/guest_consignor_detail_page.dart';
 import '../features/guest_consignor/presentation/pages/guest_consignors_page.dart';
 import '../features/notification/presentation/bloc/notification_bloc.dart';
+import '../features/notification/presentation/pages/notification_settings_page.dart';
 import '../features/notification/presentation/pages/notifications_page.dart';
 import '../features/products/data/models/product.dart';
 import '../features/products/presentation/pages/add_product_page.dart';
@@ -170,6 +171,10 @@ class AppRouter {
           value: getIt<NotificationBloc>()..add(LoadNotifications()),
           child: const NotificationsPage(),
         ),
+      ),
+      GoRoute(
+        path: '/notifications/settings',
+        builder: (context, state) => const NotificationSettingsPage(),
       ),
       // Guest consignor routes (shop owner only)
       GoRoute(
