@@ -43,6 +43,7 @@ public class SecurityConfig {
                         // Public endpoints (versioned)
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/v1/dev/**").permitAll() // Dev only endpoints
                         .requestMatchers("/error").permitAll()
                         // API Documentation endpoints
                         .requestMatchers("/docs", "/v3/api-docs/**", "/swagger-ui/**").permitAll()

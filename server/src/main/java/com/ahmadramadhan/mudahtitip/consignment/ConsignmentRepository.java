@@ -22,6 +22,10 @@ public interface ConsignmentRepository extends JpaRepository<Consignment, Long> 
 
         List<Consignment> findByProductOwnerIdAndStatus(Long ownerId, ConsignmentStatus status);
 
+        List<Consignment> findByProductOwnerIdOrderByCreatedAtDesc(Long ownerId);
+
+        List<Consignment> findByShopIdOrderByCreatedAtDesc(Long shopId);
+
         /**
          * Find consignments expiring before a given date.
          */
