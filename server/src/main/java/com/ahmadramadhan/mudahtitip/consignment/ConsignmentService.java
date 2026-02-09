@@ -1,5 +1,7 @@
 package com.ahmadramadhan.mudahtitip.consignment;
 
+import com.ahmadramadhan.mudahtitip.agreement.AgreementRepository;
+import com.ahmadramadhan.mudahtitip.agreement.AgreementStatus;
 import com.ahmadramadhan.mudahtitip.auth.User;
 import com.ahmadramadhan.mudahtitip.auth.UserRole;
 import com.ahmadramadhan.mudahtitip.common.MessageService;
@@ -26,6 +28,7 @@ public class ConsignmentService {
     private final ProductRepository productRepository;
     private final ShopRepository shopRepository;
     private final MessageService messageService;
+    private final AgreementRepository agreementRepository;
 
     /**
      * Create a new consignment.
@@ -140,5 +143,22 @@ public class ConsignmentService {
         LocalDate today = LocalDate.now();
         LocalDate futureDate = today.plusDays(days);
         return consignmentRepository.findExpiringSoon(today, futureDate);
+    }
+
+    /**
+     * Get consignments without an accepted agreement (eligible for agreement
+     * proposal).
+     */
+    public List<Consignment> getConsignmentsWithoutAgreement(User user) {
+        List<Consignment> consignments = getConsignmentsForUser(user, ConsignmentStatus.ACTIVE);
+        // Filter to only those without an accepted agreement
+        return consignments.stream()
+                .filter(c -> !hasAcceptedAgreement(c.getId()))
+                .toList();
+    }
+
+    private boolean hasAcceptedAgreement(Long consignmentId) {
+        return agreementRepository.findByConsignmentIdAndStatus(
+                consignmentId, AgreementStatus.ACCEPTED).isPresent();
     }
 }

@@ -7,6 +7,7 @@ import '../core/di/injection.dart';
 import '../features/agreement/presentation/pages/agreement_detail_page.dart';
 import '../features/agreement/presentation/pages/agreements_page.dart';
 import '../features/agreement/presentation/pages/propose_agreement_page.dart';
+import '../features/agreement/presentation/pages/select_consignment_page.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
@@ -149,6 +150,10 @@ class AppRouter {
       GoRoute(
         path: '/agreements',
         builder: (context, state) => const AgreementsPage(),
+      ),
+      GoRoute(
+        path: '/agreements/select',
+        builder: (context, state) => const SelectConsignmentPage(),
       ),
       GoRoute(
         path: '/agreements/propose/:consignmentId',

@@ -63,4 +63,15 @@ class ConsignmentRepository {
         .map((json) => Consignment.fromJson(json as Map<String, dynamic>))
         .toList();
   }
+
+  /// Get consignments without an accepted agreement (eligible for proposals).
+  Future<List<Consignment>> getConsignmentsWithoutAgreement() async {
+    final response = await _apiClient.get<List<dynamic>>(
+      '/consignments/without-agreement',
+    );
+
+    return (response.data ?? [])
+        .map((json) => Consignment.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
 }

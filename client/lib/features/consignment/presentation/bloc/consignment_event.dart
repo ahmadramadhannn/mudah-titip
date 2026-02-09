@@ -61,3 +61,8 @@ final class LoadExpiringSoon extends ConsignmentEvent {
   @override
   List<Object?> get props => [days];
 }
+
+/// Load consignments without an accepted agreement.
+final class LoadConsignmentsWithoutAgreement extends ConsignmentEvent {
+  const LoadConsignmentsWithoutAgreement();
+}

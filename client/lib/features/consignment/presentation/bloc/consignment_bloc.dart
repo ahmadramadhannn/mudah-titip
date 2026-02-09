@@ -18,6 +18,7 @@ class ConsignmentBloc extends Bloc<ConsignmentEvent, ConsignmentState> {
     on<CreateConsignment>(_onCreateConsignment);
     on<UpdateConsignmentStatus>(_onUpdateStatus);
     on<LoadExpiringSoon>(_onLoadExpiring);
+    on<LoadConsignmentsWithoutAgreement>(_onLoadWithoutAgreement);
   }
 
   Future<void> _onLoadConsignments(
@@ -95,6 +96,19 @@ class ConsignmentBloc extends Bloc<ConsignmentEvent, ConsignmentState> {
           days: event.days,
         ),
       );
+    } catch (e) {
+      emit(ConsignmentError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadWithoutAgreement(
+    LoadConsignmentsWithoutAgreement event,
+    Emitter<ConsignmentState> emit,
+  ) async {
+    emit(ConsignmentLoading());
+    try {
+      final consignments = await _repository.getConsignmentsWithoutAgreement();
+      emit(ConsignmentsLoaded(consignments: consignments));
     } catch (e) {
       emit(ConsignmentError(e.toString()));
     }

@@ -76,4 +76,15 @@ public class ConsignmentController {
         List<Consignment> expiring = consignmentService.findExpiringSoon(days);
         return ResponseEntity.ok(expiring);
     }
+
+    /**
+     * Get consignments without an accepted agreement (eligible for agreement
+     * proposal).
+     */
+    @GetMapping("/without-agreement")
+    public ResponseEntity<List<Consignment>> getConsignmentsWithoutAgreement(
+            @AuthenticationPrincipal User currentUser) {
+        List<Consignment> consignments = consignmentService.getConsignmentsWithoutAgreement(currentUser);
+        return ResponseEntity.ok(consignments);
+    }
 }

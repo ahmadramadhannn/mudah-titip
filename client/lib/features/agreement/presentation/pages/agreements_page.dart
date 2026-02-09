@@ -96,47 +96,8 @@ class _AgreementsView extends StatelessWidget {
   }
 
   void _showProposeDialog(BuildContext context) {
-    final controller = TextEditingController();
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.proposeAgreement),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('${l10n.selectConsignment}:'),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: l10n.consignments,
-                border: const OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(l10n.cancel),
-          ),
-          FilledButton(
-            onPressed: () {
-              final id = int.tryParse(controller.text);
-              if (id != null) {
-                Navigator.pop(dialogContext);
-                context.push('/agreements/propose/$id');
-              }
-            },
-            child: Text(l10n.next),
-          ),
-        ],
-      ),
-    );
+    // Navigate to the selection page instead of showing a confusing dialog
+    context.push('/agreements/select');
   }
 
   Widget _buildEmptyState(BuildContext context) {
