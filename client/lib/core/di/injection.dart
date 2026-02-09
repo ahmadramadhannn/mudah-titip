@@ -11,6 +11,7 @@ import '../../features/agreement/presentation/bloc/agreement_bloc.dart';
 import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/consignment/data/consignment_repository.dart';
+import '../../features/consignment/presentation/bloc/consignment_bloc.dart';
 import '../../features/sale/data/sale_repository.dart';
 import '../../features/analytics/data/analytics_repository.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository.dart';
@@ -123,6 +124,10 @@ Future<void> configureDependencies() async {
 
   getIt.registerFactory<AgreementBloc>(
     () => AgreementBloc(getIt<AgreementRepository>()),
+  );
+
+  getIt.registerFactory<ConsignmentBloc>(
+    () => ConsignmentBloc(getIt<ConsignmentRepository>()),
   );
 
   // NotificationBloc - singleton for persistent unread count badge
