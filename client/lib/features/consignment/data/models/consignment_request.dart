@@ -16,7 +16,7 @@ class ConsignmentRequest extends Equatable {
     required this.shopId,
     required this.quantity,
     required this.sellingPrice,
-    required this.commissionPercent,
+    this.commissionPercent = 0.0, // Default to 0 for shop owner flow
     this.consignmentDate,
     this.expiryDate,
     this.notes,

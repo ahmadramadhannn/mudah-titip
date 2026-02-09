@@ -532,6 +532,11 @@ class _QuickActionsGrid extends StatelessWidget {
           ]
         : [
             _QuickAction(
+              'Cari Produk', // Browse Products
+              Icons.search_outlined,
+              '/products/browse',
+            ),
+            _QuickAction(
               l10n.manageConsignors,
               Icons.people_outline,
               '/guest-consignors',
@@ -545,11 +550,6 @@ class _QuickActionsGrid extends StatelessWidget {
               l10n.analytics,
               Icons.analytics_outlined,
               '/analytics',
-            ),
-            _QuickAction(
-              l10n.agreements,
-              Icons.handshake_outlined,
-              '/agreements',
             ),
           ];
 

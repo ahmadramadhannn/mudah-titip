@@ -16,6 +16,7 @@ import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/consignment/presentation/pages/add_consignment_page.dart';
 import '../features/consignment/presentation/pages/consignment_detail_page.dart';
 import '../features/consignment/presentation/pages/consignments_page.dart';
+import '../features/consignment/presentation/pages/create_consignment_for_product_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/guest_consignor/data/models/guest_consignor.dart';
 import '../features/guest_consignor/presentation/pages/add_guest_consignor_page.dart';
@@ -141,6 +142,13 @@ class AppRouter {
         builder: (context, state) {
           final id = int.parse(state.pathParameters['id']!);
           return ConsignmentDetailPage(consignmentId: id);
+        },
+      ),
+      GoRoute(
+        path: '/consignments/create/:productId',
+        builder: (context, state) {
+          final productId = int.parse(state.pathParameters['productId']!);
+          return CreateConsignmentForProductPage(productId: productId);
         },
       ),
       GoRoute(path: '/sales', builder: (context, state) => const SalesPage()),
