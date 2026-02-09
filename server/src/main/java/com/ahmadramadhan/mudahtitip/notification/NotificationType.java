@@ -77,5 +77,16 @@ public enum NotificationType {
     /**
      * Payout/settlement is ready for collection.
      */
-    PAYOUT_READY
+    PAYOUT_READY,
+
+    // ===== Complaints =====
+    /**
+     * A complaint was received about your product.
+     */
+    COMPLAINT_RECEIVED,
+
+    /**
+     * A complaint you filed has been resolved.
+     */
+    COMPLAINT_RESOLVED
 }

@@ -69,7 +69,10 @@ public class NotificationPreferenceService {
             case CONSIGNMENT_EXPIRING, CONSIGNMENT_EXPIRED, CONSIGNMENT_COMPLETED ->
                 pref.getExpiryRemindersEnabled();
             case PAYOUT_READY -> pref.getPayoutNotificationsEnabled();
+            // Complaints always enabled (important for quality control)
+            case COMPLAINT_RECEIVED, COMPLAINT_RESOLVED -> true;
         };
+
     }
 
     /**

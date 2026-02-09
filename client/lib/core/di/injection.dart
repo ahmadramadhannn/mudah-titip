@@ -22,6 +22,7 @@ import '../../features/products/data/repositories/product_repository.dart';
 import '../../features/products/presentation/bloc/product_bloc.dart';
 import '../../features/profile/data/repositories/profile_repository.dart';
 import '../../features/profile/presentation/bloc/profile_bloc.dart';
+import '../../features/complaint/data/repositories/complaint_repository.dart';
 
 final getIt = GetIt.instance;
 
@@ -92,6 +93,10 @@ Future<void> configureDependencies() async {
 
   getIt.registerLazySingleton<AdminRepository>(
     () => AdminRepository(getIt<ApiClient>().dio),
+  );
+
+  getIt.registerLazySingleton<ComplaintRepository>(
+    () => ComplaintRepository(getIt<ApiClient>()),
   );
 
   // ============================================================

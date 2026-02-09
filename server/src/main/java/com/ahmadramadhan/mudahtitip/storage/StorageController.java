@@ -72,11 +72,17 @@ public class StorageController {
     }
 
     private boolean isAllowedContentType(String contentType) {
-        return contentType != null && (contentType.equals("image/jpeg") ||
+        return contentType != null && (
+        // Images
+        contentType.equals("image/jpeg") ||
                 contentType.equals("image/jpg") ||
                 contentType.equals("image/png") ||
                 contentType.equals("image/gif") ||
-                contentType.equals("image/webp"));
+                contentType.equals("image/webp") ||
+                // Videos (for complaints)
+                contentType.equals("video/mp4") ||
+                contentType.equals("video/quicktime") ||
+                contentType.equals("video/webm"));
     }
 
     /**

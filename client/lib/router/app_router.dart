@@ -34,6 +34,11 @@ import '../features/admin/presentation/pages/admin_dashboard_page.dart';
 import '../features/admin/presentation/pages/user_management_page.dart';
 import '../features/admin/presentation/pages/shop_verification_page.dart';
 import '../features/admin/presentation/bloc/admin_bloc.dart';
+import '../features/complaint/data/repositories/complaint_repository.dart';
+import '../features/complaint/presentation/bloc/complaint_bloc.dart';
+import '../features/complaint/presentation/pages/complaints_page.dart';
+import '../features/complaint/presentation/pages/complaint_detail_page.dart';
+import '../features/complaint/presentation/pages/create_complaint_page.dart';
 
 /// App router configuration using go_router.
 class AppRouter {
@@ -204,6 +209,44 @@ class AppRouter {
         builder: (context, state) {
           // TODO: Implement add product for guest consignor
           return _PlaceholderPage(title: 'Tambah Produk Penitip');
+        },
+      ),
+      // Complaint routes
+      GoRoute(
+        path: '/complaints',
+        builder: (context, state) => BlocProvider(
+          create: (context) => ComplaintBloc(getIt<ComplaintRepository>()),
+          child: const ComplaintsPage(),
+        ),
+      ),
+      GoRoute(
+        path: '/complaints/create/:consignmentId',
+        builder: (context, state) {
+          final consignmentId = int.parse(
+            state.pathParameters['consignmentId']!,
+          );
+          final productName = state.uri.queryParameters['productName'];
+          return BlocProvider(
+            create: (context) => ComplaintBloc(getIt<ComplaintRepository>()),
+            child: CreateComplaintPage(
+              consignmentId: consignmentId,
+              productName: productName,
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/complaints/:id',
+        builder: (context, state) {
+          final id = int.parse(state.pathParameters['id']!);
+          return RepositoryProvider(
+            create: (context) => getIt<ComplaintRepository>(),
+            child: BlocProvider(
+              create: (context) =>
+                  ComplaintBloc(context.read<ComplaintRepository>()),
+              child: ComplaintDetailPage(complaintId: id),
+            ),
+          );
         },
       ),
       // Admin routes - protected by navigation guard
