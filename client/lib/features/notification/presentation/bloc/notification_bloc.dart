@@ -15,6 +15,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<LoadUnreadCount>(_onLoadUnreadCount);
     on<MarkNotificationAsRead>(_onMarkAsRead);
     on<MarkAllNotificationsAsRead>(_onMarkAllAsRead);
+    on<ResetNotifications>(_onReset);
+  }
+
+  void _onReset(ResetNotifications event, Emitter<NotificationState> emit) {
+    emit(const NotificationInitial());
   }
 
   Future<void> _onLoadNotifications(

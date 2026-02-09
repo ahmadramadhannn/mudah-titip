@@ -17,3 +17,6 @@ class MarkNotificationAsRead extends NotificationEvent {
 
 /// Mark all notifications as read.
 class MarkAllNotificationsAsRead extends NotificationEvent {}
+
+/// Reset notification state (call on logout).
+class ResetNotifications extends NotificationEvent {}

@@ -9,6 +9,7 @@ import 'core/di/injection.dart';
 import 'core/locale/locale_cubit.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/notification/presentation/bloc/notification_bloc.dart';
 import 'features/products/presentation/bloc/product_bloc.dart';
 import 'router/app_router.dart';
 
@@ -43,48 +44,68 @@ class _MudahTitipAppState extends State<MudahTitipApp> {
         BlocProvider.value(value: getIt<LocaleCubit>()),
         // AuthBloc is singleton - use value provider
         BlocProvider.value(value: getIt<AuthBloc>()),
+        // NotificationBloc is singleton for persistent unread count
+        BlocProvider.value(value: getIt<NotificationBloc>()),
         // ProductBloc is registered as lazy singleton in DI
         BlocProvider(create: (_) => getIt<ProductBloc>()),
       ],
-      // Rebuild MaterialApp when locale changes
-      child: BlocConsumer<LocaleCubit, LocaleState>(
+      // Listen for auth state changes to reset notification state on logout
+      child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          // Sync API client locale when locale changes
-          if (kDebugMode) {
-            print(
-              '🌐 BlocConsumer listener: locale changed to ${state.locale.languageCode}',
-            );
+          if (state is AuthUnauthenticated) {
+            // Reset notification state when user logs out
+            context.read<NotificationBloc>().add(ResetNotifications());
+            if (kDebugMode) {
+              print('🔔 Notifications reset on logout');
+            }
+          } else if (state is AuthAuthenticated) {
+            // Load notifications for the new user
+            context.read<NotificationBloc>().add(LoadNotifications());
+            if (kDebugMode) {
+              print('🔔 Loading notifications for user: ${state.name}');
+            }
           }
-          getIt<ApiClient>().setLocale(state.locale.languageCode);
         },
-        builder: (context, localeState) {
-          if (kDebugMode) {
-            print(
-              '🌐 BlocConsumer builder: building with locale ${localeState.locale.languageCode}',
+        // Rebuild MaterialApp when locale changes
+        child: BlocConsumer<LocaleCubit, LocaleState>(
+          listener: (context, state) {
+            // Sync API client locale when locale changes
+            if (kDebugMode) {
+              print(
+                '🌐 BlocConsumer listener: locale changed to ${state.locale.languageCode}',
+              );
+            }
+            getIt<ApiClient>().setLocale(state.locale.languageCode);
+          },
+          builder: (context, localeState) {
+            if (kDebugMode) {
+              print(
+                '🌐 BlocConsumer builder: building with locale ${localeState.locale.languageCode}',
+              );
+            }
+            return MaterialApp.router(
+              title: 'Mudah Titip',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.light,
+              darkTheme: AppTheme.dark,
+              themeMode: ThemeMode.system,
+              routerConfig: _appRouter.router,
+              // Use locale from LocaleCubit
+              locale: localeState.locale,
+              // Localization
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('id'), // Indonesian (default)
+                Locale('en'), // English
+              ],
             );
-          }
-          return MaterialApp.router(
-            title: 'Mudah Titip',
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            themeMode: ThemeMode.system,
-            routerConfig: _appRouter.router,
-            // Use locale from LocaleCubit
-            locale: localeState.locale,
-            // Localization
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('id'), // Indonesian (default)
-              Locale('en'), // English
-            ],
-          );
-        },
+          },
+        ),
       ),
     );
   }
