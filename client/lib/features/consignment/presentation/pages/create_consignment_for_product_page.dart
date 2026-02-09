@@ -88,11 +88,12 @@ class _CreateConsignmentFormState extends State<_CreateConsignmentForm> {
     if (_product == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Product  not loaded')));
+      ).showSnackBar(const SnackBar(content: Text('Product not loaded')));
       return;
     }
 
     try {
+      print('DEBUG: Starting consignment creation...');
       final consignmentRepo = getIt<ConsignmentRepository>();
 
       // Create consignment request (commissionPercent defaults to 0)
@@ -104,18 +105,32 @@ class _CreateConsignmentFormState extends State<_CreateConsignmentForm> {
         notes: _notesController.text.isEmpty ? null : _notesController.text,
       );
 
+      print('DEBUG: Request data: ${request.toJson()}');
+
       // Create consignment
+      print('DEBUG: Calling API...');
       final consignment = await consignmentRepo.createConsignment(request);
+
+      print('DEBUG: Consignment created with ID: ${consignment.id}');
 
       if (!mounted) return;
 
       // Navigate to propose agreement page
+      print('DEBUG: Navigating to /agreements/propose/${consignment.id}');
       context.go('/agreements/propose/${consignment.id}');
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print('DEBUG: Error occurred!');
+      print('DEBUG: Error: $e');
+      print('DEBUG: StackTrace: $stackTrace');
+
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.toString()}'),
+          duration: const Duration(seconds: 5),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
