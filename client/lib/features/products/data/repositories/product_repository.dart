@@ -23,6 +23,21 @@ class ProductRepository {
     }
   }
 
+  Future<List<Product>> getAvailableProducts({String? category}) async {
+    try {
+      final queryParams = category != null ? '?category=$category' : '';
+      final response = await _apiClient.get(
+        '${ApiEndpoints.products}/available$queryParams',
+      );
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data
+          .map((json) => Product.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw ApiErrorHandler.handleDioError(e);
+    }
+  }
+
   Future<Product> getProduct(int id) async {
     try {
       final response = await _apiClient.get(

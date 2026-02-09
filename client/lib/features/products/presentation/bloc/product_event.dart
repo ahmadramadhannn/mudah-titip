@@ -11,6 +11,15 @@ final class ProductsLoadRequested extends ProductEvent {
   const ProductsLoadRequested();
 }
 
+final class AvailableProductsLoadRequested extends ProductEvent {
+  final String? category;
+
+  const AvailableProductsLoadRequested({this.category});
+
+  @override
+  List<Object?> get props => [category];
+}
+
 final class ProductCreateRequested extends ProductEvent {
   final CreateProductRequest request;
 

@@ -5,6 +5,11 @@ package com.ahmadramadhan.mudahtitip.consignment;
  */
 public enum ConsignmentStatus {
     /**
+     * Consignment is pending agreement acceptance (shop owner initiated).
+     */
+    PENDING,
+
+    /**
      * Consignment is active and products are available for sale.
      */
     ACTIVE,

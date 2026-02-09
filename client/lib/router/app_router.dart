@@ -26,6 +26,7 @@ import '../features/notification/presentation/pages/notification_settings_page.d
 import '../features/notification/presentation/pages/notifications_page.dart';
 import '../features/products/data/models/product.dart';
 import '../features/products/presentation/pages/add_product_page.dart';
+import '../features/products/presentation/pages/browse_products_page.dart';
 import '../features/products/presentation/pages/products_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/sale/presentation/pages/record_sale_page.dart';
@@ -115,6 +116,10 @@ class AppRouter {
       GoRoute(
         path: '/products',
         builder: (context, state) => const ProductsPage(),
+      ),
+      GoRoute(
+        path: '/products/browse',
+        builder: (context, state) => const BrowseProductsPage(),
       ),
       GoRoute(
         path: '/products/add',

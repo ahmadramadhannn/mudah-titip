@@ -14,6 +14,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
 
   ProductBloc(this._productRepository) : super(const ProductInitial()) {
     on<ProductsLoadRequested>(_onLoadRequested);
+    on<AvailableProductsLoadRequested>(_onLoadAvailableProducts);
     on<ProductCreateRequested>(_onCreateRequested);
     on<ProductUpdateRequested>(_onUpdateRequested);
     on<ProductDeleteRequested>(_onDeleteRequested);
@@ -26,6 +27,21 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     emit(const ProductLoading());
     try {
       final products = await _productRepository.getMyProducts();
+      emit(ProductLoadSuccess(products));
+    } on Failure catch (e) {
+      emit(ProductFailure(e.message));
+    }
+  }
+
+  Future<void> _onLoadAvailableProducts(
+    AvailableProductsLoadRequested event,
+    Emitter<ProductState> emit,
+  ) async {
+    emit(const ProductLoading());
+    try {
+      final products = await _productRepository.getAvailableProducts(
+        category: event.category,
+      );
       emit(ProductLoadSuccess(products));
     } on Failure catch (e) {
       emit(ProductFailure(e.message));
