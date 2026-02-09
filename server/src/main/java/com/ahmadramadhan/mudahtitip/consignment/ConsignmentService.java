@@ -91,10 +91,8 @@ public class ConsignmentService {
                 .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("product.not.found")));
 
         // Get shop owner's shop
-        Shop shop = shopOwner.getShop();
-        if (shop == null) {
-            throw new IllegalStateException(messageService.getMessage("shop.not.found"));
-        }
+        Shop shop = shopRepository.findByOwnerId(shopOwner.getId())
+                .orElseThrow(() -> new IllegalStateException(messageService.getMessage("shop.not.found")));
 
         LocalDate expiryDate = calculateExpiryDate(product, request);
 
