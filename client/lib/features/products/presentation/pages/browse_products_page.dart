@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../data/models/product.dart';
 import '../bloc/product_bloc.dart';
 
