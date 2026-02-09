@@ -5,7 +5,6 @@ import com.ahmadramadhan.mudahtitip.consignment.dto.ConsignmentRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +23,11 @@ public class ConsignmentController {
     private final ConsignmentService consignmentService;
 
     /**
-     * Create a new consignment. Only consignors can create.
+     * Create a new consignment.
+     * Consignors create ACTIVE consignments for their products.
+     * Shop owners create PENDING consignments that need agreement acceptance.
      */
     @PostMapping
-    @PreAuthorize("hasRole('CONSIGNOR')")
     public ResponseEntity<Consignment> createConsignment(
             @Valid @RequestBody ConsignmentRequest request,
             @AuthenticationPrincipal User currentUser) {

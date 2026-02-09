@@ -133,6 +133,23 @@ public class ProductService {
     }
 
     /**
+     * Get all available products for shop owners to browse.
+     * Returns all active products.
+     */
+    public List<Product> getAvailableForShopOwner(String category) {
+        List<Product> products = productRepository.findByIsActiveTrue();
+
+        // Filter by category if provided
+        if (category != null && !category.isBlank()) {
+            return products.stream()
+                    .filter(p -> category.equals(p.getCategory()))
+                    .toList();
+        }
+
+        return products;
+    }
+
+    /**
      * Check if user can edit a product.
      * User can edit if they own it directly, or if they manage the guest owner.
      */

@@ -34,7 +34,6 @@ public class ConsignmentRequest {
     @Positive(message = "Harga harus positif")
     private BigDecimal sellingPrice;
 
-    @NotNull(message = "Komisi wajib diisi")
     @PositiveOrZero(message = "Komisi tidak boleh negatif")
     private BigDecimal commissionPercent;
 

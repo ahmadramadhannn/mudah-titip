@@ -114,6 +114,17 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    /**
+     * Get all available products for shop owners to browse.
+     */
+    @GetMapping("/available")
+    @PreAuthorize("hasRole('SHOP_OWNER')")
+    public ResponseEntity<List<Product>> getAvailableProducts(
+            @RequestParam(required = false) String category) {
+        List<Product> products = productService.getAvailableForShopOwner(category);
+        return ResponseEntity.ok(products);
+    }
+
     private Product buildProductFromRequest(ProductRequest request) {
         return Product.builder()
                 .name(request.getName())

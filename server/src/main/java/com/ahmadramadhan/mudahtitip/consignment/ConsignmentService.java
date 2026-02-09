@@ -32,28 +32,37 @@ public class ConsignmentService {
 
     /**
      * Create a new consignment.
+     * Consignors: creates ACTIVE consignment for their own products
+     * Shop owners: creates PENDING consignment for products they want to sell
      */
     @Transactional
     public Consignment createConsignment(ConsignmentRequest request, User currentUser) {
+        if (currentUser.getRole() == UserRole.SHOP_OWNER) {
+            return createConsignmentByShopOwner(request, currentUser);
+        } else if (currentUser.getRole() == UserRole.CONSIGNOR) {
+            return createConsignmentByConsignor(request, currentUser);
+        } else {
+            throw new IllegalArgumentException(messageService.getMessage("consignment.role.invalid"));
+        }
+    }
+
+    /**
+     * Create consignment initiated by consignor (original flow).
+     */
+    @Transactional
+    private Consignment createConsignmentByConsignor(ConsignmentRequest request, User consignor) {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("product.not.found")));
 
         // Verify product ownership
-        if (!product.getOwner().getId().equals(currentUser.getId())) {
+        if (!product.getOwner().getId().equals(consignor.getId())) {
             throw new IllegalArgumentException(messageService.getMessage("product.access.denied"));
         }
 
         Shop shop = shopRepository.findById(request.getShopId())
                 .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("shop.not.found")));
 
-        // Calculate expiry date if not provided
-        LocalDate expiryDate = request.getExpiryDate();
-        if (expiryDate == null && product.getShelfLifeDays() != null) {
-            LocalDate startDate = request.getConsignmentDate() != null
-                    ? request.getConsignmentDate()
-                    : LocalDate.now();
-            expiryDate = startDate.plusDays(product.getShelfLifeDays());
-        }
+        LocalDate expiryDate = calculateExpiryDate(product, request);
 
         Consignment consignment = Consignment.builder()
                 .product(product)
@@ -61,7 +70,8 @@ public class ConsignmentService {
                 .initialQuantity(request.getQuantity())
                 .currentQuantity(request.getQuantity())
                 .sellingPrice(request.getSellingPrice())
-                .commissionPercent(request.getCommissionPercent())
+                .commissionPercent(request.getCommissionPercent() != null ? request.getCommissionPercent()
+                        : java.math.BigDecimal.ZERO)
                 .consignmentDate(request.getConsignmentDate() != null ? request.getConsignmentDate() : LocalDate.now())
                 .expiryDate(expiryDate)
                 .status(ConsignmentStatus.ACTIVE)
@@ -69,6 +79,54 @@ public class ConsignmentService {
                 .build();
 
         return consignmentRepository.save(consignment);
+    }
+
+    /**
+     * Create consignment initiated by shop owner (new flow).
+     * Creates PENDING consignment that becomes ACTIVE when agreement is accepted.
+     */
+    @Transactional
+    private Consignment createConsignmentByShopOwner(ConsignmentRequest request, User shopOwner) {
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException(messageService.getMessage("product.not.found")));
+
+        // Get shop owner's shop
+        Shop shop = shopOwner.getShop();
+        if (shop == null) {
+            throw new IllegalStateException(messageService.getMessage("shop.not.found"));
+        }
+
+        LocalDate expiryDate = calculateExpiryDate(product, request);
+
+        Consignment consignment = Consignment.builder()
+                .product(product)
+                .shop(shop)
+                .initialQuantity(request.getQuantity())
+                .currentQuantity(request.getQuantity())
+                .sellingPrice(request.getSellingPrice())
+                .commissionPercent(request.getCommissionPercent() != null ? request.getCommissionPercent()
+                        : java.math.BigDecimal.ZERO)
+                .consignmentDate(LocalDate.now())
+                .expiryDate(expiryDate)
+                .status(ConsignmentStatus.PENDING) // PENDING until agreement accepted
+                .notes(request.getNotes())
+                .build();
+
+        return consignmentRepository.save(consignment);
+    }
+
+    /**
+     * Calculate expiry date based on product shelf life and consignment date.
+     */
+    private LocalDate calculateExpiryDate(Product product, ConsignmentRequest request) {
+        LocalDate expiryDate = request.getExpiryDate();
+        if (expiryDate == null && product.getShelfLifeDays() != null) {
+            LocalDate startDate = request.getConsignmentDate() != null
+                    ? request.getConsignmentDate()
+                    : LocalDate.now();
+            expiryDate = startDate.plusDays(product.getShelfLifeDays());
+        }
+        return expiryDate;
     }
 
     /**

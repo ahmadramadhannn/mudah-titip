@@ -26,4 +26,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByGuestOwnerIdAndIsActiveTrue(Long guestOwnerId);
 
     List<Product> findByGuestOwnerId(Long guestOwnerId);
+
+    List<Product> findByIsActiveTrue();
 }
