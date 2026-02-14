@@ -2,7 +2,9 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
-RUN mvn dependency:go-offline
+# Targeted resolution is usually faster and more reliable than go-offline
+RUN mvn dependency:resolve -B
+RUN mvn dependency:resolve-plugins -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
