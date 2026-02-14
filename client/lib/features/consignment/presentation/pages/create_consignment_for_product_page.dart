@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../products/data/models/product.dart';
 import '../../../products/data/repositories/product_repository.dart';
+import '../../../../core/widgets/quantity_selector.dart';
 import '../../data/consignment_repository.dart';
 import '../../data/models/consignment_request.dart';
 import '../bloc/consignment_bloc.dart';
@@ -260,16 +261,10 @@ class _CreateConsignmentFormState extends State<_CreateConsignmentForm> {
             ),
             const SizedBox(height: 24),
             // Quantity Field
-            TextFormField(
+            QuantitySelector(
               controller: _quantityController,
-              decoration: const InputDecoration(
-                labelText: 'Jumlah *',
-                hintText: 'Masukkan jumlah produk',
-                suffixText: 'pcs',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              label: 'Jumlah *',
+              suffixText: 'pcs',
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Jumlah harus diisi';

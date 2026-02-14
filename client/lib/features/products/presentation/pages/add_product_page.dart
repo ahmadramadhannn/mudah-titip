@@ -9,6 +9,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/services/image_upload_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/widgets/quantity_selector.dart';
 import '../../data/models/product.dart';
 import '../../data/models/product_request.dart';
 import '../bloc/product_bloc.dart';
@@ -445,14 +446,10 @@ class _AddProductPageState extends State<AddProductPage> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                QuantitySelector(
                   controller: _stockController,
-                  decoration: InputDecoration(
-                    labelText: l10n.stock,
-                    prefixIcon: const Icon(Icons.numbers_outlined),
-                  ),
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
+                  label: l10n.stock,
+                  suffixText: 'pcs',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return l10n.fieldRequired;
