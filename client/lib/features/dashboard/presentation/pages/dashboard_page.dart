@@ -122,85 +122,95 @@ class _DashboardContent extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (context, state) {
-          if (state is DashboardLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is DashboardError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 48, color: AppColors.error),
-                  const SizedBox(height: 16),
-                  Text(state.message),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.read<DashboardBloc>().add(
-                      DashboardLoadRequested(isConsignor: auth.isConsignor),
-                    ),
-                    child: Text(l10n.retry),
-                  ),
-                ],
-              ),
+      body: BlocListener<ProductBloc, ProductState>(
+        listener: (context, state) {
+          if (state is ProductOperationSuccess) {
+            // Refresh dashboard when a product is added, updated, or deleted
+            context.read<DashboardBloc>().add(
+              DashboardRefreshRequested(isConsignor: auth.isConsignor),
             );
           }
+        },
+        child: BlocBuilder<DashboardBloc, DashboardState>(
+          builder: (context, state) {
+            if (state is DashboardLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is DashboardLoaded) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<DashboardBloc>().add(
-                  DashboardRefreshRequested(isConsignor: auth.isConsignor),
-                );
-              },
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
+            if (state is DashboardError) {
+              return Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Greeting
-                    _GreetingCard(auth: auth),
-                    const SizedBox(height: 24),
-
-                    // Quick stats
-                    Text(
-                      l10n.summary,
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                    const SizedBox(height: 16),
+                    Text(state.message),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => context.read<DashboardBloc>().add(
+                        DashboardLoadRequested(isConsignor: auth.isConsignor),
+                      ),
+                      child: Text(l10n.retry),
                     ),
-                    const SizedBox(height: 12),
-                    _StatsGrid(auth: auth, state: state),
-                    const SizedBox(height: 24),
+                  ],
+                ),
+              );
+            }
 
-                    // Quick actions
-                    Text(
-                      l10n.quickActions,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 12),
-                    _QuickActionsGrid(auth: auth),
-                    const SizedBox(height: 24),
+            if (state is DashboardLoaded) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<DashboardBloc>().add(
+                    DashboardRefreshRequested(isConsignor: auth.isConsignor),
+                  );
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Greeting
+                      _GreetingCard(auth: auth),
+                      const SizedBox(height: 24),
 
-                    // Alerts section
-                    if (state.expiringConsignments.isNotEmpty ||
-                        state.lowStockConsignments.isNotEmpty) ...[
+                      // Quick stats
                       Text(
-                        l10n.attention,
+                        l10n.summary,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 12),
-                      _AlertsSection(state: state),
-                    ],
-                  ],
-                ),
-              ),
-            );
-          }
+                      _StatsGrid(auth: auth, state: state),
+                      const SizedBox(height: 24),
 
-          return const SizedBox.shrink();
-        },
+                      // Quick actions
+                      Text(
+                        l10n.quickActions,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 12),
+                      _QuickActionsGrid(auth: auth),
+                      const SizedBox(height: 24),
+
+                      // Alerts section
+                      if (state.expiringConsignments.isNotEmpty ||
+                          state.lowStockConsignments.isNotEmpty) ...[
+                        Text(
+                          l10n.attention,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 12),
+                        _AlertsSection(state: state),
+                      ],
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
       ),
       bottomNavigationBar: _BottomNavBar(auth: auth),
     );
