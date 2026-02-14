@@ -71,6 +71,8 @@
   "basePrice": "Harga Dasar",
   "sellingPrice": "Harga Jual",
   "quantity": "Jumlah",
+  "stock": "Stok",
+  "totalStock": "Total Stok",
   "shelfLife": "Masa Simpan (hari)",
   "noProducts": "Belum ada produk",
   "addFirstProduct": "Tambahkan produk pertama Anda!",

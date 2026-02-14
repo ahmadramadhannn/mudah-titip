@@ -192,6 +192,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get quantity => 'Jumlah';
 
   @override
+  String get stock => 'Stok';
+
+  @override
+  String get totalStock => 'Total Stok';
+
+  @override
   String get shelfLife => 'Masa Simpan (hari)';
 
   @override

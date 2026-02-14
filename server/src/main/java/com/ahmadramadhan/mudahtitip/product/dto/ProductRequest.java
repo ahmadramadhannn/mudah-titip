@@ -3,6 +3,7 @@ package com.ahmadramadhan.mudahtitip.product.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,10 @@ public class ProductRequest {
     @NotNull(message = "Harga dasar wajib diisi")
     @Positive(message = "Harga harus positif")
     private BigDecimal basePrice;
+
+    @NotNull(message = "Stok wajib diisi")
+    @PositiveOrZero(message = "Stok tidak boleh negatif")
+    private Integer stock;
 
     private String imageUrl;
 }

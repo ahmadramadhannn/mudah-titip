@@ -68,6 +68,8 @@
   "basePrice": "Base Price",
   "sellingPrice": "Selling Price",
   "quantity": "Quantity",
+  "stock": "Stock",
+  "totalStock": "Total Stock",
   "shelfLife": "Shelf Life (days)",
   "noProducts": "No products yet",
   "addFirstProduct": "Add your first product!",

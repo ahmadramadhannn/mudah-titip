@@ -64,6 +64,10 @@ public class ConsignmentService {
 
         LocalDate expiryDate = calculateExpiryDate(product, request);
 
+        if (product.getStock() < request.getQuantity()) {
+            throw new IllegalArgumentException(messageService.getMessage("product.stock.insufficient"));
+        }
+
         Consignment consignment = Consignment.builder()
                 .product(product)
                 .shop(shop)
@@ -77,6 +81,10 @@ public class ConsignmentService {
                 .status(ConsignmentStatus.ACTIVE)
                 .notes(request.getNotes())
                 .build();
+
+        // Decrement product stock
+        product.setStock(product.getStock() - request.getQuantity());
+        productRepository.save(product);
 
         return consignmentRepository.save(consignment);
     }

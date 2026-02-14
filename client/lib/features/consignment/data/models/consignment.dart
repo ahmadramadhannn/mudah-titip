@@ -4,12 +4,14 @@ import '../../../products/data/models/product.dart';
 
 /// Consignment status enum matching backend ConsignmentStatus.
 enum ConsignmentStatus {
+  pending,
   active,
   completed,
   expired,
   returned;
 
   String get displayName => switch (this) {
+    ConsignmentStatus.pending => 'Menunggu',
     ConsignmentStatus.active => 'Aktif',
     ConsignmentStatus.completed => 'Selesai',
     ConsignmentStatus.expired => 'Kadaluarsa',

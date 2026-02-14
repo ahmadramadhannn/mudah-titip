@@ -329,6 +329,10 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (color, bgColor) = switch (status) {
+      ConsignmentStatus.pending => (
+        Colors.amber.shade700,
+        Colors.amber.shade50,
+      ),
       ConsignmentStatus.active => (Colors.green.shade700, Colors.green.shade50),
       ConsignmentStatus.completed => (
         Colors.blue.shade700,

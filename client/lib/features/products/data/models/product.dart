@@ -8,6 +8,7 @@ class Product extends Equatable {
   final String? category;
   final int? shelfLifeDays;
   final double basePrice;
+  final int stock;
   final String? imageUrl;
   final bool isActive;
   final DateTime createdAt;
@@ -20,6 +21,7 @@ class Product extends Equatable {
     this.category,
     this.shelfLifeDays,
     required this.basePrice,
+    required this.stock,
     this.imageUrl,
     required this.isActive,
     required this.createdAt,
@@ -34,6 +36,7 @@ class Product extends Equatable {
       category: json['category'] as String?,
       shelfLifeDays: json['shelfLifeDays'] as int?,
       basePrice: (json['basePrice'] as num).toDouble(),
+      stock: json['stock'] as int? ?? 0,
       imageUrl: json['imageUrl'] as String?,
       isActive: json['isActive'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
@@ -51,6 +54,7 @@ class Product extends Equatable {
       'category': category,
       'shelfLifeDays': shelfLifeDays,
       'basePrice': basePrice,
+      'stock': stock,
       'imageUrl': imageUrl,
       'isActive': isActive,
       'createdAt': createdAt.toIso8601String(),
@@ -66,6 +70,7 @@ class Product extends Equatable {
     category,
     shelfLifeDays,
     basePrice,
+    stock,
     imageUrl,
     isActive,
     createdAt,

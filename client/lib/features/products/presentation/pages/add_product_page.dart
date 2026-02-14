@@ -29,6 +29,7 @@ class _AddProductPageState extends State<AddProductPage> {
   late final TextEditingController _basePriceController;
   late final TextEditingController _categoryController;
   late final TextEditingController _shelfLifeDaysController;
+  late final TextEditingController _stockController;
   bool _isLoading = false;
   bool _isUploadingImage = false;
 
@@ -55,6 +56,9 @@ class _AddProductPageState extends State<AddProductPage> {
     _shelfLifeDaysController = TextEditingController(
       text: widget.productToEdit?.shelfLifeDays?.toString(),
     );
+    _stockController = TextEditingController(
+      text: widget.productToEdit?.stock.toString() ?? '0',
+    );
     // Set existing image URL if editing
     _uploadedImageUrl = widget.productToEdit?.imageUrl;
   }
@@ -66,6 +70,7 @@ class _AddProductPageState extends State<AddProductPage> {
     _basePriceController.dispose();
     _categoryController.dispose();
     _shelfLifeDaysController.dispose();
+    _stockController.dispose();
     super.dispose();
   }
 
@@ -194,6 +199,7 @@ class _AddProductPageState extends State<AddProductPage> {
       final basePrice = double.tryParse(_basePriceController.text) ?? 0;
       final category = _categoryController.text.trim();
       final shelfLifeDays = int.tryParse(_shelfLifeDaysController.text);
+      final stock = int.tryParse(_stockController.text) ?? 0;
 
       if (_isEditing) {
         context.read<ProductBloc>().add(
@@ -203,6 +209,7 @@ class _AddProductPageState extends State<AddProductPage> {
               name: name,
               description: description.isNotEmpty ? description : null,
               basePrice: basePrice,
+              stock: stock,
               category: category.isNotEmpty ? category : null,
               shelfLifeDays: shelfLifeDays,
               imageUrl: imageUrl,
@@ -216,6 +223,7 @@ class _AddProductPageState extends State<AddProductPage> {
               name: name,
               description: description.isNotEmpty ? description : null,
               basePrice: basePrice,
+              stock: stock,
               category: category.isNotEmpty ? category : null,
               shelfLifeDays: shelfLifeDays,
               imageUrl: imageUrl,
@@ -432,6 +440,25 @@ class _AddProductPageState extends State<AddProductPage> {
                     }
                     if (double.tryParse(value) == null) {
                       return l10n.invalidEmail; // Reusing as "invalid format"
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _stockController,
+                  decoration: InputDecoration(
+                    labelText: l10n.stock,
+                    prefixIcon: const Icon(Icons.numbers_outlined),
+                  ),
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return l10n.fieldRequired;
+                    }
+                    if (int.tryParse(value) == null) {
+                      return l10n.fieldRequired;
                     }
                     return null;
                   },

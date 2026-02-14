@@ -132,6 +132,7 @@ public class ProductController {
                 .category(request.getCategory())
                 .shelfLifeDays(request.getShelfLifeDays())
                 .basePrice(request.getBasePrice())
+                .stock(request.getStock())
                 .imageUrl(request.getImageUrl())
                 .build();
     }

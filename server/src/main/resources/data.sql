@@ -45,32 +45,32 @@ ON DUPLICATE KEY UPDATE updated_at = NOW();
 -- ============================================================================
 -- PRODUCTS (15 total - owned by consignors)
 -- ============================================================================
-INSERT INTO products (id, name, description, category, shelf_life_days, base_price, image_url, is_active, owner_id, created_at, updated_at)
+INSERT INTO products (id, name, description, category, shelf_life_days, base_price, stock, image_url, is_active, owner_id, created_at, updated_at)
 VALUES
 -- Fitri's products (Makanan Ringan)
-(1, 'Keripik Singkong Original', 'Keripik singkong renyah tanpa pengawet', 'Makanan', 30, 15000.00, NULL, true, 4, NOW(), NOW()),
-(2, 'Keripik Singkong Pedas', 'Keripik singkong dengan bumbu pedas khas', 'Makanan', 30, 17000.00, NULL, true, 4, NOW(), NOW()),
-(3, 'Kue Nastar Homemade', 'Kue nastar lembut dengan isian selai nanas asli', 'Makanan', 14, 45000.00, NULL, true, 4, NOW(), NOW()),
+(1, 'Keripik Singkong Original', 'Keripik singkong renyah tanpa pengawet', 'Makanan', 30, 15000.00, 100, NULL, true, 4, NOW(), NOW()),
+(2, 'Keripik Singkong Pedas', 'Keripik singkong dengan bumbu pedas khas', 'Makanan', 30, 17000.00, 100, NULL, true, 4, NOW(), NOW()),
+(3, 'Kue Nastar Homemade', 'Kue nastar lembut dengan isian selai nanas asli', 'Makanan', 14, 45000.00, 50, NULL, true, 4, NOW(), NOW()),
 
 -- Gunawan's products (Minuman)
-(4, 'Sirup Markisa', 'Sirup markisa asli tanpa bahan pengawet', 'Minuman', 60, 35000.00, NULL, true, 5, NOW(), NOW()),
-(5, 'Jus Mangga Botolan', 'Jus mangga segar dalam kemasan 500ml', 'Minuman', 7, 12000.00, NULL, true, 5, NOW(), NOW()),
-(6, 'Teh Herbal Jahe', 'Teh herbal dengan jahe merah berkhasiat', 'Minuman', 90, 25000.00, NULL, true, 5, NOW(), NOW()),
+(4, 'Sirup Markisa', 'Sirup markisa asli tanpa bahan pengawet', 'Minuman', 60, 35000.00, 80, NULL, true, 5, NOW(), NOW()),
+(5, 'Jus Mangga Botolan', 'Jus mangga segar dalam kemasan 500ml', 'Minuman', 7, 12000.00, 60, NULL, true, 5, NOW(), NOW()),
+(6, 'Teh Herbal Jahe', 'Teh herbal dengan jahe merah berkhasiat', 'Minuman', 90, 25000.00, 120, NULL, true, 5, NOW(), NOW()),
 
 -- Hana's products (Kerajinan)
-(7, 'Tas Rajut Warna-Warni', 'Tas rajut handmade dengan benang berkualitas', 'Kerajinan', NULL, 85000.00, NULL, true, 6, NOW(), NOW()),
-(8, 'Dompet Kulit Sintetis', 'Dompet dari kulit sintetis premium', 'Kerajinan', NULL, 65000.00, NULL, true, 6, NOW(), NOW()),
-(9, 'Gantungan Kunci Resin', 'Gantungan kunci dari resin dengan bunga kering', 'Kerajinan', NULL, 25000.00, NULL, true, 6, NOW(), NOW()),
+(7, 'Tas Rajut Warna-Warni', 'Tas rajut handmade dengan benang berkualitas', 'Kerajinan', NULL, 85000.00, 30, NULL, true, 6, NOW(), NOW()),
+(8, 'Dompet Kulit Sintetis', 'Dompet dari kulit sintetis premium', 'Kerajinan', NULL, 65000.00, 40, NULL, true, 6, NOW(), NOW()),
+(9, 'Gantungan Kunci Resin', 'Gantungan kunci dari resin dengan bunga kering', 'Kerajinan', NULL, 25000.00, 150, NULL, true, 6, NOW(), NOW()),
 
 -- Ivan's products (Makanan Berat)
-(10, 'Rendang Kering', 'Rendang kering siap makan dalam kemasan vacuum', 'Makanan', 30, 75000.00, NULL, true, 7, NOW(), NOW()),
-(11, 'Abon Sapi Premium', 'Abon sapi dengan tekstur lembut', 'Makanan', 60, 55000.00, NULL, true, 7, NOW(), NOW()),
-(12, 'Sambal Terasi Bu Ivan', 'Sambal terasi homemade tingkat pedas sedang', 'Makanan', 30, 28000.00, NULL, true, 7, NOW(), NOW()),
+(10, 'Rendang Kering', 'Rendang kering siap makan dalam kemasan vacuum', 'Makanan', 30, 75000.00, 25, NULL, true, 7, NOW(), NOW()),
+(11, 'Abon Sapi Premium', 'Abon sapi dengan tekstur lembut', 'Makanan', 60, 55000.00, 35, NULL, true, 7, NOW(), NOW()),
+(12, 'Sambal Terasi Bu Ivan', 'Sambal terasi homemade tingkat pedas sedang', 'Makanan', 30, 28000.00, 45, NULL, true, 7, NOW(), NOW()),
 
 -- Joko's products (Aksesoris)
-(13, 'Gelang Kayu Etnik', 'Gelang dari kayu dengan ukiran etnik', 'Aksesoris', NULL, 35000.00, NULL, true, 8, NOW(), NOW()),
-(14, 'Kalung Manik-Manik', 'Kalung handmade dengan manik-manik batu alam', 'Aksesoris', NULL, 45000.00, NULL, true, 8, NOW(), NOW()),
-(15, 'Bros Batik Mini', 'Bros dengan motif batik khas Indonesia', 'Aksesoris', NULL, 20000.00, NULL, true, 8, NOW(), NOW())
+(13, 'Gelang Kayu Etnik', 'Gelang dari kayu dengan ukiran etnik', 'Aksesoris', NULL, 35000.00, 75, NULL, true, 8, NOW(), NOW()),
+(14, 'Kalung Manik-Manik', 'Kalung handmade dengan manik-manik batu alam', 'Aksesoris', NULL, 45000.00, 20, NULL, true, 8, NOW(), NOW()),
+(15, 'Bros Batik Mini', 'Bros dengan motif batik khas Indonesia', 'Aksesoris', NULL, 20000.00, 100, NULL, true, 8, NOW(), NOW())
 ON DUPLICATE KEY UPDATE updated_at = NOW();
 
 -- ============================================================================

@@ -464,6 +464,18 @@ abstract class AppLocalizations {
   /// **'Jumlah'**
   String get quantity;
 
+  /// No description provided for @stock.
+  ///
+  /// In id, this message translates to:
+  /// **'Stok'**
+  String get stock;
+
+  /// No description provided for @totalStock.
+  ///
+  /// In id, this message translates to:
+  /// **'Total Stok'**
+  String get totalStock;
+
   /// No description provided for @shelfLife.
   ///
   /// In id, this message translates to:

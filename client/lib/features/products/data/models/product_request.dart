@@ -5,6 +5,7 @@ class CreateProductRequest {
   final String? category;
   final int? shelfLifeDays;
   final double basePrice;
+  final int stock;
   final String? imageUrl;
 
   const CreateProductRequest({
@@ -13,6 +14,7 @@ class CreateProductRequest {
     this.category,
     this.shelfLifeDays,
     required this.basePrice,
+    required this.stock,
     this.imageUrl,
   });
 
@@ -22,6 +24,7 @@ class CreateProductRequest {
     if (description != null) json['description'] = description;
     if (category != null) json['category'] = category;
     if (shelfLifeDays != null) json['shelfLifeDays'] = shelfLifeDays;
+    json['stock'] = stock;
     if (imageUrl != null) json['imageUrl'] = imageUrl;
 
     return json;
@@ -35,6 +38,7 @@ class UpdateProductRequest {
   final String? category;
   final int? shelfLifeDays;
   final double basePrice;
+  final int stock;
   final String? imageUrl;
 
   const UpdateProductRequest({
@@ -43,6 +47,7 @@ class UpdateProductRequest {
     this.category,
     this.shelfLifeDays,
     required this.basePrice,
+    required this.stock,
     this.imageUrl,
   });
 
@@ -53,6 +58,7 @@ class UpdateProductRequest {
       'category': category,
       'shelfLifeDays': shelfLifeDays,
       'basePrice': basePrice,
+      'stock': stock,
       'imageUrl': imageUrl,
     };
   }
