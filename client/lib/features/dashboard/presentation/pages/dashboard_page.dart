@@ -10,6 +10,7 @@ import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../notification/presentation/bloc/notification_bloc.dart';
 import '../../../notification/presentation/widgets/notification_badge.dart';
 import '../../../products/data/repositories/product_repository.dart';
+import '../../../products/presentation/bloc/product_bloc.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../bloc/dashboard_bloc.dart';
 
